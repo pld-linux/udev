@@ -5,12 +5,12 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	026
+Version:	027
 Release:	1
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	bc0abc2fab36802d557de51a29ba6d1a
+# Source0-md5:	2c3eb9345d839013d560992cb6cf7222
 BuildRequires:	sed >= 4.0
 Requires:	coreutils
 Requires:	hotplug >= 2003_08_05
@@ -49,7 +49,7 @@ EXTRAS="extras/scsi_id extras/volume_id"
 %ifarch athlon
 	ARCH=i386 \
 %endif
-	udevdir=/dev \
+	udevdir=/udev \
 	CC="%{__cc}" \
 	%{!?debug:DEBUG=false} \
 	OPTIMIZATION="%{rpmcflags}" \
@@ -61,7 +61,7 @@ cp -a udev udev-initrd
 %endif
 
 %{__make} \
-	udevdir=/dev \
+	udevdir=/udev \
 	CC="%{__cc}" \
 	%{!?debug:DEBUG=false} \
 	OPTIMIZATION="%{rpmcflags}" \
@@ -73,7 +73,7 @@ rm -rf $RPM_BUILD_ROOT
 
 EXTRAS="extras/scsi_id extras/volume_id"
 
-install -d $RPM_BUILD_ROOT%{_prefix}/sbin
+install -d $RPM_BUILD_ROOT{%{_prefix}/sbin,/udev}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -104,6 +104,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/scsi_id.config
 %attr(755,root,root) %{_sbindir}/scsi_id
 %{_mandir}/man8/*
+%dir /udev
 
 %if %{with initrd}
 %files initrd
