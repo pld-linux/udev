@@ -102,7 +102,7 @@ rm -rf $RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT{%{_prefix}/sbin,/udev}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{rules.d,permissions.d,scripts}
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/{default,block}
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/{default,block,net,snd}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -121,6 +121,9 @@ install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/check-cdrom.sh
 
 mv $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/
 ln -s ../../udev/scripts/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/
+
+mv $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/default/selinux.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/
+ln -s ../../udev/scripts/selinux.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/default/
 
 %if %{with initrd}
 install -m755 initrd-udev $RPM_BUILD_ROOT%{_sbindir}/initrd-udev
@@ -142,9 +145,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %attr(755,root,root) %{_bindir}/*
 
+%config(missingok) %{_sysconfdir}/dev.d/net/selinux.dev
 %config(missingok) %{_sysconfdir}/dev.d/net/hotplug.dev
 %attr(755,root,root) %dir %{_sysconfdir}/dev.d
 %attr(755,root,root) %dir %{_sysconfdir}/dev.d/default
+%attr(755,root,root) %dir %{_sysconfdir}/dev.d/net
+%attr(755,root,root) %dir %{_sysconfdir}/dev.d/snd
 
 %attr(755,root,root) %dir %{_sysconfdir}/udev
 %attr(755,root,root) %dir %{_sysconfdir}/udev/rules.d
