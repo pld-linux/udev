@@ -87,7 +87,7 @@ sed -i -e 's#gcc#$(CC)#g' devmap_name/Makefile
 	OPTFLAGS="%{rpmcflags}"
 
 %{__make} \
-	udevdir=/dev \
+	udevdir=/udev \
 	CC="%{__cc}" \
 	%{!?debug:DEBUG=false} \
 	OPTIMIZATION="%{rpmcflags}" \
