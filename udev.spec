@@ -6,13 +6,13 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	039
+Version:	040
 Release:	1
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	4c28bd5a53f2be408c8d3a66aa1bafe8
-# Source0-size:	381657
+# Source0-md5:	e97a5260bf9a8f23ba3a369a48804731
+# Source0-size:	379246
 Source1:	%{name}.rules
 Source2:	%{name}.permissions
 Source3:	%{name}.conf
@@ -82,10 +82,10 @@ cp -a udev initrd-udev
 %{__make} clean
 %endif
 
-cd devmap_name
-make
-cd ..
-
+sed -i -e 's#gcc#$(CC)#g' devmap_name/Makefile
+%{__make} -C devmap_name \
+	CC="%{__cc}" \
+	OPTFLAGS="%{rpmcflags}"
 
 %{__make} \
 	udevdir=/dev \
