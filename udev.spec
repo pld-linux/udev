@@ -30,6 +30,7 @@ Requires:	coreutils
 Requires:	hotplug >= 2003_08_05
 Provides:	dev = %{dev_ver}
 Obsoletes:	dev
+Obsoletes:	udev-dev
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
@@ -54,22 +55,6 @@ A userspace implementation of devfs - static binary for initrd.
 %description initrd -l pl
 Implementacja devfs w przestrzeni u¿ytkownika - statyczna binarka dla
 initrd.
-
-%package dev
-Summary:	dev replacement using udev
-Summary(pl):	Zamiennik dev z u¿yciem udev
-Group:		Base
-Requires:	%{name} = %{version}-%{release}
-Provides:	dev = %{dev_ver}
-Obsoletes:	dev
-Obsoletes:	MAKEDEV
-Conflicts:	kernel < 2.4
-
-%description dev
-dev replacement using udev.
-
-%description dev -l pl
-Zamiennik dev z u¿yciem udev.
 
 %prep
 %setup -q
