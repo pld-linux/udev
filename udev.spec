@@ -1,6 +1,6 @@
 #
 # Conditional build:
-%bcond_without	initrd	# don't build udev-initrd
+%bcond_with	initrd	# build udev-initrd
 #
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
