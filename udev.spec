@@ -24,6 +24,7 @@ Patch4:		%{name}-030-rhsec.patch
 Patch5:		%{name}-030-symlink.patch
 Patch6:		%{name}-030-cloexec.patch
 BuildRequires:	sed >= 4.0
+%{?with_initrd:BuildRequires:	uClibc-static >= 0.9.21}
 Requires:	coreutils
 Requires:	hotplug >= 2003_08_05
 Provides:	dev = %{dev_ver}
@@ -85,12 +86,13 @@ Zamiennik dev z u¿yciem udev.
 	ARCH=i386 \
 %endif
 	udevdir=/dev \
-	CC="%{__cc}" \
-	LD="%{__cc} %{rpmldflags} -static" \
+	CC="%{_target_cpu}-uclibc-gcc" \
+	LD="%{_target_cpu}-uclibc-gcc %{rpmldflags} -static" \
 	%{!?debug:DEBUG=false} \
 	OPTIMIZATION="%{rpmcflags}" \
 	USE_KLIBC=false \
 	USE_LOG=true \
+	USE_SELINUX=false \
 	EXTRAS=""
 
 cp -a udev initrd-udev
