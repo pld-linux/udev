@@ -7,7 +7,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	046
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -123,6 +123,8 @@ ln -s ../../udev/scripts/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/
 install ./etc/dev.d/default/selinux.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/
 ln -s ../../udev/scripts/selinux.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/default/
 
+ln -s %{_sbindir}/wait_for_sysfs $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default/00-wait_for_sysfs.hotplug
+
 %if %{with initrd}
 install -m755 initrd-udev $RPM_BUILD_ROOT%{_sbindir}/initrd-udev
 ln -s initrd-udev $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
@@ -165,6 +167,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(755,root,root) %{_sbindir}/devmap_name
 
+%config(missingok) %{_sysconfdir}/hotplug.d/default/00-wait_for_sysfs.hotplug
 %config(missingok) %{_sysconfdir}/hotplug.d/default/10-udev.hotplug
 
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/scsi_id.config
