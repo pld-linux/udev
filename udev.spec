@@ -19,9 +19,8 @@ Source4:	start_udev
 Source5:	devmap_name.tar.gz
 # Source5-md5:	f72f557299436af5d6ad66815b80a641
 Source6:	%{name}-check-cdrom.sh
-Patch0:		%{name}-025-volsbin.patch
-Patch1:		%{name}-029-moreconf.patch
-Patch2:		%{name}-032-symlink.patch
+Patch0:		%{name}-029-moreconf.patch
+Patch1:		%{name}-032-symlink.patch
 BuildRequires:	device-mapper-devel
 BuildRequires:	libselinux-devel >= 1.17.13
 BuildRequires:	sed >= 4.0
@@ -58,7 +57,6 @@ initrd.
 %setup -q -a5
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 %build
 %if %{with initrd}
@@ -122,8 +120,6 @@ install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/check-cdrom.sh
 mv $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/
 ln -s ../../udev/scripts/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/
 
-install ./etc/dev.d/default/selinux.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/
-ln -s ../../udev/scripts/selinux.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/default/
 
 %if %{with initrd}
 install -m755 initrd-udev $RPM_BUILD_ROOT%{_sbindir}/initrd-udev
@@ -146,7 +142,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %attr(755,root,root) %{_bindir}/*
 
-%config(missingok) %{_sysconfdir}/dev.d/default/selinux.dev
 %config(missingok) %{_sysconfdir}/dev.d/net/hotplug.dev
 %attr(755,root,root) %dir %{_sysconfdir}/dev.d
 %attr(755,root,root) %dir %{_sysconfdir}/dev.d/default
@@ -160,7 +155,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(755,root,root) %{_sysconfdir}/udev/scripts/hotplug.dev
 %attr(755,root,root) %{_sysconfdir}/udev/scripts/check-cdrom.sh
-%attr(755,root,root) %{_sysconfdir}/udev/scripts/selinux.dev
 
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/udev.conf
 %config(noreplace) %verify(not size mtime md5)  %{_sysconfdir}/udev/rules.d/50-udev.rules
