@@ -7,7 +7,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	042
-Release:	1
+Release:	2
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
@@ -122,7 +122,7 @@ install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/check-cdrom.sh
 mv $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/
 ln -s ../../udev/scripts/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/
 
-mv $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/default/selinux.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/
+install ./etc/dev.d/default/selinux.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/
 ln -s ../../udev/scripts/selinux.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/default/
 
 %if %{with initrd}
@@ -145,7 +145,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %attr(755,root,root) %{_bindir}/*
 
-%config(missingok) %{_sysconfdir}/dev.d/net/selinux.dev
+%config(missingok) %{_sysconfdir}/dev.d/default/selinux.dev
 %config(missingok) %{_sysconfdir}/dev.d/net/hotplug.dev
 %attr(755,root,root) %dir %{_sysconfdir}/dev.d
 %attr(755,root,root) %dir %{_sysconfdir}/dev.d/default
@@ -159,6 +159,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(755,root,root) %{_sysconfdir}/udev/scripts/hotplug.dev
 %attr(755,root,root) %{_sysconfdir}/udev/scripts/check-cdrom.sh
+%attr(755,root,root) %{_sysconfdir}/udev/scripts/selinux.dev
 
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/udev.conf
 %config(noreplace) %verify(not size mtime md5)  %{_sysconfdir}/udev/rules.d/50-udev.rules
