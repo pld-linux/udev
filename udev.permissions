@@ -53,21 +53,21 @@ rtc:root:root:0660
 fd[01]*:root:floppy:0660
 
 # audio devices
-dsp*:root:root:0660
-audio*:root:root:0660
-midi*:root:root:0660
-mixer*:root:root:0660
-sequencer*:root:root:0660
-sound/*:root:root:0660
-snd/*:root:root:0660
-beep:root:root:0660
-admm*:root:root:0660
-adsp*:root:root:0660
-aload*:root:root:0660
-amidi*:root:root:0660
-dmfm*:root:root:0660
-dmmidi*:root:root:0660
-sndstat:root:root:0660
+dsp*:root:audio:0660
+audio*:root:audio:0660
+midi*:root:audio:0660
+mixer*:root:audio:0660
+sequencer*:root:audio:0660
+sound/*:root:audio:0660
+snd/*:root:audio:0660
+beep:root:audio:0660
+admm*:root:audio:0660
+adsp*:root:audio:0660
+aload*:root:audio:0660
+amidi*:root:audio:0660
+dmfm*:root:audio:0660
+dmmidi*:root:audio:0660
+sndstat:root:audio:0660
 
 # optical devices
 sr*:root:disk:660
@@ -160,14 +160,14 @@ js[0-9]*:root:root:0644
 djs[0-9]*:root:root:0644
 
 # v4l devices
-video*:root:root:0660
-radio*:root:root:0660
-winradio*:root:root:0660
-vtx*:root:root:0660
-vbi*:root:root:0660
-video/*:root:root:0660
-vttuner:root:root:0660
-v4l/*:root:root:0660
+video*:root:video:0660
+radio*:root:video:0660
+winradio*:root:video:0660
+vtx*:root:video:0660
+vbi*:root:video:0660
+video/*:root:video:0660
+vttuner:root:video:0660
+v4l/*:root:video:0660
 
 # input devices
 input/*:root:root:644
