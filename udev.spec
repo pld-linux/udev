@@ -28,6 +28,7 @@ BuildRequires:	sed >= 4.0
 Requires:	coreutils
 Requires:	hotplug >= 2003_08_05
 Provides:	dev = %{dev_ver}
+Obsoletes:	dev < %{dev_ver}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
@@ -170,6 +171,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/scsi_id.config
 
 %{_mandir}/man8/*
+
+%dev(c,1,3) %attr(666,root,root) /dev/null
+%dev(c,5,1) %attr(660,root,console) /dev/console
+%dev(c,1,5) %attr(666,root,root) /dev/zero
 
 %if %{with initrd}
 %files initrd
