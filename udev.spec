@@ -1,13 +1,12 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	015
-Release:	2
+Version:	016
+Release:	1
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	6abfb23d89284cca03c5c68e2ab8910a
-Patch0:		%{name}-dbus.patch
+# Source0-md5:	5724a5b7b1756fc948402bf98173a04c
 BuildRequires:	dbus-devel >= 0.20
 BuildRequires:	sed >= 4.0
 Requires:	coreutils
@@ -26,7 +25,6 @@ wy¿szych.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
 %{__make} \
@@ -56,11 +54,11 @@ fi
 if [ -f /var/lock/subsys/messagebus ]; then
 	/etc/rc.d/init.d/messagebus restart 1>&2
 fi
-	
 
 %files
 %defattr(644,root,root,755)
-%doc ChangeLog FAQ README TODO docs/{overview,udev-*.pdf}
+%doc ChangeLog FAQ README TODO
+%doc docs/{overview,udev_vs_devfs,libsysfs.txt,udev-*.pdf}
 %attr(755,root,root) %{_sbindir}/*
 %attr(750,root,root) %dir %{_sysconfdir}/udev
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/*
