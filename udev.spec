@@ -15,8 +15,7 @@ Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}
 Source1:	%{name}.rules
 Source2:	%{name}.permissions
 Source3:	%{name}.conf
-Source4:	pam_console.dev
-Source5:	start_udev
+Source4:	start_udev
 Patch0:		%{name}-025-volsbin.patch
 Patch1:		%{name}-029-chassis.patch
 Patch2:		%{name}-029-moreconf.patch
@@ -125,13 +124,14 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev.rules
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/permissions.d/50-udev.permissions
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.conf
+install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/start_udev
 
 mv $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/
 ln -s ../../udev/scripts/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/
 
 %if %{with initrd}
 install -m755 initrd-udev $RPM_BUILD_ROOT%{_sbindir}/initrd-udev
-ln -s initrd-udev $RPM_BUILD_ROOT/sbin/udevstart.initrd
+ln -s initrd-udev $RPM_BUILD_ROOT%{_bindir}/udevstart.initrd
 %endif
 
 %clean
