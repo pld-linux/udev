@@ -2,17 +2,16 @@
 # Conditional build:
 %bcond_without	initrd	# build without udev-initrd
 #
-%define dev_ver 3.0.0
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	050
+Version:	053
 Release:	1
 Epoch:		1
 License:	GPL
 Group:		Base
-Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	eefa5f012ae66ac5adc7d9d7a6a5a6fc
+Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
+# Source0-md5:	35d44d19b7097c87fd4828e2ea844c65
 Source1:	%{name}.rules
 Source2:	%{name}.permissions
 Source3:	%{name}.conf
@@ -20,15 +19,15 @@ Source4:	start_udev
 Source5:	devmap_name.tar.gz
 # Source5-md5:	f72f557299436af5d6ad66815b80a641
 Source6:	%{name}-check-cdrom.sh
-Patch1:		%{name}-029-moreconf.patch
-Patch2:		%{name}-032-symlink.patch
+Source7:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
+Patch0:		%{name}-032-symlink.patch
 BuildRequires:	device-mapper-devel
 BuildRequires:	libselinux-devel >= 1.17.13
 BuildRequires:	sed >= 4.0
 %{?with_initrd:BuildRequires:	uClibc-static >= 0.9.21}
 Requires:	coreutils
 Requires:	hotplug >= 2003_08_05
-Provides:	dev = %{dev_ver}
+Provides:	dev = 3.0.0
 Obsoletes:	dev
 Obsoletes:	udev-dev
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -58,8 +57,7 @@ initrd.
 
 %prep
 %setup -q -a5
-%patch1 -p1
-%patch2 -p1
+%patch0 -p1
 
 %build
 %if %{with initrd}
@@ -96,6 +94,8 @@ sed 's/LOGNAME_SIZE/64/' -i extras/volume_id/udev_volume_id.c
 	USE_LOG=true \
 	EXTRAS="%{extras}"
 
+%{__cc} %{rpmcflags} %{SOURCE7} -o uevent_listen
+
 %install
 rm -rf $RPM_BUILD_ROOT
 
@@ -129,6 +129,7 @@ ln -s initrd-udev $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
 %endif
 
 install devmap_name/devmap_name $RPM_BUILD_ROOT%{_sbindir}/devmap_name
+install uevent_listen $RPM_BUILD_ROOT%{_sbindir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
