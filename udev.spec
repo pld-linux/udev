@@ -124,7 +124,7 @@ ln -s ../../udev/scripts/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/
 
 %if %{with initrd}
 install -m755 initrd-udev $RPM_BUILD_ROOT%{_sbindir}/initrd-udev
-ln -s initrd-udev $RPM_BUILD_ROOT%{_bindir}/udevstart.initrd
+ln -s initrd-udev $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
 %endif
 
 install devmap_name/devmap_name $RPM_BUILD_ROOT%{_sbindir}/devmap_name
