@@ -6,20 +6,19 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	042
-Release:	4
+Version:	050
+Release:	1
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	0b86c5c07615f417042d796366fad4d2
-# Source0-size:	379246
+# Source0-md5:	eefa5f012ae66ac5adc7d9d7a6a5a6fc
 Source1:	%{name}.rules
 Source2:	%{name}.permissions
 Source3:	%{name}.conf
 Source4:	start_udev
 Source5:	devmap_name.tar.gz
-Source6:	%{name}-check-cdrom.sh
 # Source5-md5:	f72f557299436af5d6ad66815b80a641
+Source6:	%{name}-check-cdrom.sh
 Patch0:		%{name}-025-volsbin.patch
 Patch1:		%{name}-029-moreconf.patch
 Patch2:		%{name}-032-symlink.patch
@@ -86,6 +85,8 @@ sed -i -e 's#gcc#$(CC)#g' devmap_name/Makefile
 	CC="%{__cc}" \
 	OPTFLAGS="%{rpmcflags}"
 
+sed 's/LOGNAME_SIZE/64/' \
+	-i extras/volume_id/udev_volume_id.c
 %{__make} \
 	udevdir=/udev \
 	CC="%{__cc}" \
