@@ -13,7 +13,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 A userspace implementation of devfs for 2.5 and higher kernels.
 
 %description -l pl
-Implementacjia devfs w przestrzeni u¿ytkownika dla kerneli 2.5 i wy¿szych.
+Implementacjia devfs w przestrzeni u¿ytkownika dla j±der 2.5 i
+wy¿szych.
 
 %prep
 %setup  -q
