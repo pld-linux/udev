@@ -1,0 +1,13 @@
+--- udev-025/extras/volume_id/Makefile.volsbin	2004-06-02 15:28:43.520504784 +0200
++++ udev-025/extras/volume_id/Makefile	2004-06-02 15:29:08.229748408 +0200
+@@ -54,8 +54,8 @@
+ spotless: clean
+ 
+ install: all
+-	$(INSTALL_PROGRAM) $(PROG) $(DESTDIR)$(usrsbindir)/$(PROG)
++	$(INSTALL_PROGRAM) $(PROG) $(DESTDIR)$(sbindir)/$(PROG)
+ 
+ uninstall:
+-	- rm $(DESTDIR)$(usrsbindir)/$(PROG)
++	- rm $(DESTDIR)$(sbindir)/$(PROG)
+ 
