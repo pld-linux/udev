@@ -6,23 +6,19 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	032
-Release:	0.2
+Version:	034
+Release:	0.1
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	6df7392c3f5fe44d7cf261a0d2497b99
+# Source0-md5:	38488100701063f8f567644a07fe11c4
+# Source0-size:	371749
 Source1:	%{name}.rules
 Source2:	%{name}.permissions
 Source3:	%{name}.conf
 Source4:	start_udev
 Patch0:		%{name}-025-volsbin.patch
-Patch1:		%{name}-029-chassis.patch
-Patch2:		%{name}-029-moreconf.patch
-Patch3:		%{name}-030-selinux.patch
-Patch4:		%{name}-030-rhsec.patch
-Patch5:		%{name}-030-symlink.patch
-Patch6:		%{name}-030-cloexec.patch
+Patch1:		%{name}-029-moreconf.patch
 BuildRequires:	libselinux-devel >= 1.17.13
 BuildRequires:	sed >= 4.0
 %{?with_initrd:BuildRequires:	uClibc-static >= 0.9.21}
@@ -60,11 +56,6 @@ initrd.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
 
 %build
 %if %{with initrd}
