@@ -121,7 +121,6 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/scsi_id.config
 %attr(755,root,root) %{_sbindir}/scsi_id
 %{_mandir}/man8/*
-%dir /dev
 
 %if %{with initrd}
 %files initrd
