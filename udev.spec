@@ -5,12 +5,12 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	023
+Version:	024
 Release:	0.1
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	1f900275d2b61196209ca35ea7ae2def
+# Source0-md5:	1e9a16f35814975d55c78258f3c4a498
 BuildRequires:	dbus-devel >= 0.20
 BuildRequires:	pkgconfig
 BuildRequires:	sed >= 4.0
@@ -103,8 +103,9 @@ fi
 %attr(750,root,root) %dir %{_sysconfdir}/udev
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/*
 %attr(755,root,root) %{_sysconfdir}/hotplug.d/default/*.hotplug
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/dbus*/system.d/*
+#%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/dbus*/system.d/*
 %{_mandir}/man8/*
+%{_sysconfdir}/dev.d
 
 %if %{with initrd}
 %exclude %{_sbindir}/udev-initrd
