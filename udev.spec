@@ -18,7 +18,7 @@ Source2:	%{name}.permissions
 Source3:	%{name}.conf
 Source4:	start_udev
 Source5:	devmap_name.tar.gz
-# NoSource5-md5:	f72f557299436af5d6ad66815b80a641
+# Source5-md5:	f72f557299436af5d6ad66815b80a641
 Patch0:		%{name}-025-volsbin.patch
 Patch1:		%{name}-029-moreconf.patch
 Patch2:		%{name}-032-symlink.patch
