@@ -26,6 +26,7 @@ Patch6:		%{name}-030-cloexec.patch
 BuildRequires:	sed >= 4.0
 Requires:	coreutils
 Requires:	hotplug >= 2003_08_05
+Provides:	dev = %{dev_ver}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
