@@ -7,7 +7,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	042
-Release:	1
+Release:	2
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
@@ -29,8 +29,6 @@ BuildRequires:	sed >= 4.0
 %{?with_initrd:BuildRequires:	uClibc-static >= 0.9.21}
 Requires:	coreutils
 Requires:	hotplug >= 2003_08_05
-Provides:	dev = %{dev_ver}
-Obsoletes:	dev
 Obsoletes:	udev-dev
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -69,7 +67,7 @@ initrd.
 %ifarch athlon
 	ARCH=i386 \
 %endif
-	udevdir=/dev \
+	udevdir=/udev \
 	CC="%{_target_cpu}-uclibc-gcc" \
 	LD="%{_target_cpu}-uclibc-gcc %{rpmldflags} -static" \
 	%{!?debug:DEBUG=false} \
@@ -89,7 +87,7 @@ sed -i -e 's#gcc#$(CC)#g' devmap_name/Makefile
 	OPTFLAGS="%{rpmcflags}"
 
 %{__make} \
-	udevdir=/dev \
+	udevdir=/udev \
 	CC="%{__cc}" \
 	%{!?debug:DEBUG=false} \
 	OPTIMIZATION="%{rpmcflags}" \
@@ -122,7 +120,7 @@ install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/check-cdrom.sh
 mv $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/
 ln -s ../../udev/scripts/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/
 
-mv $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/default/selinux.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/
+install ./etc/dev.d/default/selinux.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/
 ln -s ../../udev/scripts/selinux.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/default/
 
 %if %{with initrd}
@@ -145,7 +143,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %attr(755,root,root) %{_bindir}/*
 
-%config(missingok) %{_sysconfdir}/dev.d/net/selinux.dev
+%config(missingok) %{_sysconfdir}/dev.d/default/selinux.dev
 %config(missingok) %{_sysconfdir}/dev.d/net/hotplug.dev
 %attr(755,root,root) %dir %{_sysconfdir}/dev.d
 %attr(755,root,root) %dir %{_sysconfdir}/dev.d/default
@@ -159,6 +157,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(755,root,root) %{_sysconfdir}/udev/scripts/hotplug.dev
 %attr(755,root,root) %{_sysconfdir}/udev/scripts/check-cdrom.sh
+%attr(755,root,root) %{_sysconfdir}/udev/scripts/selinux.dev
 
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/udev.conf
 %config(noreplace) %verify(not size mtime md5)  %{_sysconfdir}/udev/rules.d/50-udev.rules
@@ -171,10 +170,6 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/scsi_id.config
 
 %{_mandir}/man8/*
-
-%dev(c,1,3) %attr(666,root,root) /dev/null
-%dev(c,5,1) %attr(660,root,console) /dev/console
-%dev(c,1,5) %attr(666,root,root) /dev/zero
 
 %if %{with initrd}
 %files initrd
