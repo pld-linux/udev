@@ -7,11 +7,16 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	032
-Release:	1.1
+Release:	1.9
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
 # Source0-md5:	6df7392c3f5fe44d7cf261a0d2497b99
+Source1:	%{name}.sysconfig
+Source2:	%{name}.permissions
+Source3:	%{name}.rules
+Source4:	%{name}.hotplug
+Patch0:		%{name}-start_udev.patch
 BuildRequires:	sed >= 4.0
 Requires:	coreutils
 Requires:	hotplug >= 2003_08_05
@@ -57,10 +62,9 @@ Zamiennik dev z u¿yciem udev.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
-EXTRAS="extras/scsi_id extras/volume_id"
-
 %if %{with initrd}
 %{__make} \
 %ifarch athlon
@@ -68,14 +72,19 @@ EXTRAS="extras/scsi_id extras/volume_id"
 %endif
 	udevdir=/dev \
 	CC="%{__cc}" \
+	LD="%{__cc} -static" \
 	%{!?debug:DEBUG=false} \
-	OPTIMIZATION="%{rpmcflags}" \
-	USE_KLIBC=true \
+	OPTIMALIZATION="%{rpmcflags}" \
+	USE_KLIBC=false \
+	EXTRAS="" \
+	USE_LOG=true \
 	udev
 	
-cp -a udev udev-initrd
+cp -a udev udev.static
 %{__make} clean
 %endif
+
+EXTRAS="extras/scsi_id extras/volume_id"
 
 %{__make} \
 	udevdir=/dev \
@@ -90,15 +99,26 @@ rm -rf $RPM_BUILD_ROOT
 
 EXTRAS="extras/scsi_id extras/volume_id"
 
-install -d $RPM_BUILD_ROOT{%{_prefix}/sbin,/dev}
+install -d $RPM_BUILD_ROOT{%{_prefix}/sbin,/dev,/etc/sysconfig}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
 	initdir=%{_initrddir} \
 	EXTRAS="$EXTRAS"
 
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/permissions.d/50-udev.permissions
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev.rules
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default/10-udev.hotplug
+
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/sysconfig/udev
+install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/permissions.d/50-udev.permissions
+install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev.rules
+install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default/10-udev.hotplug
+install extras/start_udev $RPM_BUILD_ROOT%{_sbindir}
+
 %if %{with initrd}
-install -m755 udev-initrd $RPM_BUILD_ROOT%{_sbindir}
+install udev.static $RPM_BUILD_ROOT%{_sbindir}
+ln -sf udev.static $RPM_BUILD_ROOT%{_sbindir}/udevstart.static
 %endif
 
 %clean
@@ -109,9 +129,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc ChangeLog FAQ HOWTO-udev_for_dev README TODO
 %doc docs/{overview,udev_vs_devfs,libsysfs.txt,udev-*.pdf,RFC-dev.d}
 %attr(755,root,root) %{_sbindir}/udev*
+%attr(755,root,root) %{_sbindir}/start_udev
 %attr(755,root,root) %{_prefix}/sbin/udev*
 %if %{with initrd}
-%exclude %{_sbindir}/udev-initrd
+%exclude %{_sbindir}/*.static
 %endif
 %attr(755,root,root) %{_bindir}/*
 %attr(750,root,root) %dir %{_sysconfdir}/udev
@@ -119,13 +140,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(750,root,root) %{_sysconfdir}/dev.d
 %attr(755,root,root) %{_sysconfdir}/hotplug.d/default/*.hotplug
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/scsi_id.config
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/*
 %attr(755,root,root) %{_sbindir}/scsi_id
 %{_mandir}/man8/*
 
 %if %{with initrd}
 %files initrd
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_sbindir}/udev-initrd
+%attr(755,root,root) %{_sbindir}/*.static
 %endif
 
 %files dev
