@@ -3,12 +3,13 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	017
+Version:	018
 Release:	1
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	666679dfde71f098b0f607c49df69a38
+# Source0-md5:	d09f32eb7916ed86b687675899ee6a02
+Patch0:		%{name}-athlon.patch
 BuildRequires:	dbus-devel >= 0.20
 BuildRequires:	sed >= 4.0
 Requires:	coreutils
@@ -35,6 +36,7 @@ A userspace implementation of devfs - static binary for initrd.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %if %{with initrd}
@@ -85,7 +87,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc ChangeLog FAQ README TODO
+%doc ChangeLog FAQ HOWTO-udev_for_dev README TODO
 %doc docs/{overview,udev_vs_devfs,libsysfs.txt,udev-*.pdf}
 %attr(755,root,root) %{_sbindir}/*
 %attr(750,root,root) %dir %{_sysconfdir}/udev
