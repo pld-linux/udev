@@ -29,11 +29,16 @@ wy¿szych.
 
 %package initrd
 Summary:	A userspace implementation of devfs - static binary for initrd
+Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika - statyczna binarka dla initrd
 Group:		Base
 Requires:	%{name} = %{version}-%{release}
 
 %description initrd
 A userspace implementation of devfs - static binary for initrd.
+
+%description initrd -l pl
+Implementacja devfs w przestrzeni u¿ytkownika - statyczna binarka dla
+initrd.
 
 %prep
 %setup -q
