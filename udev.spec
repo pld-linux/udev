@@ -1,12 +1,12 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	0.2
+Version:	004
 Release:	1
 License:	GPL
 Group:		Base
-Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev-0.2.tar.bz2
-# Source0-md5:	c63d4482cbaa074f937661486e9f2030
+Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
+# Source0-md5:	1f3cd6ba984ed947aa004be29ca362cf
 BuildRequires:	sed >= 4.0
 Requires:	coreutils
 Requires:	hotplug >= 2003_08_05
@@ -23,17 +23,12 @@ wy¿szych.
 %setup -q
 
 %build
-%{__make} -C libsysfs \
-	CC="%{__cc}" \
-	CFLAGS="%{rpmcflags} -Wall -ansi"
-
+sed -i -e 's#CFLAGS = .*#CFLAGS = %{rpmcflags}#g' libsysfs/Makefile
 %{__make} \
+	udevdir=/dev \
 	CC="%{__cc}" \
 	%{!?debug:DEBUG=false} \
 	OPTIMIZATION="%{rpmcflags}"
-
-sed -i -e 's#/udev/#/dev/#g' udev.h
-sed -i -e 's#/home/greg/src/udev/#/etc/udev/#g' namedev.h
 
 %install
 rm -rf $RPM_BUILD_ROOT
