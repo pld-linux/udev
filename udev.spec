@@ -5,13 +5,13 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	054
-Release:	2
+Version:	056
+Release:	1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	1c26d16d12b453f6a85c4e0e36bb304b
+# Source0-md5:	30fb3a320e74ff0c49c15ecaa6e37a4c
 Source1:	%{name}.rules
 Source3:	%{name}.conf
 Source4:	start_udev
@@ -57,7 +57,7 @@ initrd.
 
 %prep
 %setup -q -a5
-%patch0 -p1
+#%patch0 -p1
 
 %build
 %if %{with initrd}
