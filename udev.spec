@@ -7,7 +7,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	042
-Release:	3
+Release:	4
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
@@ -101,6 +101,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_prefix}/sbin,/udev}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{rules.d,permissions.d,scripts}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/{default,block,net,snd}
+install -d $RPM_BUILD_ROOT/udev
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -138,6 +139,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc ChangeLog FAQ HOWTO-udev_for_dev README TODO
 %doc docs/{overview,udev_vs_devfs,libsysfs.txt,udev-*.pdf,RFC-dev.d}
 %attr(755,root,root) %{_sbindir}/*
+%dir /udev
 %if %{with initrd}
 %exclude %{_sbindir}/*initrd*
 %endif
