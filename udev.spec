@@ -21,6 +21,7 @@ Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}
 Patch0:		%{name}-libsysfs.patch
 Patch1:		%{name}-dm.patch
 Patch2:		%{name}-DESTDIR.patch
+Patch3:		%{name}-provision.patch
 BuildRequires:	dbus-devel >= 0.20
 BuildRequires:	pkgconfig
 BuildRequires:	sed >= 4.0
@@ -60,6 +61,7 @@ initrd.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %if %{with initrd}
