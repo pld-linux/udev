@@ -28,7 +28,7 @@ BuildRequires:	sed >= 4.0
 Requires:	coreutils
 Requires:	hotplug >= 2003_08_05
 Provides:	dev = %{dev_ver}
-Obsoletes:	dev < %{dev_ver}
+Obsoletes:	dev
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
