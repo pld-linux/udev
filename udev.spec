@@ -17,9 +17,12 @@ Source1:	%{name}.rules
 Source2:	%{name}.permissions
 Source3:	%{name}.conf
 Source4:	start_udev
+Source5:	devmap_name.tar.gz
+# NoSource5-md5:	f72f557299436af5d6ad66815b80a641
 Patch0:		%{name}-025-volsbin.patch
 Patch1:		%{name}-029-moreconf.patch
 Patch2:		%{name}-032-symlink.patch
+BuildRequires:	device-mapper-devel
 BuildRequires:	libselinux-devel >= 1.17.13
 BuildRequires:	sed >= 4.0
 %{?with_initrd:BuildRequires:	uClibc-static >= 0.9.21}
@@ -54,7 +57,7 @@ Implementacja devfs w przestrzeni u¿ytkownika - statyczna binarka dla
 initrd.
 
 %prep
-%setup -q
+%setup -q -a5
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -78,6 +81,11 @@ initrd.
 cp -a udev initrd-udev
 %{__make} clean
 %endif
+
+cd devmap_name
+make
+cd ..
+
 
 %{__make} \
 	udevdir=/dev \
@@ -117,6 +125,8 @@ install -m755 initrd-udev $RPM_BUILD_ROOT%{_sbindir}/initrd-udev
 ln -s initrd-udev $RPM_BUILD_ROOT%{_bindir}/udevstart.initrd
 %endif
 
+install devmap_name/devmap_name $RPM_BUILD_ROOT%{_sbindir}/devmap_name
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -144,6 +154,8 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/udev.conf
 %config(noreplace) %verify(not size mtime md5)  %{_sysconfdir}/udev/rules.d/50-udev.rules
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/permissions.d/50-udev.permissions
+
+%{_sbindir}/devmap_name
 
 %config(missingok) %{_sysconfdir}/hotplug.d/default/10-udev.hotplug
 
