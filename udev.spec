@@ -13,7 +13,6 @@ License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
 # Source0-md5:	d870db0f8093529704fc40fe7dd40914
-# Source0-size:	379246
 Source1:	%{name}.rules
 Source2:	%{name}.permissions
 Source3:	%{name}.conf
