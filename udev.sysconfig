@@ -1,0 +1,3 @@
+# set USE_UDEV to yes, if you want to use udev 
+USE_UDEV="yes"
+
