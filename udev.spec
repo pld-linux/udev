@@ -13,10 +13,10 @@ Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
 # Source0-md5:	6df7392c3f5fe44d7cf261a0d2497b99
 Source1:	%{name}.sysconfig
-Source2:	%{name}.permissions
-Source3:	%{name}.rules
-Source4:	%{name}.hotplug
+Source2:	%{name}.hotplug
 Patch0:		%{name}-start_udev.patch
+Patch1:		%{name}-permissions.patch
+Patch2:		%{name}-rules.patch
 BuildRequires:	sed >= 4.0
 Requires:	coreutils
 Requires:	hotplug >= 2003_08_05
@@ -63,6 +63,8 @@ Zamiennik dev z u¿yciem udev.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %build
 %if %{with initrd}
@@ -106,14 +108,10 @@ install -d $RPM_BUILD_ROOT{%{_prefix}/sbin,/dev,/etc/sysconfig}
 	initdir=%{_initrddir} \
 	EXTRAS="$EXTRAS"
 
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/permissions.d/50-udev.permissions
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev.rules
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default/10-udev.hotplug
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/sysconfig/udev
-install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/permissions.d/50-udev.permissions
-install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev.rules
-install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default/10-udev.hotplug
+install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default/10-udev.hotplug
 install extras/start_udev $RPM_BUILD_ROOT%{_sbindir}
 
 %if %{with initrd}
