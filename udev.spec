@@ -7,7 +7,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	030
-Release:	1
+Release:	1.1
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
@@ -133,4 +133,3 @@ rm -rf $RPM_BUILD_ROOT
 
 %files dev
 %defattr(644,root,root,755)
-/dev
