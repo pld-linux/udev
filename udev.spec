@@ -18,6 +18,7 @@ Source2:	%{name}.permissions
 Source3:	%{name}.conf
 Source4:	start_udev
 Source5:	devmap_name.tar.gz
+Source6:	%{name}-check-cdrom.sh
 # Source5-md5:	f72f557299436af5d6ad66815b80a641
 Patch0:		%{name}-025-volsbin.patch
 Patch1:		%{name}-029-moreconf.patch
@@ -116,6 +117,7 @@ install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev.rules
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/permissions.d/50-udev.permissions
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.conf
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/start_udev
+install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/check-cdrom.sh
 
 mv $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/
 ln -s ../../udev/scripts/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/
@@ -150,6 +152,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %dir %{_sysconfdir}/udev/scripts
 
 %attr(755,root,root) %{_sysconfdir}/udev/scripts/hotplug.dev
+%attr(755,root,root) %{_sysconfdir}/udev/scripts/check-cdrom.sh
 
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/udev.conf
 %config(noreplace) %verify(not size mtime md5)  %{_sysconfdir}/udev/rules.d/50-udev.rules
