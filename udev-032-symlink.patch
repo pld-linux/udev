@@ -1,19 +1,14 @@
---- udev-032/namedev.c.symlink	2004-10-06 10:38:58.760423024 +0200
-+++ udev-032/namedev.c	2004-10-06 10:38:58.767421960 +0200
-@@ -898,14 +898,18 @@
- 
+--- udev-053/namedev.c.orig	2005-02-11 20:55:12.000000000 +0100
++++ udev-053/namedev.c	2005-02-12 10:51:10.614856944 +0100
+@@ -779,9 +779,19 @@
+ 			/* collect symlinks for this or the final matching rule */
  			if (dev->symlink[0] != '\0') {
  				char temp[NAME_SIZE];
--
 +				char *p;
 +				int len;
- 				info("configured rule in '%s' at line %i applied, added symlink '%s'",
+ 
+ 				info("configured rule in '%s[%i]' applied, added symlink '%s'",
  				     dev->config_file, dev->config_line, dev->symlink);
--				strfieldcpy(temp, dev->symlink);
--				apply_format(udev, temp, sizeof(temp), class_dev, sysfs_device);
--				if (udev->symlink[0] != '\0')
--					strfieldcat(udev->symlink, " ");
--				strfieldcat(udev->symlink, temp);
 +				foreach_strpart(dev->symlink, " ", p, len) {
 +					strncpy(temp, p, len);
 +					temp[len] = '\0';
@@ -22,6 +17,6 @@
 +						strfieldcat(udev->symlink, " ");
 +					strfieldcat(udev->symlink, temp);
 +				}
- 			}
- 
- 			if (dev->name[0] != '\0') {
+ 				strfieldcpy(temp, dev->symlink);
+ 				apply_format(udev, temp, sizeof(temp), class_dev, sysfs_device);
+ 				if (udev->symlink[0] != '\0')
