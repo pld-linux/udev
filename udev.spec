@@ -2,6 +2,7 @@
 # Conditional build:
 %bcond_with	initrd	# build udev-initrd
 #
+%define dev_ver 3.0.0
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u퓓tkownika
 Name:		udev
@@ -37,6 +38,22 @@ A userspace implementation of devfs - static binary for initrd.
 %description initrd -l pl
 Implementacja devfs w przestrzeni u퓓tkownika - statyczna binarka dla
 initrd.
+
+%package dev
+Summary:        dev replacement using udev
+Summary(pl):    Zamiennik dev z u퓓ciem udev
+Group:          Base
+Requires:       %{name} = %{version}-%{release}
+Provides:	dev = %{dev_ver}
+Obsoletes:	dev
+Obsoletes:	MAKEDEV
+Conflicts:	kernel < 2.4
+
+%description dev
+dev replacement using udev.
+
+%description dev -l pl
+Zamiennik dev z u퓓ciem udev.
 
 %prep
 %setup -q
@@ -84,6 +101,8 @@ install -d $RPM_BUILD_ROOT{%{_prefix}/sbin,/udev}
 install -m755 udev-initrd $RPM_BUILD_ROOT%{_sbindir}
 %endif
 
+ln -s /udev $RPM_BUILD_ROOT/dev
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -111,3 +130,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/udev-initrd
 %endif
+
+%files dev
+%defattr(644,root,root,755)
+/dev
