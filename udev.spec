@@ -6,12 +6,12 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u퓓tkownika
 Name:		udev
-Version:	027
+Version:	028
 Release:	1
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	2c3eb9345d839013d560992cb6cf7222
+# Source0-md5:	74053f6276c82d81f2a35afb64c0d178
 BuildRequires:	sed >= 4.0
 Requires:	coreutils
 Requires:	hotplug >= 2003_08_05
@@ -40,10 +40,10 @@ Implementacja devfs w przestrzeni u퓓tkownika - statyczna binarka dla
 initrd.
 
 %package dev
-Summary:        dev replacement using udev
-Summary(pl):    Zamiennik dev z u퓓ciem udev
-Group:          Base
-Requires:       %{name} = %{version}-%{release}
+Summary:	dev replacement using udev
+Summary(pl):	Zamiennik dev z u퓓ciem udev
+Group:		Base
+Requires:	%{name} = %{version}-%{release}
 Provides:	dev = %{dev_ver}
 Obsoletes:	dev
 Obsoletes:	MAKEDEV
