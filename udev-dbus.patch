@@ -1,0 +1,11 @@
+diff -urN aa/udev-015/udev_dbus.c udev-015/udev_dbus.c
+--- aa/udev-015/udev_dbus.c	2003-12-08 18:57:30.000000000 +0100
++++ udev-015/udev_dbus.c	2004-01-31 17:11:38.202274896 +0100
+@@ -12,6 +12,7 @@
+ #include "udev.h"
+ #include "udev_version.h"
+ #include "udev_dbus.h"
++#include "logging.h"
+ 
+ 
+ /** variable for the connection the to system message bus or #NULL
