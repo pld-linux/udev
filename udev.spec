@@ -26,7 +26,7 @@ Patch2:		%{name}-032-symlink.patch
 BuildRequires:	device-mapper-devel
 BuildRequires:	libselinux-devel >= 1.17.13
 BuildRequires:	sed >= 4.0
-%{?with_initrd:BuildRequires:	uClibc-static >= 0.9.21}
+%{?with_initrd:BuildRequires:	dietlibc-static}
 Requires:	coreutils
 Requires:	hotplug >= 2003_08_05
 Obsoletes:	udev-dev
@@ -68,8 +68,8 @@ initrd.
 	ARCH=i386 \
 %endif
 	udevdir=/udev \
-	CC="%{_target_cpu}-uclibc-gcc" \
-	LD="%{_target_cpu}-uclibc-gcc %{rpmldflags} -static" \
+	CC="%{_target_cpu}-dietlibc-gcc" \
+	LD="%{_target_cpu}-dietlibc-gcc %{rpmldflags} -static" \
 	%{!?debug:DEBUG=false} \
 	OPTIMIZATION="%{rpmcflags}" \
 	USE_KLIBC=false \
