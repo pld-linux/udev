@@ -1,5 +1,5 @@
 Summary:	a userspace implementation of devfs
-Summary(pl):	Implementacjia devfs w przestrzeni u¿ytkownika
+Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	0.2
 Release:	1
@@ -7,23 +7,29 @@ License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev-0.2.tar.bz2
 # Source0-md5:	c63d4482cbaa074f937661486e9f2030
-Requires:	hotplug >= 2003_08_05
+BuildRequires:	sed >= 4.0
 Requires:	coreutils
+Requires:	hotplug >= 2003_08_05
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 A userspace implementation of devfs for 2.5 and higher kernels.
 
 %description -l pl
-Implementacjia devfs w przestrzeni u¿ytkownika dla j±der 2.5 i
+Implementacja devfs w przestrzeni u¿ytkownika dla j±der 2.5 i
 wy¿szych.
 
 %prep
-%setup  -q
+%setup -q
 
 %build
+%{__make} -C libsysfs \
+	CC="%{__cc}" \
+	CFLAGS="%{rpmcflags} -Wall -ansi"
+
 %{__make} \
 	CC="%{__cc}" \
+	%{!?debug:DEBUG=false} \
 	OPTIMIZATION="%{rpmcflags}"
 
 sed -i -e 's#/udev/#/dev/#g' udev.h
@@ -31,10 +37,9 @@ sed -i -e 's#/home/greg/src/udev/#/etc/udev/#g' namedev.h
 
 %install
 rm -rf $RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man{5,8},%{_sysconfdir}/{udev,hotplug.d/default}}
 
-install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/{man8,man5},%{_sysconfdir}/{udev,hotplug.d/default}}
-
-install udev		$RPM_BUILD_ROOT%{_sbindir}
+install udev $RPM_BUILD_ROOT%{_sbindir}
 install namedev.config namedev.permissions $RPM_BUILD_ROOT%{_sysconfdir}/udev
 
 ln -s /sbin/udev $RPM_BUILD_ROOT/etc/hotplug.d/default/udev.hotplug
