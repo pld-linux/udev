@@ -1,4 +1,6 @@
-%bcond_without	initrd # don't build udev-initrd
+#
+# Conditional build:
+%bcond_without	initrd	# don't build udev-initrd
 #
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
@@ -9,7 +11,6 @@ License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
 # Source0-md5:	d09f32eb7916ed86b687675899ee6a02
-Patch0:		%{name}-athlon.patch
 BuildRequires:	dbus-devel >= 0.20
 BuildRequires:	sed >= 4.0
 Requires:	coreutils
@@ -36,11 +37,13 @@ A userspace implementation of devfs - static binary for initrd.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
 %if %{with initrd}
 %{__make} \
+%ifarch athlon
+	ARCH=i386 \
+%endif
 	udevdir=/dev \
 	CC="%{__cc}" \
 	%{!?debug:DEBUG=false} \
