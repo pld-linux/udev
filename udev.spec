@@ -44,7 +44,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc README TODO ChangeLog docs/*
+%doc ChangeLog FAQ README TODO docs/*
 %attr(750,root,root) %dir /etc/udev
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/*
 %attr(755,root,root) %{_sbindir}/*
