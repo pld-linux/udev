@@ -1,4 +1,4 @@
-Summary:	a userspace implementation of devfs
+Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	0.2
