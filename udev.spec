@@ -12,6 +12,7 @@ Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
 # Source0-md5:	36e3c05d0a09016693e61b269aca9641
 BuildRequires:	dbus-devel >= 0.20
+BuildRequires:	pkgconfig
 BuildRequires:	sed >= 4.0
 Requires:	coreutils
 Requires:	dbus >= 0.20-2
