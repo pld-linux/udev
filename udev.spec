@@ -6,13 +6,13 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	046
-Release:	2
+Version:	048
+Release:	1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	51d6b9722c1097ed4d28d2e46af4d9a3
+# Source0-md5:	b4f383ae6d1a9f197f5c618717e2d582
 Source1:	%{name}.rules
 Source2:	%{name}.permissions
 Source3:	%{name}.conf
@@ -120,9 +120,6 @@ install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/check-cdrom.sh
 mv $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/
 ln -s ../../udev/scripts/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/
 
-install ./etc/dev.d/default/selinux.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/
-ln -s ../../udev/scripts/selinux.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/default/
-
 ln -s %{_sbindir}/wait_for_sysfs $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default/00-wait_for_sysfs.hotplug
 
 %if %{with initrd}
@@ -145,7 +142,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %attr(755,root,root) %{_bindir}/*
 
-%config(missingok) %{_sysconfdir}/dev.d/default/selinux.dev
 %config(missingok) %{_sysconfdir}/dev.d/net/hotplug.dev
 %attr(755,root,root) %dir %{_sysconfdir}/dev.d
 %attr(755,root,root) %dir %{_sysconfdir}/dev.d/default
@@ -159,7 +155,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(755,root,root) %{_sysconfdir}/udev/scripts/hotplug.dev
 %attr(755,root,root) %{_sysconfdir}/udev/scripts/check-cdrom.sh
-%attr(755,root,root) %{_sysconfdir}/udev/scripts/selinux.dev
 
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/udev.conf
 %config(noreplace) %verify(not size mtime md5)  %{_sysconfdir}/udev/rules.d/50-udev.rules
