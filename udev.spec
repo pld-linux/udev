@@ -19,6 +19,7 @@ Source3:	%{name}.conf
 Source4:	start_udev
 Patch0:		%{name}-025-volsbin.patch
 Patch1:		%{name}-029-moreconf.patch
+Patch2:		%{name}-032-symlink.patch
 BuildRequires:	libselinux-devel >= 1.17.13
 BuildRequires:	sed >= 4.0
 %{?with_initrd:BuildRequires:	uClibc-static >= 0.9.21}
@@ -56,6 +57,7 @@ initrd.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %if %{with initrd}
