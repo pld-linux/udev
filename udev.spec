@@ -20,7 +20,6 @@ Source5:	devmap_name.tar.gz
 Source6:	%{name}-check-cdrom.sh
 Source7:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
 # Source7-md5:	7b2b881a8531fd84da7cae9152dc4e39
-Patch0:		%{name}-032-symlink.patch
 BuildRequires:	device-mapper-devel
 BuildRequires:	libselinux-devel >= 1.17.13
 BuildRequires:	sed >= 4.0
@@ -57,7 +56,6 @@ initrd.
 
 %prep
 %setup -q -a5
-#%patch0 -p1
 
 %build
 %if %{with initrd}
