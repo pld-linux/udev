@@ -136,6 +136,10 @@ install -m755 udev-initrd $RPM_BUILD_ROOT%{_sbindir}
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/default/udev_dbus.dev
 ln -s %{_prefix}/sbin/udev_dbus $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/default/udev_dbus.dev
 %endif
+%if %{with selinux}
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/default/udev_selinux.dev
+ln -s %{_sbindir}/udev_selinux $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/default/udev_selinux.dev
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
