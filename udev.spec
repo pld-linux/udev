@@ -1,12 +1,12 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	007
+Version:	008
 Release:	1
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	b9fa9f8e163cc4b076c29b9a69e60dcd
+# Source0-md5:	3d5662c7e2f2ad4277e18e3551b85166
 BuildRequires:	glibc-static
 BuildRequires:	sed >= 4.0
 Requires:	coreutils
@@ -35,7 +35,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man8,%{_sysconfdir}/{udev,hotplug.d/default}}
 
 install udev $RPM_BUILD_ROOT%{_sbindir}
-install udev.config udev.permissions $RPM_BUILD_ROOT%{_sysconfdir}/udev
+install udev.conf udev.permissions udev.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev
 install udev.8 $RPM_BUILD_ROOT%{_mandir}/man8
 
 ln -s /sbin/udev $RPM_BUILD_ROOT/etc/hotplug.d/default/udev.hotplug
