@@ -1,0 +1,22 @@
+--- udev-025/extras/chassis_id/table.c.pro	2004-04-24 21:34:07.176182024 +0200
++++ udev-025/extras/chassis_id/table.c	2004-04-24 21:34:24.449322977 +0200
+@@ -17,7 +17,7 @@
+ #include <stdio.h>
+ 
+ #define TABLE_SIZE 100
+-#define PROVISION_DB  "/usr/local/bin/provision.tbl"
++#define PROVISION_DB  "/etc/provision.tbl"
+ 
+ struct provision_record
+ {
+--- udev-025/extras/chassis_id/README.pro	2004-04-24 21:34:41.474504971 +0200
++++ udev-025/extras/chassis_id/README	2004-04-24 21:35:14.224084267 +0200
+@@ -12,7 +12,7 @@
+ 
+ BUS="scsi", PROGRAM="/usr/local/bin/chassis_id", NAME="/chassis%c{1}/slot%c{2}/host%c{3}/disk-%c{4}
+ 
+-The provisioning table ( file provision.tbl ) has to be put in /usr/local/bin and as of now has
++The provisioning table ( file provision.tbl ) has to be put in /etc and as of now has
+ to be populated manually. This is the only place where the geographic map of devices is kept
+ in the system.
+ 

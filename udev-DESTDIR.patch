@@ -1,0 +1,39 @@
+--- udev-025/extras/selinux/Makefile.mp	2004-04-24 22:08:00.302659287 +0200
++++ udev-025/extras/selinux/Makefile	2004-04-24 22:08:09.193187729 +0200
+@@ -56,7 +56,7 @@
+ 
+ install: all
+ 	$(INSTALL_PROGRAM) $(PROG) $(DESTDIR)$(sbindir)/$(PROG)
+-	- ln -s -f $(DESTDIR)$(sbindir)/$(PROG) $(DESTDIR)$(devddir)/$(PROG).dev
++	- ln -s -f $(sbindir)/$(PROG) $(DESTDIR)$(devddir)/$(PROG).dev
+ 
+ uninstall:
+ 	- rm $(DESTDIR)$(devddir)/$(PROG).dev
+--- udev-025/extras/dbus/Makefile.mp	2004-04-24 22:06:56.510218201 +0200
++++ udev-025/extras/dbus/Makefile	2004-04-24 22:07:30.241634983 +0200
+@@ -60,7 +60,7 @@
+ install: install-dbus-policy all
+ 	$(INSTALL_DATA) etc/dbus-1/system.d/udev_sysbus_policy.conf $(DESTDIR)$(dbusdir)
+ 	$(INSTALL_PROGRAM) $(PROG) $(DESTDIR)$(usrsbindir)/$(PROG)
+-	- ln -s -f $(DESTDIR)$(usrsbindir)/$(PROG) $(DESTDIR)$(devddir)/$(PROG).dev
++	- ln -s -f $(usrsbindir)/$(PROG) $(DESTDIR)$(devddir)/$(PROG).dev
+ 
+ uninstall: uninstall-dbus-policy
+ 	- rm $(DESTDIR)$(devddir)/$(PROG).dev
+--- udev-025/extras/multipath-tools/multipathd/Makefile.mp	2004-04-24 21:38:43.709410293 +0200
++++ udev-025/extras/multipath-tools/multipathd/Makefile	2004-04-24 21:39:24.253699409 +0200
+@@ -17,10 +17,10 @@
+ 	strip $(EXEC)
+ 
+ install:
+-	install -d $(bindir)
+-	install -m 755 $(EXEC) $(bindir)
+-	install -d $(rcdir)
+-	install -m 755 multipathd.init $(rcdir)/$(EXEC)
++	install -d $(DESTDIR)$(bindir)
++	install -m 755 $(EXEC) $(DESTDIR)$(bindir)
++	install -d $(DESTDIR)$(rcdir)
++	install -m 755 multipathd.init $(DESTDIR)$(rcdir)/$(EXEC)
+ 
+ uninstall:
+ 	rm -f $(bindir)/$(EXEC)

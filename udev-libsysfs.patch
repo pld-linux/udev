@@ -1,0 +1,44 @@
+--- udev-025/extras/scsi_id/scsi_serial.c.wiget	2004-04-24 21:23:22.413902963 +0200
++++ udev-025/extras/scsi_id/scsi_serial.c	2004-04-24 21:23:30.831509682 +0200
+@@ -31,7 +31,7 @@
+ #include <unistd.h>
+ #include <syslog.h>
+ #include <scsi/sg.h>
+-#include <sysfs/libsysfs.h>
++#include <libsysfs.h>
+ #include "scsi_id.h"
+ #include "scsi.h"
+ 
+--- udev-025/extras/scsi_id/scsi_id.c.wiget	2004-04-21 23:39:10.000000000 +0200
++++ udev-025/extras/scsi_id/scsi_id.c	2004-04-24 21:22:11.646616352 +0200
+@@ -32,7 +32,7 @@
+ #include <stdarg.h>
+ #include <ctype.h>
+ #include <sys/stat.h>
+-#include <sysfs/libsysfs.h>
++#include <libsysfs.h>
+ #include "scsi_id_version.h"
+ #include "scsi_id.h"
+ 
+--- udev-025/extras/multipath-tools/multipath/main.c.wiget	2004-04-24 21:24:37.540468027 +0200
++++ udev-025/extras/multipath-tools/multipath/main.c	2004-04-24 21:24:49.076558575 +0200
+@@ -27,7 +27,7 @@
+ #include <signal.h>
+ #include <sys/ioctl.h>
+ #include <dlist.h>
+-#include <sysfs/libsysfs.h>
++#include <libsysfs.h>
+ #include "../libdevmapper/libdevmapper.h"
+ #include "main.h"
+ #include "devinfo.h"
+--- udev-025/extras/multipath-tools/multipath/devinfo.c.wiget	2004-04-24 21:24:31.661441122 +0200
++++ udev-025/extras/multipath-tools/multipath/devinfo.c	2004-04-24 21:24:43.396498738 +0200
+@@ -3,7 +3,7 @@
+ #include <string.h>
+ #include <fcntl.h>
+ #include <sys/ioctl.h>
+-#include <sysfs/libsysfs.h>
++#include <libsysfs.h>
+ #include "devinfo.h"
+ #include "sg_include.h"
+ 
