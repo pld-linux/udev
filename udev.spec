@@ -141,13 +141,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/*
 
 %config(missingok) %{_sysconfdir}/dev.d/net/hotplug.dev
-%attr(755,root,root) %dir %{_sysconfdir}/dev.d/
+%attr(755,root,root) %dir %{_sysconfdir}/dev.d
 %attr(755,root,root) %dir %{_sysconfdir}/dev.d/default
 
-%attr(755,root,root) %dir %{_sysconfdir}/udev/
-%attr(755,root,root) %dir %{_sysconfdir}/udev/rules.d/
-%attr(755,root,root) %dir %{_sysconfdir}/udev/permissions.d/
-%attr(755,root,root) %dir %{_sysconfdir}/udev/scripts/
+%attr(755,root,root) %dir %{_sysconfdir}/udev
+%attr(755,root,root) %dir %{_sysconfdir}/udev/rules.d
+%attr(755,root,root) %dir %{_sysconfdir}/udev/permissions.d
+%attr(755,root,root) %dir %{_sysconfdir}/udev/scripts
 
 %attr(755,root,root) %{_sysconfdir}/udev/scripts/hotplug.dev
 
@@ -155,7 +155,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not size mtime md5)  %{_sysconfdir}/udev/rules.d/50-udev.rules
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/permissions.d/50-udev.permissions
 
-%{_sbindir}/devmap_name
+%attr(755,root,root) %{_sbindir}/devmap_name
 
 %config(missingok) %{_sysconfdir}/hotplug.d/default/10-udev.hotplug
 
