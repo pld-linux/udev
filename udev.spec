@@ -6,21 +6,21 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	042
-Release:	2
+Version:	045
+Release:	1
+Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	0b86c5c07615f417042d796366fad4d2
+# Source0-md5:	d870db0f8093529704fc40fe7dd40914
 # Source0-size:	379246
 Source1:	%{name}.rules
 Source2:	%{name}.permissions
 Source3:	%{name}.conf
 Source4:	start_udev
 Source5:	devmap_name.tar.gz
-Source6:	%{name}-check-cdrom.sh
 # Source5-md5:	f72f557299436af5d6ad66815b80a641
-Patch0:		%{name}-025-volsbin.patch
+Source6:	%{name}-check-cdrom.sh
 Patch1:		%{name}-029-moreconf.patch
 Patch2:		%{name}-032-symlink.patch
 BuildRequires:	device-mapper-devel
@@ -59,7 +59,6 @@ initrd.
 
 %prep
 %setup -q -a5
-%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 
