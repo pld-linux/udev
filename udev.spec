@@ -11,6 +11,7 @@ Patch0:		%{name}-dbus.patch
 BuildRequires:	dbus-devel >= 0.20
 BuildRequires:	sed >= 4.0
 Requires:	coreutils
+Requires:	dbus >= 0.20-2
 Requires:	hotplug >= 2003_08_05
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
