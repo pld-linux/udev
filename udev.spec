@@ -1,12 +1,11 @@
 #
 # TODO:
-# - make selinux work
 # - is there a reason _not_ to build scsi_id? Adds no dependencies.
 #
 # Conditional build:
 %bcond_with	initrd	# build udev-initrd
 %bcond_without	dbus	# build DBUS extra package
-%bcond_with	selinux # build SELinux extra package
+%bcond_without	selinux # build SELinux extra package
 %bcond_without	scsi_id # build scsi_id extra package
 #
 Summary:	A userspace implementation of devfs
@@ -20,6 +19,9 @@ Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}
 # Source0-md5:	4f4c0ace4307cb1c73d9f5365fe6c946
 %if %{with dbus}
 BuildRequires:	dbus-devel >= 0.20
+%endif
+%if %{with selinux}
+BuildRequires:	libselinux-devel >= 1.10
 %endif
 BuildRequires:	pkgconfig
 BuildRequires:	sed >= 4.0
