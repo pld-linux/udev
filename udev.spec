@@ -7,7 +7,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	030
-Release:	1.1
+Release:	1.1.1
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
@@ -66,7 +66,7 @@ EXTRAS="extras/scsi_id extras/volume_id"
 %ifarch athlon
 	ARCH=i386 \
 %endif
-	udevdir=/udev \
+	udevdir=/dev \
 	CC="%{__cc}" \
 	%{!?debug:DEBUG=false} \
 	OPTIMIZATION="%{rpmcflags}" \
@@ -78,7 +78,7 @@ cp -a udev udev-initrd
 %endif
 
 %{__make} \
-	udevdir=/udev \
+	udevdir=/dev \
 	CC="%{__cc}" \
 	%{!?debug:DEBUG=false} \
 	OPTIMIZATION="%{rpmcflags}" \
@@ -90,7 +90,7 @@ rm -rf $RPM_BUILD_ROOT
 
 EXTRAS="extras/scsi_id extras/volume_id"
 
-install -d $RPM_BUILD_ROOT{%{_prefix}/sbin,/udev}
+install -d $RPM_BUILD_ROOT{%{_prefix}/sbin,/dev}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -100,8 +100,6 @@ install -d $RPM_BUILD_ROOT{%{_prefix}/sbin,/udev}
 %if %{with initrd}
 install -m755 udev-initrd $RPM_BUILD_ROOT%{_sbindir}
 %endif
-
-ln -s /udev $RPM_BUILD_ROOT/dev
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -123,7 +121,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/scsi_id.config
 %attr(755,root,root) %{_sbindir}/scsi_id
 %{_mandir}/man8/*
-%dir /udev
+%dir /dev
 
 %if %{with initrd}
 %files initrd
