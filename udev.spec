@@ -1,7 +1,11 @@
 #
 # Conditional build:
 %bcond_without	initrd	# build without udev-initrd
+%bcond_without	uClibc	# link initrd version with static dietlibc instead of uClibc
 #
+%ifarch %{x8664}
+%undefine	with_uClibc
+%endif
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
@@ -23,7 +27,10 @@ Source7:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
 BuildRequires:	device-mapper-devel
 BuildRequires:	libselinux-devel >= 1.17.13
 BuildRequires:	sed >= 4.0
-%{?with_initrd:BuildRequires:	uClibc-static >= 0.9.21}
+%if %{with initrd}
+%{!?with_uClibc:BuildRequires:	dietlibc-static}
+%{?with_uClibc:BuildRequires:	uClibc-static >= 0.9.21}
+%endif
 Requires:	coreutils
 Requires:	hotplug >= 2003_08_05
 Provides:	dev = 3.0.0
@@ -64,8 +71,10 @@ initrd.
 	ARCH=i386 \
 %endif
 	udevdir=/dev \
-	CC="%{_target_cpu}-uclibc-gcc" \
-	LD="%{_target_cpu}-uclibc-gcc %{rpmldflags} -static" \
+	%{?with_uClibc:CC="%{_target_cpu}-uclibc-gcc"} \
+	%{?with_uClibc:LD="%{_target_cpu}-uclibc-gcc %{rpmldflags} -static"} \
+	%{!?with_uClibc:CC="%{_target_cpu}-dietlibc-gcc"} \
+	%{!?with_uClibc:LD="%{_target_cpu}-dietlibc-gcc %{rpmldflags} -static"} \
 	%{!?debug:DEBUG=false} \
 	OPTIMIZATION="%{rpmcflags}" \
 	USE_KLIBC=false \
