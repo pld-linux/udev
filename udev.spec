@@ -9,13 +9,13 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	057
+Version:	058
 Release:	1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	f3fb853592ce3cb768c289545af2a3bd
+# Source0-md5:	03be2f56cc13c7f24b0ebf296166d48a
 Source1:	%{name}.rules
 Source3:	%{name}.conf
 Source4:	start_udev
@@ -143,7 +143,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc ChangeLog FAQ HOWTO-udev_for_dev README TODO
-%doc docs/{overview,udev_vs_devfs,libsysfs.txt,udev-*.pdf,RFC-dev.d}
+%doc docs/{overview,udev_vs_devfs,libsysfs.txt,RFC-dev.d}
 %attr(755,root,root) %{_sbindir}/*
 %if %{with initrd}
 %exclude %{_sbindir}/*initrd*
@@ -165,8 +165,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/udev.conf
 %config(noreplace) %verify(not size mtime md5)  %{_sysconfdir}/udev/rules.d/50-udev.rules
-
-%attr(755,root,root) %{_sbindir}/devmap_name
 
 %config(missingok) %{_sysconfdir}/hotplug.d/default/00-wait_for_sysfs.hotplug
 %config(missingok) %{_sysconfdir}/hotplug.d/default/10-udev.hotplug
