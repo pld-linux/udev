@@ -9,13 +9,13 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	058
-Release:	1
+Version:	064
+Release:	0.1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	03be2f56cc13c7f24b0ebf296166d48a
+# Source0-md5:	589a5fd80ca2c85874e81cc767e6fdeb
 Source1:	%{name}.rules
 Source3:	%{name}.conf
 Source4:	start_udev
@@ -39,7 +39,7 @@ Obsoletes:	udev-dev
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
-%define		extras		extras/scsi_id extras/volume_id
+%define		extras		extras/scsi_id extras/volume_id extras/usb_id extras/dasd_id extras/ata_id extras/chassis_id extras/floppy extras/run_directory
 
 %description
 A userspace implementation of devfs for 2.5 and higher kernels.
@@ -91,7 +91,7 @@ sed -i -e 's#gcc#$(CC)#g' devmap_name/Makefile
 	CC="%{__cc}" \
 	OPTFLAGS="%{rpmcflags}"
 
-sed 's/LOGNAME_SIZE/64/' -i extras/volume_id/udev_volume_id.c
+#sed 's/LOGNAME_SIZE/64/' -i extras/volume_id/udev_volume_id.c
 %{__make} \
 	udevdir=/dev \
 	CC="%{__cc}" \
@@ -124,10 +124,10 @@ install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.conf
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/start_udev
 install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/check-cdrom.sh
 
-mv $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/
-ln -s ../../udev/scripts/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/
+#mv $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/
+#ln -s ../../udev/scripts/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/
 
-ln -s %{_sbindir}/wait_for_sysfs $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default/00-wait_for_sysfs.hotplug
+#ln -s %{_sbindir}/wait_for_sysfs $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default/00-wait_for_sysfs.hotplug
 
 %if %{with initrd}
 install -m755 initrd-udev $RPM_BUILD_ROOT%{_sbindir}/initrd-udev
@@ -150,7 +150,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %attr(755,root,root) %{_bindir}/*
 
-%config(missingok) %{_sysconfdir}/dev.d/net/hotplug.dev
+#%config(missingok) %{_sysconfdir}/dev.d/net/hotplug.dev
 %attr(755,root,root) %dir %{_sysconfdir}/dev.d
 %attr(755,root,root) %dir %{_sysconfdir}/dev.d/default
 %attr(755,root,root) %dir %{_sysconfdir}/dev.d/net
@@ -160,14 +160,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %dir %{_sysconfdir}/udev/rules.d
 %attr(755,root,root) %dir %{_sysconfdir}/udev/scripts
 
-%attr(755,root,root) %{_sysconfdir}/udev/scripts/hotplug.dev
+#%attr(755,root,root) %{_sysconfdir}/udev/scripts/hotplug.dev
 %attr(755,root,root) %{_sysconfdir}/udev/scripts/check-cdrom.sh
 
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/udev.conf
 %config(noreplace) %verify(not size mtime md5)  %{_sysconfdir}/udev/rules.d/50-udev.rules
 
-%config(missingok) %{_sysconfdir}/hotplug.d/default/00-wait_for_sysfs.hotplug
-%config(missingok) %{_sysconfdir}/hotplug.d/default/10-udev.hotplug
+#%config(missingok) %{_sysconfdir}/hotplug.d/default/00-wait_for_sysfs.hotplug
+#%config(missingok) %{_sysconfdir}/hotplug.d/default/10-udev.hotplug
 
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/scsi_id.config
 
