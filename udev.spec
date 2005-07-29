@@ -2,39 +2,33 @@
 # Conditional build:
 %bcond_without	initrd	# build without udev-initrd
 #
+%define dev_ver 3.0.0
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	054
+Version:	058
 Release:	1
-Epoch:		1
 License:	GPL
 Group:		Base
-Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	1c26d16d12b453f6a85c4e0e36bb304b
+Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
+# Source0-md5:	03be2f56cc13c7f24b0ebf296166d48a
 Source1:	%{name}.rules
-Source2:	%{name}.permissions
 Source3:	%{name}.conf
 Source4:	start_udev
 Source5:	devmap_name.tar.gz
 # Source5-md5:	f72f557299436af5d6ad66815b80a641
 Source6:	%{name}-check-cdrom.sh
-Source7:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
-# Source7-md5:	7b2b881a8531fd84da7cae9152dc4e39
-Patch0:		%{name}-032-symlink.patch
 BuildRequires:	device-mapper-devel
 BuildRequires:	libselinux-devel >= 1.17.13
 BuildRequires:	sed >= 4.0
-%{?with_initrd:BuildRequires:	uClibc-static >= 0.9.21}
+%{?with_initrd:BuildRequires:	dietlibc-static}
 Requires:	coreutils
 Requires:	hotplug >= 2003_08_05
-Provides:	dev = 3.0.0
-Obsoletes:	dev
 Obsoletes:	udev-dev
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
-%define		extras		extras/scsi_id extras/volume_id
+%define		extras		extras/chassis_id extras/scsi_id extras/volume_id
 
 %description
 A userspace implementation of devfs for 2.5 and higher kernels.
@@ -47,7 +41,7 @@ wy¿szych.
 Summary:	A userspace implementation of devfs - static binary for initrd
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika - statyczna binarka dla initrd
 Group:		Base
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name} = %{version}-%{release}
 
 %description initrd
 A userspace implementation of devfs - static binary for initrd.
@@ -58,7 +52,7 @@ initrd.
 
 %prep
 %setup -q -a5
-%patch0 -p1
+sed -i -e 's#gcc#$(CC)#g' devmap_name/Makefile
 
 %build
 %if %{with initrd}
@@ -66,9 +60,9 @@ initrd.
 %ifarch athlon
 	ARCH=i386 \
 %endif
-	udevdir=/dev \
-	CC="%{_target_cpu}-uclibc-gcc" \
-	LD="%{_target_cpu}-uclibc-gcc %{rpmldflags} -static" \
+	udevdir=/udev \
+	CC="%{_target_cpu}-dietlibc-gcc" \
+	LD="%{_target_cpu}-dietlibc-gcc %{rpmldflags} -static" \
 	%{!?debug:DEBUG=false} \
 	OPTIMIZATION="%{rpmcflags}" \
 	USE_KLIBC=false \
@@ -80,14 +74,12 @@ cp -a udev initrd-udev
 %{__make} clean
 %endif
 
-sed -i -e 's#gcc#$(CC)#g' devmap_name/Makefile
 %{__make} -C devmap_name \
 	CC="%{__cc}" \
 	OPTFLAGS="%{rpmcflags}"
 
-sed 's/LOGNAME_SIZE/64/' -i extras/volume_id/udev_volume_id.c
 %{__make} \
-	udevdir=/dev \
+	udevdir=/udev \
 	CC="%{__cc}" \
 	%{!?debug:DEBUG=false} \
 	OPTIMIZATION="%{rpmcflags}" \
@@ -95,13 +87,11 @@ sed 's/LOGNAME_SIZE/64/' -i extras/volume_id/udev_volume_id.c
 	USE_LOG=true \
 	EXTRAS="%{extras}"
 
-%{__cc} %{rpmcflags} %{SOURCE7} -o uevent_listen
-
 %install
 rm -rf $RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT{%{_prefix}/sbin,/udev}
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{rules.d,permissions.d,scripts}
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{rules.d,scripts}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/{default,block,net,snd}
 
 %{__make} install \
@@ -110,11 +100,9 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/{default,block,net,snd}
 	EXTRAS="%{extras}"
 
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.rules
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.permissions
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev.rules
-install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/permissions.d/50-udev.permissions
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.conf
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/start_udev
 install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/check-cdrom.sh
@@ -122,24 +110,22 @@ install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/check-cdrom.sh
 mv $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/
 ln -s ../../udev/scripts/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/
 
-ln -s %{_sbindir}/wait_for_sysfs $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default/00-wait_for_sysfs.hotplug
-
 %if %{with initrd}
 install -m755 initrd-udev $RPM_BUILD_ROOT%{_sbindir}/initrd-udev
 ln -s initrd-udev $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
 %endif
 
 install devmap_name/devmap_name $RPM_BUILD_ROOT%{_sbindir}/devmap_name
-install uevent_listen $RPM_BUILD_ROOT%{_sbindir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc ChangeLog FAQ HOWTO-udev_for_dev README TODO
-%doc docs/{overview,udev_vs_devfs,libsysfs.txt,udev-*.pdf,RFC-dev.d}
+%doc ChangeLog FAQ HOWTO-udev_for_dev README RELEASE-NOTES TODO
+%doc docs/{overview,udev_vs_devfs,libsysfs.txt,RFC-dev.d}
 %attr(755,root,root) %{_sbindir}/*
+%dir /udev
 %if %{with initrd}
 %exclude %{_sbindir}/*initrd*
 %endif
@@ -153,7 +139,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(755,root,root) %dir %{_sysconfdir}/udev
 %attr(755,root,root) %dir %{_sysconfdir}/udev/rules.d
-%attr(755,root,root) %dir %{_sysconfdir}/udev/permissions.d
 %attr(755,root,root) %dir %{_sysconfdir}/udev/scripts
 
 %attr(755,root,root) %{_sysconfdir}/udev/scripts/hotplug.dev
@@ -161,20 +146,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/udev.conf
 %config(noreplace) %verify(not size mtime md5)  %{_sysconfdir}/udev/rules.d/50-udev.rules
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/permissions.d/50-udev.permissions
 
-%attr(755,root,root) %{_sbindir}/devmap_name
-
-%config(missingok) %{_sysconfdir}/hotplug.d/default/00-wait_for_sysfs.hotplug
 %config(missingok) %{_sysconfdir}/hotplug.d/default/10-udev.hotplug
 
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/scsi_id.config
 
 %{_mandir}/man8/*
-
-%dev(c,1,3) %attr(666,root,root) /dev/null
-%dev(c,5,1) %attr(660,root,console) /dev/console
-%dev(c,1,5) %attr(666,root,root) /dev/zero
 
 %if %{with initrd}
 %files initrd
