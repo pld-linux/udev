@@ -6,12 +6,12 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	056
+Version:	058
 Release:	1
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	30fb3a320e74ff0c49c15ecaa6e37a4c
+# Source0-md5:	03be2f56cc13c7f24b0ebf296166d48a
 Source1:	%{name}.rules
 Source3:	%{name}.conf
 Source4:	start_udev
@@ -93,7 +93,6 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_prefix}/sbin,/udev}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{rules.d,scripts}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/{default,block,net,snd}
-install -d $RPM_BUILD_ROOT/udev
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -111,7 +110,6 @@ install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/check-cdrom.sh
 mv $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/
 ln -s ../../udev/scripts/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/
 
-
 %if %{with initrd}
 install -m755 initrd-udev $RPM_BUILD_ROOT%{_sbindir}/initrd-udev
 ln -s initrd-udev $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
@@ -124,8 +122,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc ChangeLog FAQ HOWTO-udev_for_dev README TODO
-%doc docs/{overview,udev_vs_devfs,libsysfs.txt,udev-*.pdf,RFC-dev.d}
+%doc ChangeLog FAQ HOWTO-udev_for_dev README RELEASE-NOTES TODO
+%doc docs/{overview,udev_vs_devfs,libsysfs.txt,RFC-dev.d}
 %attr(755,root,root) %{_sbindir}/*
 %dir /udev
 %if %{with initrd}
