@@ -6,21 +6,18 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	050
-Release:	2
+Version:	056
+Release:	1
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	eefa5f012ae66ac5adc7d9d7a6a5a6fc
+# Source0-md5:	30fb3a320e74ff0c49c15ecaa6e37a4c
 Source1:	%{name}.rules
-Source2:	%{name}.permissions
 Source3:	%{name}.conf
 Source4:	start_udev
 Source5:	devmap_name.tar.gz
 # Source5-md5:	f72f557299436af5d6ad66815b80a641
 Source6:	%{name}-check-cdrom.sh
-Patch0:		%{name}-029-moreconf.patch
-Patch1:		%{name}-032-symlink.patch
 BuildRequires:	device-mapper-devel
 BuildRequires:	libselinux-devel >= 1.17.13
 BuildRequires:	sed >= 4.0
@@ -31,7 +28,7 @@ Obsoletes:	udev-dev
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
-%define		extras		extras/scsi_id extras/volume_id
+%define		extras		extras/chassis_id extras/scsi_id extras/volume_id
 
 %description
 A userspace implementation of devfs for 2.5 and higher kernels.
@@ -55,8 +52,7 @@ initrd.
 
 %prep
 %setup -q -a5
-%patch0 -p1
-%patch1 -p1
+sed -i -e 's#gcc#$(CC)#g' devmap_name/Makefile
 
 %build
 %if %{with initrd}
@@ -78,13 +74,10 @@ cp -a udev initrd-udev
 %{__make} clean
 %endif
 
-sed -i -e 's#gcc#$(CC)#g' devmap_name/Makefile
 %{__make} -C devmap_name \
 	CC="%{__cc}" \
 	OPTFLAGS="%{rpmcflags}"
 
-sed 's/LOGNAME_SIZE/64/' \
-	-i extras/volume_id/udev_volume_id.c
 %{__make} \
 	udevdir=/udev \
 	CC="%{__cc}" \
@@ -98,7 +91,7 @@ sed 's/LOGNAME_SIZE/64/' \
 rm -rf $RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT{%{_prefix}/sbin,/udev}
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{rules.d,permissions.d,scripts}
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{rules.d,scripts}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/{default,block,net,snd}
 install -d $RPM_BUILD_ROOT/udev
 
@@ -108,11 +101,9 @@ install -d $RPM_BUILD_ROOT/udev
 	EXTRAS="%{extras}"
 
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.rules
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.permissions
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev.rules
-install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/permissions.d/50-udev.permissions
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.conf
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/start_udev
 install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/check-cdrom.sh
@@ -150,7 +141,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(755,root,root) %dir %{_sysconfdir}/udev
 %attr(755,root,root) %dir %{_sysconfdir}/udev/rules.d
-%attr(755,root,root) %dir %{_sysconfdir}/udev/permissions.d
 %attr(755,root,root) %dir %{_sysconfdir}/udev/scripts
 
 %attr(755,root,root) %{_sysconfdir}/udev/scripts/hotplug.dev
@@ -158,9 +148,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/udev.conf
 %config(noreplace) %verify(not size mtime md5)  %{_sysconfdir}/udev/rules.d/50-udev.rules
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/permissions.d/50-udev.permissions
-
-%attr(755,root,root) %{_sbindir}/devmap_name
 
 %config(missingok) %{_sysconfdir}/hotplug.d/default/10-udev.hotplug
 
