@@ -1,0 +1,21 @@
+--- udev-064/udev_rules_parse.c.orig	2005-07-29 15:22:25.000000000 +0200
++++ udev-064/udev_rules_parse.c	2005-07-29 15:25:38.000000000 +0200
+@@ -195,6 +195,18 @@
+ 	return NULL;
+ }
+ 
++#ifndef strnlen
++static size_t strnlen(const char *str, size_t maxlen)
++{
++	size_t len = 0;
++	for(len=0; len<maxlen; len++) {
++		if (*str=='\0') break;
++		str++;
++	}
++	return len;
++}
++#endif
++
+ static int add_rule_key(struct udev_rule *rule, struct key *key,
+ 			enum key_operation operation, const char *value)
+ {

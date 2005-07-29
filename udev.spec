@@ -6,36 +6,30 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	042
+Version:	064
 Release:	1
 License:	GPL
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	0b86c5c07615f417042d796366fad4d2
-# Source0-size:	379246
+# Source0-md5:	589a5fd80ca2c85874e81cc767e6fdeb
 Source1:	%{name}.rules
-Source2:	%{name}.permissions
 Source3:	%{name}.conf
 Source4:	start_udev
 Source5:	devmap_name.tar.gz
-Source6:	%{name}-check-cdrom.sh
 # Source5-md5:	f72f557299436af5d6ad66815b80a641
-Patch0:		%{name}-025-volsbin.patch
-Patch1:		%{name}-029-moreconf.patch
-Patch2:		%{name}-032-symlink.patch
+Source6:	%{name}-check-cdrom.sh
+Patch0:		%{name}-strnlen.patch
 BuildRequires:	device-mapper-devel
 BuildRequires:	libselinux-devel >= 1.17.13
 BuildRequires:	sed >= 4.0
-%{?with_initrd:BuildRequires:	uClibc-static >= 0.9.21}
+%{?with_initrd:BuildRequires:	dietlibc-static}
 Requires:	coreutils
 Requires:	hotplug >= 2003_08_05
-Provides:	dev = %{dev_ver}
-Obsoletes:	dev
 Obsoletes:	udev-dev
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
-%define		extras		extras/scsi_id extras/volume_id
+%define		extras		extras/ata_id extras/dasd_id extras/chassis_id extras/floppy extras/run_directory extras/scsi_id extras/usb_id extras/volume_id
 
 %description
 A userspace implementation of devfs for 2.5 and higher kernels.
@@ -60,8 +54,7 @@ initrd.
 %prep
 %setup -q -a5
 %patch0 -p1
-%patch1 -p1
-%patch2 -p1
+sed -i -e 's#gcc#$(CC)#g' devmap_name/Makefile
 
 %build
 %if %{with initrd}
@@ -69,11 +62,11 @@ initrd.
 %ifarch athlon
 	ARCH=i386 \
 %endif
-	udevdir=/dev \
-	CC="%{_target_cpu}-uclibc-gcc" \
-	LD="%{_target_cpu}-uclibc-gcc %{rpmldflags} -static" \
+	udevdir=/udev \
+	CC="%{_target_cpu}-dietlibc-gcc" \
+	LD="%{_target_cpu}-dietlibc-gcc %{rpmldflags} -static" \
 	%{!?debug:DEBUG=false} \
-	OPTIMIZATION="%{rpmcflags}" \
+	OPTFLAGS="%{rpmcflags} -Dclearenv\(\)=environ=NULL" \
 	USE_KLIBC=false \
 	USE_LOG=true \
 	USE_SELINUX=false \
@@ -83,13 +76,12 @@ cp -a udev initrd-udev
 %{__make} clean
 %endif
 
-sed -i -e 's#gcc#$(CC)#g' devmap_name/Makefile
 %{__make} -C devmap_name \
 	CC="%{__cc}" \
 	OPTFLAGS="%{rpmcflags}"
 
 %{__make} \
-	udevdir=/dev \
+	udevdir=/udev \
 	CC="%{__cc}" \
 	%{!?debug:DEBUG=false} \
 	OPTIMIZATION="%{rpmcflags}" \
@@ -101,8 +93,9 @@ sed -i -e 's#gcc#$(CC)#g' devmap_name/Makefile
 rm -rf $RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT{%{_prefix}/sbin,/udev}
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{rules.d,permissions.d,scripts}
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{rules.d,scripts}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/{default,block,net,snd}
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -110,20 +103,16 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/{default,block,net,snd}
 	EXTRAS="%{extras}"
 
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.rules
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.permissions
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev.rules
-install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/permissions.d/50-udev.permissions
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.conf
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/start_udev
 install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/check-cdrom.sh
 
-mv $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/
+install etc/dev.d/net/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts
 ln -s ../../udev/scripts/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/
-
-mv $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/default/selinux.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/
-ln -s ../../udev/scripts/selinux.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/default/
+ln -s /sbin/udevsend $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default/10-udev.hotplug
 
 %if %{with initrd}
 install -m755 initrd-udev $RPM_BUILD_ROOT%{_sbindir}/initrd-udev
@@ -137,15 +126,15 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc ChangeLog FAQ HOWTO-udev_for_dev README TODO
-%doc docs/{overview,udev_vs_devfs,libsysfs.txt,udev-*.pdf,RFC-dev.d}
+%doc ChangeLog FAQ HOWTO-udev_for_dev README RELEASE-NOTES TODO
+%doc docs/{overview,udev_vs_devfs,libsysfs.txt,RFC-dev.d}
 %attr(755,root,root) %{_sbindir}/*
+%dir /udev
 %if %{with initrd}
 %exclude %{_sbindir}/*initrd*
 %endif
 %attr(755,root,root) %{_bindir}/*
 
-%config(missingok) %{_sysconfdir}/dev.d/net/selinux.dev
 %config(missingok) %{_sysconfdir}/dev.d/net/hotplug.dev
 %attr(755,root,root) %dir %{_sysconfdir}/dev.d
 %attr(755,root,root) %dir %{_sysconfdir}/dev.d/default
@@ -154,7 +143,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(755,root,root) %dir %{_sysconfdir}/udev
 %attr(755,root,root) %dir %{_sysconfdir}/udev/rules.d
-%attr(755,root,root) %dir %{_sysconfdir}/udev/permissions.d
 %attr(755,root,root) %dir %{_sysconfdir}/udev/scripts
 
 %attr(755,root,root) %{_sysconfdir}/udev/scripts/hotplug.dev
@@ -162,19 +150,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/udev.conf
 %config(noreplace) %verify(not size mtime md5)  %{_sysconfdir}/udev/rules.d/50-udev.rules
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/permissions.d/50-udev.permissions
-
-%attr(755,root,root) %{_sbindir}/devmap_name
 
 %config(missingok) %{_sysconfdir}/hotplug.d/default/10-udev.hotplug
 
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/scsi_id.config
 
 %{_mandir}/man8/*
-
-%dev(c,1,3) %attr(666,root,root) /dev/null
-%dev(c,5,1) %attr(660,root,console) /dev/console
-%dev(c,1,5) %attr(666,root,root) /dev/zero
 
 %if %{with initrd}
 %files initrd
