@@ -10,7 +10,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	064
-Release:	0.1
+Release:	0.2
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -150,7 +150,7 @@ rm -rf $RPM_BUILD_ROOT
 %exclude %{_sbindir}/*initrd*
 %endif
 %attr(755,root,root) %{_bindir}/*
-%attr(-,root,root) %{_sysconfdir}/hotplug.d/default/10-udev.hotplug
+%attr(755,root,root) %{_sysconfdir}/hotplug.d/default/10-udev.hotplug
 
 #%config(missingok) %{_sysconfdir}/dev.d/net/hotplug.dev
 %attr(755,root,root) %dir %{_sysconfdir}/dev.d
