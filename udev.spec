@@ -63,6 +63,7 @@ initrd.
 
 %prep
 %setup -q -a5
+sed -i -e 's#gcc#$(CC)#g' devmap_name/Makefile
 
 %build
 %if %{with initrd}
@@ -86,12 +87,10 @@ cp -a udev initrd-udev
 %{__make} clean
 %endif
 
-sed -i -e 's#gcc#$(CC)#g' devmap_name/Makefile
 %{__make} -C devmap_name \
 	CC="%{__cc}" \
 	OPTFLAGS="%{rpmcflags}"
 
-#sed 's/LOGNAME_SIZE/64/' -i extras/volume_id/udev_volume_id.c
 %{__make} \
 	udevdir=/dev \
 	CC="%{__cc}" \
