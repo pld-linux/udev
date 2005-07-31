@@ -109,6 +109,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_prefix}/sbin,/udev}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{rules.d,scripts}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/{default,block,net,snd}
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -128,6 +129,7 @@ install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/check-cdrom.sh
 #ln -s ../../udev/scripts/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/
 
 #ln -s %{_sbindir}/wait_for_sysfs $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default/00-wait_for_sysfs.hotplug
+ln -s %{_sbindir}/udevsend $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default/10-udev.hotplug
 
 %if %{with initrd}
 install -m755 initrd-udev $RPM_BUILD_ROOT%{_sbindir}/initrd-udev
@@ -149,6 +151,7 @@ rm -rf $RPM_BUILD_ROOT
 %exclude %{_sbindir}/*initrd*
 %endif
 %attr(755,root,root) %{_bindir}/*
+%attr(-,root,root) %{_sysconfdir}/hotplug.d/default/10-udev.hotplug
 
 #%config(missingok) %{_sysconfdir}/dev.d/net/hotplug.dev
 %attr(755,root,root) %dir %{_sysconfdir}/dev.d
@@ -167,7 +170,6 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not size mtime md5)  %{_sysconfdir}/udev/rules.d/50-udev.rules
 
 #%config(missingok) %{_sysconfdir}/hotplug.d/default/00-wait_for_sysfs.hotplug
-#%config(missingok) %{_sysconfdir}/hotplug.d/default/10-udev.hotplug
 
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/scsi_id.config
 
