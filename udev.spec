@@ -123,6 +123,7 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev.rules
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.conf
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/start_udev
+install extras/path_id $RPM_BUILD_ROOT%{_sbindir}
 install extras/dvb.sh $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts
 install extras/raid-devfs.sh $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts
 
