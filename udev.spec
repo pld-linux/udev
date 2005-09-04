@@ -3,9 +3,6 @@
 %bcond_without	initrd	# build without udev-initrd
 %bcond_without	uClibc	# link initrd version with static dietlibc instead of uClibc
 #
-%ifarch %{x8664}
-%undefine	with_uClibc
-%endif
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
@@ -28,7 +25,7 @@ BuildRequires:	libselinux-devel >= 1.17.13
 BuildRequires:	sed >= 4.0
 %if %{with initrd}
 %{!?with_uClibc:BuildRequires:	dietlibc-static}
-%{?with_uClibc:BuildRequires:	uClibc-static >= 0.9.21}
+%{?with_uClibc:BuildRequires:	uClibc-static >= 0.9.28}
 %endif
 Requires:	coreutils
 Requires:	hotplug >= 2003_08_05
