@@ -9,21 +9,20 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	064
-Release:	0.2
+Version:	068
+Release:	1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	589a5fd80ca2c85874e81cc767e6fdeb
+# Source0-md5:	fd9db7375dae81e8aa634414b5ede0d6
 Source1:	%{name}.rules
 Source3:	%{name}.conf
 Source4:	start_udev
 Source5:	devmap_name.tar.gz
 # Source5-md5:	f72f557299436af5d6ad66815b80a641
-Source6:	%{name}-check-cdrom.sh
-Source7:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
-# Source7-md5:	7b2b881a8531fd84da7cae9152dc4e39
+Source6:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
+# Source6-md5:	7b2b881a8531fd84da7cae9152dc4e39
 BuildRequires:	device-mapper-devel
 BuildRequires:	libselinux-devel >= 1.17.13
 BuildRequires:	sed >= 4.0
@@ -39,7 +38,7 @@ Obsoletes:	udev-dev
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
-%define		extras		extras/scsi_id extras/volume_id extras/usb_id extras/dasd_id extras/ata_id extras/chassis_id extras/floppy extras/run_directory
+%define		extras		extras/ata_id extras/cdrom_id extras/chassis_id extras/dasd_id extras/floppy extras/run_directory extras/scsi_id extras/usb_id extras/volume_id
 
 %description
 A userspace implementation of devfs for 2.5 and higher kernels.
@@ -100,14 +99,16 @@ cp -a udev initrd-udev
 	USE_LOG=true \
 	EXTRAS="%{extras}"
 
-%{__cc} %{rpmcflags} %{SOURCE7} -o uevent_listen
+%{__cc} %{rpmcflags} %{SOURCE6} -o uevent_listen
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT{%{_prefix}/sbin,/udev}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{rules.d,scripts}
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/{default,block,net,snd}
+
+# use of /etc/dev.d/ is no longer recommended
+#install -d $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/{default,net,snd}
+
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default
 
 %{__make} install \
@@ -122,12 +123,9 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev.rules
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.conf
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/start_udev
-install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/check-cdrom.sh
+install extras/dvb.sh $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts
+install extras/raid-devfs.sh $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts
 
-#mv $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts/
-#ln -s ../../udev/scripts/hotplug.dev $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/net/
-
-#ln -s %{_sbindir}/wait_for_sysfs $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default/00-wait_for_sysfs.hotplug
 ln -s %{_sbindir}/udevsend $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default/10-udev.hotplug
 
 %if %{with initrd}
@@ -144,33 +142,31 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc ChangeLog FAQ HOWTO-udev_for_dev README TODO
-%doc docs/{overview,udev_vs_devfs,libsysfs.txt,RFC-dev.d}
+%doc docs/{overview,udev_vs_devfs,libsysfs.txt}
 %attr(755,root,root) %{_sbindir}/*
 %if %{with initrd}
 %exclude %{_sbindir}/*initrd*
 %endif
 %attr(755,root,root) %{_bindir}/*
+%attr(755,root,root) %{_prefix}/sbin/*
+
 %attr(755,root,root) %{_sysconfdir}/hotplug.d/default/10-udev.hotplug
 
-#%config(missingok) %{_sysconfdir}/dev.d/net/hotplug.dev
-%attr(755,root,root) %dir %{_sysconfdir}/dev.d
-%attr(755,root,root) %dir %{_sysconfdir}/dev.d/default
-%attr(755,root,root) %dir %{_sysconfdir}/dev.d/net
-%attr(755,root,root) %dir %{_sysconfdir}/dev.d/snd
+# use of /etc/dev.d/ is no longer recommended
+#%attr(755,root,root) %dir %{_sysconfdir}/dev.d
+#%attr(755,root,root) %dir %{_sysconfdir}/dev.d/default
+#%attr(755,root,root) %dir %{_sysconfdir}/dev.d/net
+#%attr(755,root,root) %dir %{_sysconfdir}/dev.d/snd
 
 %attr(755,root,root) %dir %{_sysconfdir}/udev
 %attr(755,root,root) %dir %{_sysconfdir}/udev/rules.d
 %attr(755,root,root) %dir %{_sysconfdir}/udev/scripts
 
-#%attr(755,root,root) %{_sysconfdir}/udev/scripts/hotplug.dev
-%attr(755,root,root) %{_sysconfdir}/udev/scripts/check-cdrom.sh
-
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/udev.conf
-%config(noreplace) %verify(not size mtime md5)  %{_sysconfdir}/udev/rules.d/50-udev.rules
-
-#%config(missingok) %{_sysconfdir}/hotplug.d/default/00-wait_for_sysfs.hotplug
-
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/rules.d/50-udev.rules
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/scsi_id.config
+
+%attr(755,root,root) %{_sysconfdir}/udev/scripts/*
 
 %{_mandir}/man8/*
 
