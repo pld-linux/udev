@@ -137,6 +137,14 @@ install uevent_listen $RPM_BUILD_ROOT%{_sbindir}
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%triggerpostun -- dev
+# need to kill and restart udevd as after obsoleting dev package the
+# /dev tree will remain empty. umask is needed as otherwise udev will
+# create devices with strange permissions (udev bug probably)
+umask 000
+/bin/killall udevd >/dev/null 2>&1
+/sbin/start_udev
+
 %files
 %defattr(644,root,root,755)
 %doc ChangeLog FAQ HOWTO-udev_for_dev README TODO
