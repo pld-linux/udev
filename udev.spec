@@ -7,7 +7,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	068
-Release:	2
+Release:	3
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -30,7 +30,7 @@ BuildRequires:	sed >= 4.0
 Requires:	coreutils
 Requires:	hotplug >= 2003_08_05
 Provides:	dev = 3.0.0
-Obsoletes:	dev
+# Obsoletes:	dev
 Obsoletes:	udev-dev
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
