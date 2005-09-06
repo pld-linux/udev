@@ -7,7 +7,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	068
-Release:	3
+Release:	2
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -142,7 +142,6 @@ rm -rf $RPM_BUILD_ROOT
 # /dev tree will remain empty. umask is needed as otherwise udev will
 # create devices with strange permissions (udev bug probably)
 umask 000
-/bin/killall udevd >/dev/null 2>&1
 /sbin/start_udev
 
 %files
