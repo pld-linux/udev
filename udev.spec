@@ -7,7 +7,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	068
-Release:	2
+Release:	4
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -141,13 +141,24 @@ rm -rf $RPM_BUILD_ROOT
 # need to kill and restart udevd as after obsoleting dev package the
 # /dev tree will remain empty. umask is needed as otherwise udev will
 # create devices with strange permissions (udev bug probably)
+have_pts=$(awk '$2 == "/dev/pts"{print "yes"}' /proc/mounts)
+
 umask 000
 /sbin/start_udev
+
+# we also need to remount /dev/pts as the /dev/pts directory could be
+# removed in certain circumstances.
+if [ "$have_pts" = "yes" ]; then
+	umount /dev/pts >/dev/null 2>&1
+	mount /dev/pts >/dev/null 2>&1
+fi
+exit 0
 
 %files
 %defattr(644,root,root,755)
 %doc ChangeLog FAQ HOWTO-udev_for_dev README TODO
 %doc docs/{overview,udev_vs_devfs,libsysfs.txt}
+%doc extras/start_udev
 %attr(755,root,root) %{_sbindir}/*
 %if %{with initrd}
 %exclude %{_sbindir}/*initrd*
