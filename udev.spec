@@ -2,7 +2,7 @@
 # Conditional build:
 %bcond_without	initrd	# build without udev-initrd
 %bcond_without	uClibc	# link initrd version with static dietlibc instead of uClibc
-#
+                        # (currently broken and unsupported)
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
