@@ -4,7 +4,7 @@
 # Conditional build:
 %bcond_without	initrd	# build without udev-initrd
 %bcond_without	uClibc	# link initrd version with static uClibc
-%bcond_with		diet	# link initrd version with static dietlibc (currently broken and unsupported)
+%bcond_with	diet	# link initrd version with static dietlibc (currently broken and unsupported)
 
 # can't have them both
 %if %{with uClibc} && %{with diet}
@@ -15,13 +15,14 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	070
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
 # Source0-md5:	e990dcdc3a245f00373cd51a9e09b27f
 Source1:	%{name}.rules
+Source2:	%{name}-firmware.rules
 Source3:	%{name}.conf
 Source4:	start_udev
 Source5:	devmap_name.tar.gz
@@ -126,6 +127,7 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.permissions
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev.rules
+install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/999-firmware.rules
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.conf
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/start_udev
 install extras/path_id $RPM_BUILD_ROOT%{_sbindir}
@@ -179,6 +181,7 @@ umask 000
 
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/udev.conf
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/rules.d/50-udev.rules
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/rules.d/999-firmware.rules
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/scsi_id.config
 
 %attr(755,root,root) %{_sysconfdir}/udev/scripts/*
