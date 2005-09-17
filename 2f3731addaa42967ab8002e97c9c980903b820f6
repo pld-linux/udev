@@ -1,0 +1,2 @@
+- updated to 068, massive cleanup, dropped check-cdrom script (make use of
+  included utility), more %files, rel.1
