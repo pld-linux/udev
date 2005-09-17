@@ -1,8 +1,16 @@
+# TODO
+# - add klibc?
 #
 # Conditional build:
 %bcond_without	initrd	# build without udev-initrd
-%bcond_without	uClibc	# link initrd version with static dietlibc instead of uClibc
-                        # (currently broken and unsupported)
+%bcond_without	uClibc	# link initrd version with static uClibc
+%bcond_with		diet	# link initrd version with static dietlibc (currently broken and unsupported)
+
+# can't have them both
+%if %{with uClibc} && %{with diet}
+%undefine	with_uClibc
+%endif
+
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
@@ -24,7 +32,7 @@ BuildRequires:	device-mapper-devel
 BuildRequires:	libselinux-devel >= 1.17.13
 BuildRequires:	sed >= 4.0
 %if %{with initrd}
-%{!?with_uClibc:BuildRequires:	dietlibc-static}
+%{?with_diet:BuildRequires:	dietlibc-static}
 %{?with_uClibc:BuildRequires:	uClibc-static >= 0.9.28}
 %endif
 Requires:	coreutils
@@ -70,8 +78,8 @@ sed -i -e 's#gcc#$(CC)#g' devmap_name/Makefile
 	udevdir=/dev \
 	%{?with_uClibc:CC="%{_target_cpu}-uclibc-gcc"} \
 	%{?with_uClibc:LD="%{_target_cpu}-uclibc-gcc %{rpmldflags} -static"} \
-	%{!?with_uClibc:CC="%{_target_cpu}-dietlibc-gcc"} \
-	%{!?with_uClibc:LD="%{_target_cpu}-dietlibc-gcc %{rpmldflags} -static"} \
+	%{?with_diet:CC="%{_target_cpu}-dietlibc-gcc"} \
+	%{?with_diet:LD="%{_target_cpu}-dietlibc-gcc %{rpmldflags} -static"} \
 	%{!?debug:DEBUG=false} \
 	OPTIMIZATION="%{rpmcflags}" \
 	USE_KLIBC=false \
