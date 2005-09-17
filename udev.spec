@@ -8,7 +8,7 @@
 
 # can't have them both
 %if %{with uClibc} && %{with diet}
-%undefine	with_uClibc
+%undefine	with_diet
 %endif
 
 Summary:	A userspace implementation of devfs
