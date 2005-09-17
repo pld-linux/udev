@@ -1,0 +1,1 @@
+- bcond: without_uClibc [use dietlibc instead - default on %{x8664)]
