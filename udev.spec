@@ -6,13 +6,13 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	068
-Release:	4
+Version:	070
+Release:	1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	fd9db7375dae81e8aa634414b5ede0d6
+# Source0-md5:	e990dcdc3a245f00373cd51a9e09b27f
 Source1:	%{name}.rules
 Source3:	%{name}.conf
 Source4:	start_udev
@@ -147,7 +147,8 @@ umask 000
 %files
 %defattr(644,root,root,755)
 %doc ChangeLog FAQ HOWTO-udev_for_dev README TODO
-%doc docs/{overview,udev_vs_devfs,libsysfs.txt}
+%doc docs/{overview,udev_vs_devfs}
+%doc libsysfs/libsysfs.txt
 %doc extras/start_udev
 %attr(755,root,root) %{_sbindir}/*
 %if %{with initrd}
