@@ -15,7 +15,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	070
-Release:	2
+Release:	3
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -148,11 +148,13 @@ install uevent_listen $RPM_BUILD_ROOT%{_sbindir}
 rm -rf $RPM_BUILD_ROOT
 
 %triggerpostun -- dev
-# need to kill and restart udevd as after obsoleting dev package the
-# /dev tree will remain empty. umask is needed as otherwise udev will
-# create devices with strange permissions (udev bug probably)
-umask 000
-/sbin/start_udev
+if [ "$2" = 0 ]; then
+	# need to kill and restart udevd as after obsoleting dev package the
+	# /dev tree will remain empty. umask is needed as otherwise udev will
+	# create devices with strange permissions (udev bug probably)
+	umask 000
+	/sbin/start_udev || exit 0
+fi
 
 %files
 %defattr(644,root,root,755)
