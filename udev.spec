@@ -1,20 +1,24 @@
 # TODO
-# - add klibc?
 # - initrd build with uclibc on amd64 produces non-working binary (illegal instruction from open("/dev/null"))
 #
 # Conditional build:
 %bcond_without	initrd	# build without udev-initrd
 %bcond_without	uClibc	# link initrd version with static uClibc
+%bcond_with	klibc	# link initrd version with static klibc
 %bcond_with	diet	# link initrd version with static dietlibc (currently broken and unsupported)
 %bcond_with	glibc	# link initrd version with static glibc
-%bcond_without	main	# compile only main program, use for debugging initrd build
+%bcond_without	main	# don't compile main package, use for debugging initrd build
 
-# can't have them both
-%if %{with uClibc} && %{with diet}
-%undefine	with_diet
+# if one of the *libc is enabled disable default uClibc
+%if %{with diet} && %{with uClibc}
+%undefine	with_uClibc
 %endif
 
 %if %{with glibc} && %{with uClibc}
+%undefine	with_uClibc
+%endif
+
+%if %{with klibc} && %{with uClibc}
 %undefine	with_uClibc
 %endif
 
@@ -43,6 +47,8 @@ BuildRequires:	sed >= 4.0
 %{?with_diet:BuildRequires:	dietlibc-static}
 %{?with_uClibc:BuildRequires:	uClibc-static >= 0.9.28}
 %{?with_glibc:BuildRequires:	glibc-static}
+%{?with_klibc:BuildRequires:	klibc-static}
+%{?with_klibc:BuildRequires:	linux-libc-headers}
 %endif
 Requires:	coreutils
 Requires:	hotplug >= 2003_08_05
@@ -91,6 +97,8 @@ sed -i -e 's#gcc#$(CC)#g' devmap_name/Makefile
 	%{?with_diet:LD="%{_target_cpu}-dietlibc-gcc %{rpmldflags} -static"} \
 	%{?with_glibc:CC="%{_target_cpu}-pld-linux-gcc"} \
 	%{?with_glibc:LD="%{_target_cpu}-pld-linux-gcc %{rpmldflags} -static"} \
+	%{?with_klibc:CC="klcc"} \
+	%{?with_klibc:LD="klcc %{rpmldflags} -static"} \
 	DEBUG=%{!?debug:false}%{?debug:true} \
 	OPTIMIZATION="%{rpmcflags}" \
 	USE_KLIBC=false \
