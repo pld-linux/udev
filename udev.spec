@@ -97,17 +97,17 @@ sed -i -e 's#gcc#$(CC)#g' devmap_name/Makefile
 	%{?with_dietlibc:LD="%{_target_cpu}-dietlibc-gcc %{rpmldflags} -static"} \
 	%{?with_glibc:CC="%{_target_cpu}-pld-linux-gcc"} \
 	%{?with_glibc:LD="%{_target_cpu}-pld-linux-gcc %{rpmldflags} -static"} \
-	%{?with_klibc:CC="klcc"} \
+	%{?with_klibc:KLCC=%{_bindir}/klcc CC="klcc"} \
 	%{?with_klibc:LD="klcc %{rpmldflags} -static"} \
 	DEBUG=%{!?debug:false}%{?debug:true} \
 	OPTIMIZATION="%{rpmcflags}" \
-	USE_KLIBC=false \
+	USE_KLIBC=%{!?with_klibc:false}%{?with_klibc:true} \
 	USE_LOG=true \
 	USE_SELINUX=false \
 	EXTRAS=""
 
 cp -a udev initrd-udev
-%if %{without main}
+%if %{with main}
 %{__make} clean
 %endif
 %endif
