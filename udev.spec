@@ -6,10 +6,16 @@
 %bcond_without	initrd	# build without udev-initrd
 %bcond_without	uClibc	# link initrd version with static uClibc
 %bcond_with	diet	# link initrd version with static dietlibc (currently broken and unsupported)
+%bcond_with	glibc	# link initrd version with static glibc
+%bcond_without	main	# compile only main program, use for debugging initrd build
 
 # can't have them both
 %if %{with uClibc} && %{with diet}
 %undefine	with_diet
+%endif
+
+%if %{with glibc} && %{with uClibc}
+%undefine	with_uClibc
 %endif
 
 Summary:	A userspace implementation of devfs
@@ -36,6 +42,7 @@ BuildRequires:	sed >= 4.0
 %if %{with initrd}
 %{?with_diet:BuildRequires:	dietlibc-static}
 %{?with_uClibc:BuildRequires:	uClibc-static >= 0.9.28}
+%{?with_glibc:BuildRequires:	glibc-static}
 %endif
 Requires:	coreutils
 Requires:	hotplug >= 2003_08_05
@@ -82,6 +89,8 @@ sed -i -e 's#gcc#$(CC)#g' devmap_name/Makefile
 	%{?with_uClibc:LD="%{_target_cpu}-uclibc-gcc %{rpmldflags} -static"} \
 	%{?with_diet:CC="%{_target_cpu}-dietlibc-gcc"} \
 	%{?with_diet:LD="%{_target_cpu}-dietlibc-gcc %{rpmldflags} -static"} \
+	%{?with_glibc:CC="%{_target_cpu}-pld-linux-gcc"} \
+	%{?with_glibc:LD="%{_target_cpu}-pld-linux-gcc %{rpmldflags} -static"} \
 	DEBUG=%{!?debug:false}%{?debug:true} \
 	OPTIMIZATION="%{rpmcflags}" \
 	USE_KLIBC=false \
@@ -90,9 +99,12 @@ sed -i -e 's#gcc#$(CC)#g' devmap_name/Makefile
 	EXTRAS=""
 
 cp -a udev initrd-udev
+%if %{without main}
 %{__make} clean
 %endif
+%endif
 
+%if %{with main}
 %{__make} -C devmap_name \
 	CC="%{__cc}" \
 	OPTFLAGS="%{rpmcflags}"
@@ -107,10 +119,12 @@ cp -a udev initrd-udev
 	EXTRAS="%{extras}"
 
 %{__cc} %{rpmcflags} %{SOURCE6} -o uevent_listen
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
+%if %{with main}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{rules.d,scripts}
 
 # use of /etc/dev.d/ is no longer recommended
@@ -137,13 +151,16 @@ install extras/raid-devfs.sh $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts
 
 ln -s %{_sbindir}/udevsend $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default/10-udev.hotplug
 
+install devmap_name/devmap_name $RPM_BUILD_ROOT%{_sbindir}/devmap_name
+install uevent_listen $RPM_BUILD_ROOT%{_sbindir}
+
+%endif
+
 %if %{with initrd}
+install -d $RPM_BUILD_ROOT%{_sbindir}
 install -m755 initrd-udev $RPM_BUILD_ROOT%{_sbindir}/initrd-udev
 ln -s initrd-udev $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
 %endif
-
-install devmap_name/devmap_name $RPM_BUILD_ROOT%{_sbindir}/devmap_name
-install uevent_listen $RPM_BUILD_ROOT%{_sbindir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -157,6 +174,7 @@ if [ "$2" = 0 ]; then
 	/sbin/start_udev || exit 0
 fi
 
+%if %{with main}
 %files
 %defattr(644,root,root,755)
 %doc ChangeLog FAQ HOWTO-udev_for_dev README TODO
@@ -194,6 +212,7 @@ fi
 %dev(c,1,3) %attr(666,root,root) /dev/null
 %dev(c,5,1) %attr(660,root,console) /dev/console
 %dev(c,1,5) %attr(666,root,root) /dev/zero
+%endif
 
 %if %{with initrd}
 %files initrd
