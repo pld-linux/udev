@@ -5,12 +5,12 @@
 %bcond_without	initrd	# build without udev-initrd
 %bcond_without	uClibc	# link initrd version with static uClibc
 %bcond_with	klibc	# link initrd version with static klibc
-%bcond_with	diet	# link initrd version with static dietlibc (currently broken and unsupported)
+%bcond_with	dietlibc	# link initrd version with static dietlibc (currently broken and unsupported)
 %bcond_with	glibc	# link initrd version with static glibc
 %bcond_without	main	# don't compile main package, use for debugging initrd build
 
 # if one of the *libc is enabled disable default uClibc
-%if %{with diet} && %{with uClibc}
+%if %{with dietlibc} && %{with uClibc}
 %undefine	with_uClibc
 %endif
 
@@ -44,7 +44,7 @@ BuildRequires:	device-mapper-devel
 BuildRequires:	libselinux-devel >= 1.17.13
 BuildRequires:	sed >= 4.0
 %if %{with initrd}
-%{?with_diet:BuildRequires:	dietlibc-static}
+%{?with_dietlibc:BuildRequires:	dietlibc-static}
 %{?with_uClibc:BuildRequires:	uClibc-static >= 0.9.28}
 %{?with_glibc:BuildRequires:	glibc-static}
 %{?with_klibc:BuildRequires:	klibc-static}
@@ -93,8 +93,8 @@ sed -i -e 's#gcc#$(CC)#g' devmap_name/Makefile
 	udevdir=/dev \
 	%{?with_uClibc:CC="%{_target_cpu}-uclibc-gcc"} \
 	%{?with_uClibc:LD="%{_target_cpu}-uclibc-gcc %{rpmldflags} -static"} \
-	%{?with_diet:CC="%{_target_cpu}-dietlibc-gcc"} \
-	%{?with_diet:LD="%{_target_cpu}-dietlibc-gcc %{rpmldflags} -static"} \
+	%{?with_dietlibc:CC="%{_target_cpu}-dietlibc-gcc"} \
+	%{?with_dietlibc:LD="%{_target_cpu}-dietlibc-gcc %{rpmldflags} -static"} \
 	%{?with_glibc:CC="%{_target_cpu}-pld-linux-gcc"} \
 	%{?with_glibc:LD="%{_target_cpu}-pld-linux-gcc %{rpmldflags} -static"} \
 	%{?with_klibc:CC="klcc"} \
