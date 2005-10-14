@@ -1,5 +1,6 @@
 # TODO
 # - add klibc?
+# - initrd build with uclibc on amd64 produces non-working binary (illegal instruction from open("/dev/null"))
 #
 # Conditional build:
 %bcond_without	initrd	# build without udev-initrd
