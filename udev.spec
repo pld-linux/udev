@@ -81,7 +81,7 @@ sed -i -e 's#gcc#$(CC)#g' devmap_name/Makefile
 	%{?with_uClibc:LD="%{_target_cpu}-uclibc-gcc %{rpmldflags} -static"} \
 	%{?with_diet:CC="%{_target_cpu}-dietlibc-gcc"} \
 	%{?with_diet:LD="%{_target_cpu}-dietlibc-gcc %{rpmldflags} -static"} \
-	%{!?debug:DEBUG=false} \
+	DEBUG=%{!?debug:false}%{?debug:true} \
 	OPTIMIZATION="%{rpmcflags}" \
 	USE_KLIBC=false \
 	USE_LOG=true \
@@ -99,7 +99,7 @@ cp -a udev initrd-udev
 %{__make} \
 	udevdir=/dev \
 	CC="%{__cc}" \
-	%{!?debug:DEBUG=false} \
+	DEBUG=%{!?debug:false}%{?debug:true} \
 	OPTIMIZATION="%{rpmcflags}" \
 	USE_KLIBC=false \
 	USE_LOG=true \
