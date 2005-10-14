@@ -1,0 +1,18 @@
+diff -ruNp udev-070.orig/udevsynthesize.c udev-070/udevsynthesize.c
+--- udev-070.orig/udevsynthesize.c	2005-09-25 17:46:13.000000000 +0200
++++ udev-070/udevsynthesize.c	2005-09-25 17:46:04.000000000 +0200
+@@ -250,6 +250,14 @@ static int add_device_udevd(struct devic
+ 	struct sockaddr_un saddr;
+ 	socklen_t addrlen;
+ 	int retval;
++	char *value;
++
++	if ((value = getenv("UDEV_CONFIG_FILE")))
++		add_env_key(device, "UDEV_CONFIG_FILE", value);
++	if ((value = getenv("UDEV_RUN")))
++		add_env_key(device, "UDEV_RUN", value);
++	if ((value = getenv("UDEV_LOG")))
++		add_env_key(device, "UDEV_LOG", value);
+ 
+ 	memset(&saddr, 0x00, sizeof(struct sockaddr_un));
+ 	saddr.sun_family = AF_LOCAL;
