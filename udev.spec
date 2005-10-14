@@ -1,5 +1,6 @@
 # TODO
 # - initrd build with uclibc on amd64 produces non-working binary (illegal instruction from open("/dev/null"))
+# - check this: make: *** extras/chassis_id: No such file or directory.  Stop.
 #
 # Conditional build:
 %bcond_without	initrd	# build without udev-initrd
