@@ -10,6 +10,10 @@
 %bcond_with	glibc	# link initrd version with static glibc
 %bcond_without	main	# don't compile main package, use for debugging initrd build
 
+%ifarch %{x8664}
+%define		with_klibc 1
+%endif
+
 # if one of the *libc is enabled disable default uClibc
 %if %{with dietlibc} && %{with uClibc}
 %undefine	with_uClibc
@@ -27,7 +31,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	070
-Release:	4
+Release:	4.1
 Epoch:		1
 License:	GPL
 Group:		Base
