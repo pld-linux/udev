@@ -41,8 +41,6 @@ Source1:	%{name}.rules
 Source2:	%{name}-firmware.rules
 Source3:	%{name}.conf
 Source4:	start_udev
-Source5:	devmap_name.tar.gz
-# Source5-md5:	f72f557299436af5d6ad66815b80a641
 Source6:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
 # Source6-md5:	7b2b881a8531fd84da7cae9152dc4e39
 Patch0:		udev-synthesize-02.patch
@@ -89,8 +87,7 @@ Implementacja devfs w przestrzeni u¿ytkownika - statyczna binarka dla
 initrd.
 
 %prep
-%setup -q -a5
-sed -i -e 's#gcc#$(CC)#g' devmap_name/Makefile
+%setup -q
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -124,10 +121,6 @@ cp -a udev initrd-udev
 %endif
 
 %if %{with main}
-%{__make} -C devmap_name \
-	CC="%{__cc}" \
-	OPTFLAGS="%{rpmcflags}"
-
 %{__make} \
 	udevdir=/dev \
 	CC="%{__cc}" \
@@ -170,8 +163,8 @@ install extras/raid-devfs.sh $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts
 
 ln -s %{_sbindir}/udevsend $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default/10-udev.hotplug
 
-install devmap_name/devmap_name $RPM_BUILD_ROOT%{_sbindir}/devmap_name
 install uevent_listen $RPM_BUILD_ROOT%{_sbindir}
+install udevsynthesize $RPM_BUILD_ROOT%{_sbindir}
 
 %endif
 
