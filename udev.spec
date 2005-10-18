@@ -1,6 +1,5 @@
 # TODO
 # - initrd build with uclibc on amd64 produces non-working binary (illegal instruction from open("/dev/null"))
-# - check this: make: *** extras/chassis_id: No such file or directory.  Stop.
 #
 # Conditional build:
 %bcond_without	initrd	# build without udev-initrd
@@ -31,7 +30,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	070
-Release:	5
+Release:	5.1
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -64,7 +63,7 @@ Obsoletes:	udev-dev
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
-%define		extras		extras/ata_id extras/cdrom_id extras/chassis_id extras/dasd_id extras/floppy extras/firmware extras/run_directory extras/scsi_id extras/usb_id extras/volume_id
+%define		extras		extras/ata_id extras/cdrom_id extras/dasd_id extras/floppy extras/firmware extras/run_directory extras/scsi_id extras/usb_id extras/volume_id
 
 %description
 A userspace implementation of devfs for 2.5 and higher kernels.
@@ -141,8 +140,7 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{rules.d,scripts}
 
 # use of /etc/dev.d/ is no longer recommended
 #install -d $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/{default,net,snd}
-
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default
+#install -d $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -152,6 +150,7 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.rules
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.permissions
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
+rm -f $RPM_BUILD_ROOT%{_sbindir}/udev_run_*
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev.rules
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/999-firmware.rules
@@ -161,7 +160,8 @@ install extras/path_id $RPM_BUILD_ROOT%{_sbindir}
 install extras/dvb.sh $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts
 install extras/raid-devfs.sh $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts
 
-ln -s %{_sbindir}/udevsend $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default/10-udev.hotplug
+# use of /etc/hotplug.d/ is no longer recommended
+# ln -s %{_sbindir}/udevsend $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default/10-udev.hotplug
 
 install uevent_listen $RPM_BUILD_ROOT%{_sbindir}
 install udevsynthesize $RPM_BUILD_ROOT%{_sbindir}
@@ -200,7 +200,8 @@ fi
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_prefix}/sbin/*
 
-%attr(755,root,root) %{_sysconfdir}/hotplug.d/default/10-udev.hotplug
+# use of /etc/hotplug.d/ is no longer recommended
+#%attr(755,root,root) %{_sysconfdir}/hotplug.d/default/10-udev.hotplug
 
 # use of /etc/dev.d/ is no longer recommended
 #%attr(755,root,root) %dir %{_sysconfdir}/dev.d
