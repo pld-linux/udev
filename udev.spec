@@ -41,6 +41,7 @@ Source2:	%{name}-firmware.rules
 Source3:	%{name}.conf
 Source4:	start_udev
 Source6:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
+# Source6-md5:	7b2b881a8531fd84da7cae9152dc4e39
 # from Mandriva CVS:
 # http://cvs.mandriva.com/cgi-bin/cvsweb.cgi/SPECS/udev/udev_import_usermap?rev=1.5
 Source7:	udev_import_usermap
@@ -49,7 +50,10 @@ Source7:	udev_import_usermap
 # http://qa.mandrivalinux.com/twiki/bin/view/Main/Udev
 # http://lwn.net/Articles/123932/
 Source8:	%{name}-modprobe.rules
-# Source6-md5:	7b2b881a8531fd84da7cae9152dc4e39
+# hotplug usb maps
+Source10:	%{name}-usb.digicam
+Source11:	%{name}-usb.distmap
+Source12:	%{name}-usb.handmap
 Patch0:		udev-synthesize-02.patch
 Patch1:		udev-synthesize-md
 Patch2:		udev-synthesize-preserve_env
@@ -64,8 +68,8 @@ BuildRequires:	sed >= 4.0
 %{?with_klibc:BuildRequires:	linux-libc-headers}
 %endif
 Requires:	coreutils
-Requires:	hotplug >= 2003_08_05
 Provides:	dev = 3.0.0
+Obsoletes:	hotplug
 # Obsoletes:	dev
 Obsoletes:	udev-dev
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -184,6 +188,10 @@ install -m755 initrd-udev $RPM_BUILD_ROOT%{_sbindir}/initrd-udev
 ln -s initrd-udev $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
 %endif
 
+$RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap usb \
+    %{SOURCE10} %{SOURCE11} %{SOURCE12} > $RPM_BUILD_ROOT/etc/udev/rules.d/70-hotplug_map.rules
+
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -223,11 +231,12 @@ fi
 %attr(755,root,root) %dir %{_sysconfdir}/udev/rules.d
 %attr(755,root,root) %dir %{_sysconfdir}/udev/scripts
 
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/udev.conf
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/scsi_id.config
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/rules.d/50-udev.rules
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/rules.d/999-firmware.rules
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/rules.d/999-modprobe.rules
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/scsi_id.config
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/udev.conf
+%{_sysconfdir}/udev/rules.d/70-hotplug_map.rules
 
 %attr(755,root,root) %{_sysconfdir}/udev/scripts/*
 
