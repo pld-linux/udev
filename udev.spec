@@ -100,7 +100,7 @@ Obsoletes:	hotplug-digicam
 Requires(pre):  /usr/bin/getgid
 Requires(pre):  /usr/sbin/groupadd
 Requires(postun):       /usr/sbin/groupdel
-Requires:       %{name} = %{version}-%{release}
+Requires:       %{name} = %{epoch}:%{version}-%{release}
 Provides:       group(digicam)
                                                                                                          
 %description digicam
