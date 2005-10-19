@@ -30,7 +30,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	070
-Release:	5.3
+Release:	5.4
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -43,17 +43,22 @@ Source4:	start_udev
 Source6:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
 # Source6-md5:	7b2b881a8531fd84da7cae9152dc4e39
 # from Mandriva CVS:
-# http://cvs.mandriva.com/cgi-bin/cvsweb.cgi/SPECS/udev/udev_import_usermap?rev=1.5
-Source7:	udev_import_usermap
+# http://cvs.mandriva.com/cgi-bin/cvsweb.cgi/SPECS/udev/
 # Needed for the automatic module loading w/o hotplug to work
 # see:
 # http://qa.mandrivalinux.com/twiki/bin/view/Main/Udev
 # http://lwn.net/Articles/123932/
+Source7:	%{name}_import_usermap
 Source8:	%{name}-modprobe.rules
 # hotplug usb maps
 Source10:	%{name}-usb.digicam
 Source11:	%{name}-usb.distmap
 Source12:	%{name}-usb.handmap
+# helpers
+Source20:	%{name}-ieee1394.helper
+Source21:	%{name}-input.helper
+Source22:	%{name}-net.helper
+Source23:	%{name}-input-coldplug
 Patch0:		udev-synthesize-02.patch
 Patch1:		udev-synthesize-md
 Patch2:		udev-synthesize-preserve_env
@@ -70,6 +75,10 @@ BuildRequires:	sed >= 4.0
 Requires:	coreutils
 Provides:	dev = 3.0.0
 Obsoletes:	hotplug
+Obsoletes:	hotplug-digicam
+Obsoletes:	hotplug-input
+Obsoletes:	hotplug-net
+Obsoletes:	hotplug-pci
 # Obsoletes:	dev
 Obsoletes:	udev-dev
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -170,6 +179,12 @@ install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/999-firmware.rules
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.conf
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/start_udev
 install %{SOURCE7} $RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap
+
+install %{SOURCE20} $RPM_BUILD_ROOT%{_sbindir}/udev_ieee1394_helper
+install %{SOURCE21} $RPM_BUILD_ROOT%{_sbindir}/udev_input_helper
+install %{SOURCE22} $RPM_BUILD_ROOT%{_sbindir}/udev_net_helper
+install %{SOURCE23} $RPM_BUILD_ROOT%{_sbindir}/udev_input_coldplug
+
 install extras/path_id $RPM_BUILD_ROOT%{_sbindir}
 install extras/dvb.sh $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts
 install extras/raid-devfs.sh $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts
