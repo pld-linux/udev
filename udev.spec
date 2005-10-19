@@ -93,15 +93,15 @@ Implementacja devfs w przestrzeni u¿ytkownika dla j±der 2.5 i
 wy¿szych.
 
 %package digicam
-Summary:        udev agent for USB digital cameras
-Summary(pl):    Agent udev dla aparatów cyfrowych na USB
-Group:          Applications/System
+Summary:	udev agent for USB digital cameras
+Summary(pl):	Agent udev dla aparatów cyfrowych na USB
+Group:		Applications/System
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/usr/sbin/groupadd
+Requires(postun):	/usr/sbin/groupdel
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+Provides:	group(digicam)
 Obsoletes:	hotplug-digicam
-Requires(pre):  /usr/bin/getgid
-Requires(pre):  /usr/sbin/groupadd
-Requires(postun):       /usr/sbin/groupdel
-Requires:       %{name} = %{epoch}:%{version}-%{release}
-Provides:       group(digicam)
                                                                                                          
 %description digicam
 udev agent for USB digital cameras.
@@ -219,12 +219,12 @@ $RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap usb \
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%pre digicam                                                                                             
+%pre digicam
 %groupadd -P %{name}-digicam -g 135 digicam
 
 %postun digicam
 if [ "$1" = "0" ]; then
-    %groupremove digicam
+	%groupremove digicam
 fi
 	    
 %triggerpostun -- dev
@@ -256,10 +256,10 @@ fi
 %attr(755,root,root) %dir %{_sysconfdir}/udev/rules.d
 %attr(755,root,root) %dir %{_sysconfdir}/udev/scripts
 
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/scsi_id.config
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/rules.d/50-udev.rules
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/rules.d/999-modprobe.rules
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/udev.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/scsi_id.config
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/50-udev.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/999-modprobe.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/udev.conf
 %{_sysconfdir}/udev/rules.d/70-hotplug_map.rules
 
 %attr(755,root,root) %{_sysconfdir}/udev/scripts/*
