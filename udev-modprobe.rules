@@ -67,3 +67,6 @@ ACTION=="add", SUBSYSTEM=="ieee1394", \
 	
 ACTION=="remove", SUBSYSTEM=="ieee1394", \
 	RUN+="/sbin/udev_ieee1394_helper"
+
+ACTION=="add", SUBSYSTEM=="firmware", \
+	RUN+="/sbin/firmware_helper"
