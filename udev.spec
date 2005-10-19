@@ -37,10 +37,9 @@ Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
 # Source0-md5:	e990dcdc3a245f00373cd51a9e09b27f
 Source1:	%{name}.rules
-Source2:	%{name}-firmware.rules
-Source3:	%{name}.conf
-Source4:	start_udev
-Source6:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
+Source2:	%{name}.conf
+Source3:	start_udev
+Source4:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
 # Source6-md5:	7b2b881a8531fd84da7cae9152dc4e39
 # from Mandriva CVS:
 # http://cvs.mandriva.com/cgi-bin/cvsweb.cgi/SPECS/udev/
@@ -48,8 +47,8 @@ Source6:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
 # see:
 # http://qa.mandrivalinux.com/twiki/bin/view/Main/Udev
 # http://lwn.net/Articles/123932/
-Source7:	%{name}_import_usermap
-Source8:	%{name}-modprobe.rules
+Source5:	%{name}_import_usermap
+Source6:	%{name}-modprobe.rules
 # hotplug usb maps
 Source10:	%{name}-usb.digicam
 Source11:	%{name}-usb.distmap
@@ -150,7 +149,7 @@ cp -a udev initrd-udev
 	USE_LOG=true \
 	EXTRAS="%{extras}"
 
-%{__cc} %{rpmcflags} %{SOURCE6} -o uevent_listen
+%{__cc} %{rpmcflags} %{SOURCE4} -o uevent_listen
 %endif
 
 %install
@@ -158,10 +157,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{with main}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{rules.d,scripts}
-
-# use of /etc/dev.d/ is no longer recommended
-#install -d $RPM_BUILD_ROOT%{_sysconfdir}/dev.d/{default,net,snd}
-#install -d $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -174,11 +169,10 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 rm -f $RPM_BUILD_ROOT%{_sbindir}/udev_run_*
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev.rules
-install %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/999-modprobe.rules
-install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/999-firmware.rules
-install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.conf
-install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/start_udev
-install %{SOURCE7} $RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap
+install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.conf
+install %{SOURCE3} $RPM_BUILD_ROOT%{_sbindir}/start_udev
+install %{SOURCE5} $RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap
+install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/999-modprobe.rules
 
 install %{SOURCE20} $RPM_BUILD_ROOT%{_sbindir}/udev_ieee1394_helper
 install %{SOURCE21} $RPM_BUILD_ROOT%{_sbindir}/udev_input_helper
@@ -188,9 +182,6 @@ install %{SOURCE23} $RPM_BUILD_ROOT%{_sbindir}/udev_input_coldplug
 install extras/path_id $RPM_BUILD_ROOT%{_sbindir}
 install extras/dvb.sh $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts
 install extras/raid-devfs.sh $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts
-
-# use of /etc/hotplug.d/ is no longer recommended
-# ln -s %{_sbindir}/udevsend $RPM_BUILD_ROOT%{_sysconfdir}/hotplug.d/default/10-udev.hotplug
 
 install uevent_listen $RPM_BUILD_ROOT%{_sbindir}
 install udevsynthesize $RPM_BUILD_ROOT%{_sbindir}
@@ -233,22 +224,12 @@ fi
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_prefix}/sbin/*
 
-# use of /etc/hotplug.d/ is no longer recommended
-#%attr(755,root,root) %{_sysconfdir}/hotplug.d/default/10-udev.hotplug
-
-# use of /etc/dev.d/ is no longer recommended
-#%attr(755,root,root) %dir %{_sysconfdir}/dev.d
-#%attr(755,root,root) %dir %{_sysconfdir}/dev.d/default
-#%attr(755,root,root) %dir %{_sysconfdir}/dev.d/net
-#%attr(755,root,root) %dir %{_sysconfdir}/dev.d/snd
-
 %attr(755,root,root) %dir %{_sysconfdir}/udev
 %attr(755,root,root) %dir %{_sysconfdir}/udev/rules.d
 %attr(755,root,root) %dir %{_sysconfdir}/udev/scripts
 
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/scsi_id.config
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/rules.d/50-udev.rules
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/rules.d/999-firmware.rules
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/rules.d/999-modprobe.rules
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/udev.conf
 %{_sysconfdir}/udev/rules.d/70-hotplug_map.rules
