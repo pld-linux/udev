@@ -23,32 +23,47 @@ ACTION=="add", SUBSYSTEM=="pcmcia", MODALIAS=="*", \
 ACTION=="add", SUBSYSTEM=="ieee1394", MODALIAS=="*", \
         RUN+="/sbin/modprobe $modalias"
 
-
 ACTION=="add", SUBSYSTEM=="ieee1394", MODALIAS=="*", \
-              RUN+="/sbin/modprobe $modalias"
+	RUN+="/sbin/modprobe $modalias"
 
 # disks & magneto-optical disk:
 ACTION=="add", SUBSYSTEM=="scsi", SYSFS{type}=="[07]", \
-              RUN+="/sbin/modprobe sd_mod"
+	RUN+="/sbin/modprobe sd_mod"
 
 # enclosure:
 ACTION=="add", SUBSYSTEM=="scsi", SYSFS{type}=="14", \
-              RUN+="/sbin/modprobe sd_mod"
+	RUN+="/sbin/modprobe sd_mod"
 
 # WORM & ROM:
 ACTION=="add", SUBSYSTEM=="scsi", SYSFS{type}=="[45]", \
-              RUN+="/sbin/modprobe sr_mod"
+	RUN+="/sbin/modprobe sr_mod"
 
 # Tape:
 ACTION=="add", SUBSYSTEM=="scsi", SYSFS{type}=="1", SYSFS{vendor}=="Onstream", \
-              SYSFS{model}!="ADR*", RUN+="/sbin/modprobe osst"
+        SYSFS{model}!="ADR*", RUN+="/sbin/modprobe osst"
 
 ACTION=="add", SUBSYSTEM=="scsi", SYSFS{type}=="1", SYSFS{vendor}=="Onstream", \
-              SYSFS{model}=="ADR*", RUN+="/sbin/modprobe st"
+	SYSFS{model}=="ADR*", RUN+="/sbin/modprobe st"
 
 ACTION=="add", SUBSYSTEM=="scsi", SYSFS{type}=="1", SYSFS{vendor}!="Onstream", \
-              RUN+="/sbin/modprobe st"
+        RUN+="/sbin/modprobe st"
 
 # printer, scanner (hp & all), changer & comm :
 ACTION=="add", SUBSYSTEM=="scsi", SYSFS{type}=="[23689]", \
-              RUN+="/sbin/modprobe sg"
+        RUN+="/sbin/modprobe sg"
+
+# helpers	      
+ACTION=="add", SUBSYSTEM=="net", ENV{INTERFACE}=="*", \
+	RUN+="/sbin/udev_net_helper"
+	
+ACTION=="remove", SUBSYSTEM=="net", ENV{INTERFACE}=="*", \
+	RUN+="/sbin/udev_net_helper"
+
+ACTION=="add", SUBSYSTEM=="input", \
+	RUN+="/sbin/udev_input_helper"
+
+ACTION=="add", SUBSYSTEM=="ieee1394", \
+	RUN+="/sbin/udev_ieee1394_helper"
+	
+ACTION=="remove", SUBSYSTEM=="ieee1394", \
+	RUN+="/sbin/udev_ieee1394_helper"
