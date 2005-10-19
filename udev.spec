@@ -30,7 +30,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	070
-Release:	5.2
+Release:	5.3
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -188,7 +188,7 @@ install -m755 initrd-udev $RPM_BUILD_ROOT%{_sbindir}/initrd-udev
 ln -s initrd-udev $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
 %endif
 
-$RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap usb \
+$RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap --no-driver-agent usb \
     %{SOURCE10} %{SOURCE11} %{SOURCE12} > $RPM_BUILD_ROOT/etc/udev/rules.d/70-hotplug_map.rules
 
 
