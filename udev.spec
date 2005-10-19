@@ -30,7 +30,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	070
-Release:	5.4
+Release:	5.5
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -49,6 +49,7 @@ Source4:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
 # http://lwn.net/Articles/123932/
 Source5:	%{name}_import_usermap
 Source6:	%{name}-modprobe.rules
+Source7:	%{name}-digicam
 # hotplug usb maps
 Source10:	%{name}-usb.digicam
 Source11:	%{name}-usb.distmap
@@ -74,7 +75,6 @@ BuildRequires:	sed >= 4.0
 Requires:	coreutils
 Provides:	dev = 3.0.0
 Obsoletes:	hotplug
-Obsoletes:	hotplug-digicam
 Obsoletes:	hotplug-input
 Obsoletes:	hotplug-net
 Obsoletes:	hotplug-pci
@@ -91,6 +91,23 @@ A userspace implementation of devfs for 2.5 and higher kernels.
 %description -l pl
 Implementacja devfs w przestrzeni u¿ytkownika dla j±der 2.5 i
 wy¿szych.
+
+%package digicam
+Summary:        udev agent for USB digital cameras
+Summary(pl):    Agent udev dla aparatów cyfrowych na USB
+Group:          Applications/System
+Obsoletes:	hotplug-digicam
+Requires(pre):  /usr/bin/getgid
+Requires(pre):  /usr/sbin/groupadd
+Requires(postun):       /usr/sbin/groupdel
+Requires:       %{name} = %{version}-%{release}
+Provides:       group(digicam)
+                                                                                                         
+%description digicam
+udev agent for USB digital cameras.
+
+%description digicam -l pl
+Agent udev dla aparatów cyfrowych na USB.
 
 %package initrd
 Summary:	A userspace implementation of devfs - static binary for initrd
@@ -156,7 +173,7 @@ cp -a udev initrd-udev
 rm -rf $RPM_BUILD_ROOT
 
 %if %{with main}
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{rules.d,scripts}
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{agents.d/usb,rules.d,scripts}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -173,6 +190,7 @@ install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.conf
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sbindir}/start_udev
 install %{SOURCE5} $RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap
 install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/999-modprobe.rules
+install %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/udev/agents.d/usb/digicam
 
 install %{SOURCE20} $RPM_BUILD_ROOT%{_sbindir}/udev_ieee1394_helper
 install %{SOURCE21} $RPM_BUILD_ROOT%{_sbindir}/udev_input_helper
@@ -194,13 +212,21 @@ install -m755 initrd-udev $RPM_BUILD_ROOT%{_sbindir}/initrd-udev
 ln -s initrd-udev $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
 %endif
 
-$RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap --no-driver-agent usb \
+$RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap usb \
     %{SOURCE10} %{SOURCE11} %{SOURCE12} > $RPM_BUILD_ROOT/etc/udev/rules.d/70-hotplug_map.rules
 
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%pre digicam                                                                                             
+%groupadd -P %{name}-digicam -g 135 digicam
+
+%postun digicam
+if [ "$1" = "0" ]; then
+    %groupremove digicam
+fi
+	    
 %triggerpostun -- dev
 if [ "$2" = 0 ]; then
 	# need to kill and restart udevd as after obsoleting dev package the
@@ -225,6 +251,8 @@ fi
 %attr(755,root,root) %{_prefix}/sbin/*
 
 %attr(755,root,root) %dir %{_sysconfdir}/udev
+%attr(755,root,root) %dir %{_sysconfdir}/udev/agents.d
+%attr(755,root,root) %dir %{_sysconfdir}/udev/agents.d/usb
 %attr(755,root,root) %dir %{_sysconfdir}/udev/rules.d
 %attr(755,root,root) %dir %{_sysconfdir}/udev/scripts
 
@@ -248,3 +276,7 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/*initrd*
 %endif
+
+%files digicam
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_sysconfdir}/udev/agents.d/usb/digicam
