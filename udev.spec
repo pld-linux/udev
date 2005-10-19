@@ -40,7 +40,7 @@ Source1:	%{name}.rules
 Source2:	%{name}.conf
 Source3:	start_udev
 Source4:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
-# Source6-md5:	7b2b881a8531fd84da7cae9152dc4e39
+# Source4-md5:	7b2b881a8531fd84da7cae9152dc4e39
 # from Mandriva CVS:
 # http://cvs.mandriva.com/cgi-bin/cvsweb.cgi/SPECS/udev/
 # Needed for the automatic module loading w/o hotplug to work
