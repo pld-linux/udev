@@ -30,7 +30,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	070
-Release:	5.1
+Release:	5.2
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -41,6 +41,14 @@ Source2:	%{name}-firmware.rules
 Source3:	%{name}.conf
 Source4:	start_udev
 Source6:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
+# from Mandriva CVS:
+# http://cvs.mandriva.com/cgi-bin/cvsweb.cgi/SPECS/udev/udev_import_usermap?rev=1.5
+Source7:	udev_import_usermap
+# Needed for the automatic module loading w/o hotplug to work
+# see:
+# http://qa.mandrivalinux.com/twiki/bin/view/Main/Udev
+# http://lwn.net/Articles/123932/
+Source8:	%{name}-modprobe.rules
 # Source6-md5:	7b2b881a8531fd84da7cae9152dc4e39
 Patch0:		udev-synthesize-02.patch
 Patch1:		udev-synthesize-md
@@ -153,9 +161,11 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 rm -f $RPM_BUILD_ROOT%{_sbindir}/udev_run_*
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev.rules
+install %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/999-modprobe.rules
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/999-firmware.rules
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.conf
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/start_udev
+install %{SOURCE7} $RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap
 install extras/path_id $RPM_BUILD_ROOT%{_sbindir}
 install extras/dvb.sh $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts
 install extras/raid-devfs.sh $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts
@@ -216,6 +226,7 @@ fi
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/udev.conf
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/rules.d/50-udev.rules
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/rules.d/999-firmware.rules
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/udev/rules.d/999-modprobe.rules
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/scsi_id.config
 
 %attr(755,root,root) %{_sysconfdir}/udev/scripts/*
