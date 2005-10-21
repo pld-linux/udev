@@ -29,13 +29,13 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	070
-Release:	6
+Version:	071
+Release:	0.1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	e990dcdc3a245f00373cd51a9e09b27f
+# Source0-md5:	6325fda7a6f29ef9fce3bcf73db3ad89
 Source1:	%{name}.rules
 Source2:	%{name}.conf
 Source3:	start_udev
@@ -50,6 +50,7 @@ Source4:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
 Source5:	%{name}_import_usermap
 Source6:	%{name}-modprobe.rules
 Source7:	%{name}-digicam
+Source8:	%{name}-persistent.rules
 # hotplug usb maps
 Source10:	%{name}-usb.digicam
 Source11:	%{name}-usb.distmap
@@ -185,12 +186,13 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.permissions
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 rm -f $RPM_BUILD_ROOT%{_sbindir}/udev_run_*
 
-install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev.rules
+install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/udev.rules
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.conf
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sbindir}/start_udev
 install %{SOURCE5} $RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap
-install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/999-modprobe.rules
+install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/modprobe.rules
 install %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/udev/agents.d/usb/digicam
+install %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/persistent.rules
 
 install %{SOURCE20} $RPM_BUILD_ROOT%{_sbindir}/udev_ieee1394_helper
 install %{SOURCE21} $RPM_BUILD_ROOT%{_sbindir}/udev_input_helper
@@ -213,7 +215,7 @@ ln -s initrd-udev $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
 %endif
 
 $RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap usb \
-    %{SOURCE10} %{SOURCE11} %{SOURCE12} > $RPM_BUILD_ROOT/etc/udev/rules.d/70-hotplug_map.rules
+    %{SOURCE10} %{SOURCE11} %{SOURCE12} > $RPM_BUILD_ROOT/etc/udev/rules.d/hotplug_map.rules
 
 
 %clean
@@ -257,10 +259,11 @@ fi
 %attr(755,root,root) %dir %{_sysconfdir}/udev/scripts
 
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/scsi_id.config
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/50-udev.rules
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/999-modprobe.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/udev.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/modprobe.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/persistent.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/udev.conf
-%{_sysconfdir}/udev/rules.d/70-hotplug_map.rules
+%{_sysconfdir}/udev/rules.d/hotplug_map.rules
 
 %attr(755,root,root) %{_sysconfdir}/udev/scripts/*
 
