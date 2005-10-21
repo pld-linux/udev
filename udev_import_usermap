@@ -66,7 +66,7 @@ sub parse_usermap_line {
     while (my ($key, $flag) = each(%flags)) {
 	hex($match{match_flags}) & $flag and push @rule, qq(SYSFS{$key}=="$match{$key}");
     }
-    push @rule, qq(RUN+="/sbin/modprobe $match{module}") unless $no_modprobe;
+    push @rule, qq(RUN+="/sbin/modprobe -q $match{module}") unless $no_modprobe;
     push @rule, qq(RUN+="$agents_dir/$subsystem/$match{module}") unless $no_driver_agent;
     print join(', ', @rule) . "\n";
 }
