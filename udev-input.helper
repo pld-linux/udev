@@ -167,12 +167,12 @@ input_map_modules ()
 	relBits="$9"
 
 	shift 9
-	absBits="{$1}"
-	cbsBits="{$2}"
-	ledBits="{$3}"
-	sndBits="{$4}"
-	ffBits="{$5}"
-	driverInfo=$(({$6}))
+	absBits="$1"
+	cbsBits="$2"
+	ledBits="$3"
+	sndBits="$4"
+	ffBits="$5"
+	driverInfo=$(($6))
 
 	: checkmatch $module
 
