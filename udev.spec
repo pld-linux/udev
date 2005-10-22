@@ -30,7 +30,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	071
-Release:	0.9
+Release:	0.91
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -205,6 +205,7 @@ install extras/raid-devfs.sh $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts
 
 install uevent_listen $RPM_BUILD_ROOT%{_sbindir}
 install udevsynthesize $RPM_BUILD_ROOT%{_sbindir}
+install udeveventrecorder $RPM_BUILD_ROOT%{_sbindir}
 
 %endif
 
