@@ -30,7 +30,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	071
-Release:	0.1
+Release:	0.9
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -217,6 +217,7 @@ ln -s initrd-udev $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
 $RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap usb \
     %{SOURCE10} %{SOURCE11} %{SOURCE12} > $RPM_BUILD_ROOT/etc/udev/rules.d/hotplug_map.rules
 
+ln -s %{_sbindir}/udevsend $RPM_BUILD_ROOT%{_sbindir}/hotplug
 
 %clean
 rm -rf $RPM_BUILD_ROOT
