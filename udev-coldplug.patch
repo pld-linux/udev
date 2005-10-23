@@ -1,0 +1,107 @@
+--- udev-068/udevstart.c.coldplug	2005-08-18 19:04:49.000000000 +0200
++++ udev-068/udevstart.c	2005-09-19 21:32:47.000000000 +0200
+@@ -141,11 +141,20 @@
+ 
+ 	udev_init_device(&udev, devpath, subsystem, "add");
+ 	udev.devt = get_devt(class_dev);
+-	if (!udev.devt && udev.type != DEV_NET) {
+-		dbg("sysfs_open_class_device_path failed");
++	if (udev.devt || udev.type == DEV_NET) {
++		udev_rules_get_name(&rules, &udev, class_dev);
++	} else if (udev.type == DEV_DEVICE) {
++		struct sysfs_device *sysfs_dev;
++		sysfs_dev = sysfs_open_device_path(path);
++		if (sysfs_dev == NULL) {
++			dbg("sysfs_open_device_path failed");
++			return -1;
++		}
++		udev_rules_get_run(&rules, &udev, NULL, sysfs_dev);
++	} else {
++		dbg("get_devt failed");
+ 		return -1;
+ 	}
+-	udev_rules_get_name(&rules, &udev, class_dev);
+ 	if (udev.ignore_device) {
+ 		dbg("device event will be ignored");
+ 		goto exit;
+@@ -220,12 +229,12 @@
+ 	}
+ }
+ 
+-static int has_devt(const char *path)
++static int has_sysfs_key(const char *path, const char *key)
+ {
+ 	char filename[PATH_SIZE];
+ 	struct stat statbuf;
+ 
+-	snprintf(filename, sizeof(filename), "%s/dev", path);
++	snprintf(filename, sizeof(filename), "%s/%s", path, key);
+ 	filename[sizeof(filename)-1] = '\0';
+ 
+ 	if (stat(filename, &statbuf) == 0)
+@@ -234,6 +243,11 @@
+ 	return 0;
+ }
+ 
++static int has_devt(const char *path)
++{
++	return has_sysfs_key(path, "dev");
++}
++
+ static void udev_scan_block(struct list_head *device_list)
+ {
+ 	char base[PATH_SIZE];
+@@ -325,6 +339,43 @@
+ 	}
+ }
+ 
++static void udev_scan_bus(struct list_head *device_list, char *bus, const char *sysfs_key)
++{
++	char base[PATH_SIZE];
++	DIR *dir;
++	struct dirent *dent;
++
++	snprintf(base, sizeof(base), "%s/bus/%s/devices", sysfs_path, bus);
++	base[sizeof(base)-1] = '\0';
++
++	dir = opendir(base);
++	if (dir != NULL) {
++		for (dent = readdir(dir); dent != NULL; dent = readdir(dir)) {
++			char linkname[PATH_SIZE];
++			char dirname_short[PATH_SIZE];
++			char *dirname = NULL;
++
++			if (dent->d_name[0] == '.')
++				continue;
++
++			snprintf(linkname, sizeof(linkname), "%s/%s", base, dent->d_name);
++			linkname[sizeof(linkname)-1] = '\0';
++
++			if (has_sysfs_key(linkname, sysfs_key)) {
++				int ret = readlink(linkname, dirname_short, PATH_SIZE);
++				if (ret > 8) {
++					dirname_short[ret] = '\0';
++					/* replace ../../.. with /sys */
++					dirname = dirname_short + 4;
++					memcpy(dirname, "/sys", 4);
++					device_list_insert(dirname, bus, device_list);
++				}
++			}
++		}
++		closedir(dir);
++	}
++}
++
+ static void asmlinkage sig_handler(int signum)
+ {
+ 	switch (signum) {
+@@ -368,6 +419,9 @@
+ 
+ 	udev_scan_class(&device_list);
+ 	udev_scan_block(&device_list);
++ 	udev_scan_bus(&device_list, "pci", "modalias");
++ 	udev_scan_bus(&device_list, "scsi", "type");
++	udev_scan_bus(&device_list, "usb", "modalias");
+ 	exec_list(&device_list);
+ 
+ 	udev_rules_close(&rules);
