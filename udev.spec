@@ -30,7 +30,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	071
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -60,9 +60,10 @@ Source20:	%{name}-ieee1394.helper
 Source21:	%{name}-input.helper
 Source22:	%{name}-net.helper
 Source23:	%{name}-input-coldplug
-Patch0:		udev-synthesize-02.patch
-Patch1:		udev-synthesize-md
-Patch2:		udev-synthesize-preserve_env
+Patch0:		%{name}-synthesize-02.patch
+Patch1:		%{name}-synthesize-md
+Patch2:		%{name}-synthesize-preserve_env
+Patch3:		%{name}-coldplug.patch
 BuildRequires:	device-mapper-devel
 BuildRequires:	libselinux-devel >= 1.17.13
 BuildRequires:	sed >= 4.0
@@ -128,6 +129,7 @@ initrd.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %if %{with initrd}
