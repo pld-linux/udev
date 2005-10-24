@@ -85,7 +85,7 @@ Obsoletes:	udev-dev
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
-%define		extras		extras/ata_id extras/cdrom_id extras/dasd_id extras/floppy extras/firmware extras/run_directory extras/scsi_id extras/usb_id extras/volume_id
+%define		extras		extras/ata_id extras/cdrom_id extras/dasd_id extras/floppy extras/firmware extras/run_directory extras/scsi_id extras/usb_id extras/volume_id extras/edd_id
 
 %description
 A userspace implementation of devfs for 2.5 and higher kernels.
