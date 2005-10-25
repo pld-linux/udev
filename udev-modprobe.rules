@@ -70,6 +70,3 @@ ACTION=="remove", SUBSYSTEM=="ieee1394", \
 
 ACTION=="add", SUBSYSTEM=="firmware", \
 	RUN+="/sbin/firmware_helper"
-
-# stopping the udev/modprobe from loading the fb drivers.
-install pci:v*d*sv*sd*bc03sc*i* /bin/true
