@@ -1,8 +1,10 @@
+#!/bin/sh
+#
 TRIES=5
 
 while [ ! -f "$DEVICE" -a $TRIES -gt 0 ]; do
 	TRIES=$(($TRIES - 1))
-	logger -t hotplug-digicam "Trying to connect $DEVICE: $TRIES, sleeping"
+	logger -t udev-digicam "Trying to connect $DEVICE: $TRIES, sleeping"
 	usleep 100000
 done
 
