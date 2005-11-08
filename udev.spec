@@ -85,7 +85,7 @@ Obsoletes:	udev-dev
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
-%define		extras		extras/ata_id extras/cdrom_id extras/dasd_id extras/floppy extras/firmware extras/run_directory extras/scsi_id extras/usb_id extras/volume_id extras/edd_id
+%define		extras		extras/ata_id extras/cdrom_id extras/dasd_id extras/edd_id extras/floppy extras/firmware extras/scsi_id extras/usb_id extras/volume_id
 
 %description
 A userspace implementation of devfs for 2.5 and higher kernels.
@@ -186,7 +186,6 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{agents.d/usb,rules.d,scripts}
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.rules
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.permissions
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
-rm -f $RPM_BUILD_ROOT%{_sbindir}/udev_run_*
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/udev.rules
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.conf
@@ -245,7 +244,7 @@ fi
 %if %{with main}
 %files
 %defattr(644,root,root,755)
-%doc ChangeLog FAQ HOWTO-udev_for_dev README TODO
+%doc ChangeLog FAQ HOWTO-udev_for_dev README RELEASE-NOTES TODO
 %doc docs/{overview,udev_vs_devfs}
 %doc libsysfs/libsysfs.txt
 %doc extras/start_udev
