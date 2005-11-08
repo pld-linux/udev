@@ -29,13 +29,13 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	071
-Release:	5
+Version:	074
+Release:	0.1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	6325fda7a6f29ef9fce3bcf73db3ad89
+# Source0-md5:	2a027db09e7955fcd0b387c6bd9e9192
 Source1:	%{name}.rules
 Source2:	%{name}.conf
 Source3:	start_udev
@@ -249,10 +249,34 @@ fi
 %doc docs/{overview,udev_vs_devfs}
 %doc libsysfs/libsysfs.txt
 %doc extras/start_udev
-%attr(755,root,root) %{_sbindir}/*
-%if %{with initrd}
-%exclude %{_sbindir}/*initrd*
-%endif
+
+%attr(755,root,root) %{_sbindir}/ata_id
+%attr(755,root,root) %{_sbindir}/cdrom_id
+%attr(755,root,root) %{_sbindir}/dasd_id
+%attr(755,root,root) %{_sbindir}/edd_id
+%attr(755,root,root) %{_sbindir}/path_id
+%attr(755,root,root) %{_sbindir}/scsi_id
+%attr(755,root,root) %{_sbindir}/usb_id
+%attr(755,root,root) %{_sbindir}/vol_id
+
+%attr(755,root,root) %{_sbindir}/create_floppy_devices
+%attr(755,root,root) %{_sbindir}/firmware_helper
+%attr(755,root,root) %{_sbindir}/udev_ieee1394_helper
+%attr(755,root,root) %{_sbindir}/udev_input_coldplug
+%attr(755,root,root) %{_sbindir}/udev_input_helper
+%attr(755,root,root) %{_sbindir}/udev_net_helper
+
+%attr(755,root,root) %{_sbindir}/hotplug
+%attr(755,root,root) %{_sbindir}/start_udev
+%attr(755,root,root) %{_sbindir}/udev
+%attr(755,root,root) %{_sbindir}/udevcontrol
+%attr(755,root,root) %{_sbindir}/udevd
+%attr(755,root,root) %{_sbindir}/udeveventrecorder
+%attr(755,root,root) %{_sbindir}/udevsend
+%attr(755,root,root) %{_sbindir}/udevstart
+%attr(755,root,root) %{_sbindir}/udevsynthesize
+%attr(755,root,root) %{_sbindir}/uevent_listen
+ 
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_prefix}/sbin/*
 
@@ -281,7 +305,8 @@ fi
 %if %{with initrd}
 %files initrd
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_sbindir}/*initrd*
+%attr(755,root,root) %{_sbindir}/initrd-udev
+%attr(755,root,root) %{_sbindir}/udevstart.initrd
 %endif
 
 %files digicam
