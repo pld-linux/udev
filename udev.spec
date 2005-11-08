@@ -76,10 +76,10 @@ BuildRequires:	sed >= 4.0
 %endif
 Requires:	coreutils
 Provides:	dev = 3.0.0
-Obsoletes:	hotplug
-Obsoletes:	hotplug-input
-Obsoletes:	hotplug-net
-Obsoletes:	hotplug-pci
+# Obsoletes:	hotplug
+# Obsoletes:	hotplug-input
+# Obsoletes:	hotplug-net
+# Obsoletes:	hotplug-pci
 # Obsoletes:	dev
 Obsoletes:	udev-dev
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
