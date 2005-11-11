@@ -29,13 +29,13 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	074
+Version:	075
 Release:	0.1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	2a027db09e7955fcd0b387c6bd9e9192
+# Source0-md5:	024ce408f74b05ff6b52b4ff250359da
 Source1:	%{name}.rules
 Source2:	%{name}.conf
 Source3:	start_udev
@@ -203,10 +203,9 @@ install %{SOURCE23} $RPM_BUILD_ROOT%{_sbindir}/udev_input_coldplug
 install extras/path_id $RPM_BUILD_ROOT%{_sbindir}
 install extras/dvb.sh $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts
 install extras/raid-devfs.sh $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts
-
+install extras/eventrecorder.sh $RPM_BUILD_ROOT%{_sbindir}
 install uevent_listen $RPM_BUILD_ROOT%{_sbindir}
 install udevsynthesize $RPM_BUILD_ROOT%{_sbindir}
-install udeveventrecorder $RPM_BUILD_ROOT%{_sbindir}
 
 %endif
 
@@ -244,7 +243,7 @@ fi
 %if %{with main}
 %files
 %defattr(644,root,root,755)
-%doc ChangeLog FAQ HOWTO-udev_for_dev README RELEASE-NOTES TODO
+%doc ChangeLog FAQ README RELEASE-NOTES TODO
 %doc docs/{overview,udev_vs_devfs}
 %doc libsysfs/libsysfs.txt
 %doc extras/start_udev
@@ -270,12 +269,13 @@ fi
 %attr(755,root,root) %{_sbindir}/udev
 %attr(755,root,root) %{_sbindir}/udevcontrol
 %attr(755,root,root) %{_sbindir}/udevd
-%attr(755,root,root) %{_sbindir}/udeveventrecorder
 %attr(755,root,root) %{_sbindir}/udevsend
 %attr(755,root,root) %{_sbindir}/udevstart
 %attr(755,root,root) %{_sbindir}/udevsynthesize
 %attr(755,root,root) %{_sbindir}/uevent_listen
  
+%attr(755,root,root) %{_sbindir}/eventrecorder.sh
+
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_prefix}/sbin/*
 
