@@ -279,12 +279,12 @@ fi
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_prefix}/sbin/*
 
-%attr(755,root,root) %dir %{_sysconfdir}/udev
-%attr(755,root,root) %dir %{_sysconfdir}/udev/agents.d
-%attr(755,root,root) %dir %{_sysconfdir}/udev/agents.d/usb
-%attr(755,root,root) %dir %{_sysconfdir}/udev/devices
-%attr(755,root,root) %dir %{_sysconfdir}/udev/rules.d
-%attr(755,root,root) %dir %{_sysconfdir}/udev/scripts
+%dir %{_sysconfdir}/udev
+%dir %{_sysconfdir}/udev/agents.d
+%dir %{_sysconfdir}/udev/agents.d/usb
+%dir %{_sysconfdir}/udev/devices
+%dir %{_sysconfdir}/udev/rules.d
+%dir %{_sysconfdir}/udev/scripts
 
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/scsi_id.config
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/udev.rules
