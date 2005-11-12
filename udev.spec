@@ -176,7 +176,7 @@ cp -a udev initrd-udev
 rm -rf $RPM_BUILD_ROOT
 
 %if %{with main}
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{agents.d/usb,rules.d,scripts}
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{agents.d/usb,rules.d,scripts,devices}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -282,6 +282,7 @@ fi
 %attr(755,root,root) %dir %{_sysconfdir}/udev
 %attr(755,root,root) %dir %{_sysconfdir}/udev/agents.d
 %attr(755,root,root) %dir %{_sysconfdir}/udev/agents.d/usb
+%attr(755,root,root) %dir %{_sysconfdir}/udev/devices
 %attr(755,root,root) %dir %{_sysconfdir}/udev/rules.d
 %attr(755,root,root) %dir %{_sysconfdir}/udev/scripts
 
