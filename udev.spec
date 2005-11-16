@@ -30,7 +30,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	075
-Release:	0.1
+Release:	1
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -51,6 +51,7 @@ Source5:	%{name}_import_usermap
 Source6:	%{name}-modprobe.rules
 Source7:	%{name}-digicam
 Source8:	%{name}-persistent.rules
+Source9:	%{name}-hotplug_map.rules
 # hotplug usb maps
 Source10:	%{name}-usb.digicam
 Source11:	%{name}-usb.distmap
@@ -194,6 +195,7 @@ install %{SOURCE5} $RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap
 install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/modprobe.rules
 install %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/udev/agents.d/usb/digicam
 install %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/persistent.rules
+install %{SOURCE9} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/hotplug_map.rules
 
 install %{SOURCE20} $RPM_BUILD_ROOT%{_sbindir}/udev_ieee1394_helper
 install %{SOURCE21} $RPM_BUILD_ROOT%{_sbindir}/udev_input_helper
@@ -214,11 +216,6 @@ install -d $RPM_BUILD_ROOT%{_sbindir}
 install -m755 initrd-udev $RPM_BUILD_ROOT%{_sbindir}/initrd-udev
 ln -s initrd-udev $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
 %endif
-
-$RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap usb \
-    %{SOURCE10} %{SOURCE11} %{SOURCE12} > $RPM_BUILD_ROOT/etc/udev/rules.d/hotplug_map.rules
-
-ln -s %{_sbindir}/udevsend $RPM_BUILD_ROOT%{_sbindir}/hotplug
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -264,7 +261,6 @@ fi
 %attr(755,root,root) %{_sbindir}/udev_input_helper
 %attr(755,root,root) %{_sbindir}/udev_net_helper
 
-%attr(755,root,root) %{_sbindir}/hotplug
 %attr(755,root,root) %{_sbindir}/start_udev
 %attr(755,root,root) %{_sbindir}/udev
 %attr(755,root,root) %{_sbindir}/udevcontrol
