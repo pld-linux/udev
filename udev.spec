@@ -241,7 +241,7 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc ChangeLog FAQ README RELEASE-NOTES TODO
-%doc docs/{overview,udev_vs_devfs}
+%doc docs/{overview,udev_vs_devfs,writing_udev_rules}
 %doc libsysfs/libsysfs.txt
 %doc extras/start_udev
 
