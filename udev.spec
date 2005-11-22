@@ -30,7 +30,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	075
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -75,6 +75,7 @@ BuildRequires:	sed >= 4.0
 %{?with_klibc:BuildRequires:	klibc-static}
 %{?with_klibc:BuildRequires:	linux-libc-headers}
 %endif
+Requires:	MAKEDEV
 Requires:	coreutils
 Provides:	dev = 3.0.0
 # Obsoletes:	hotplug
