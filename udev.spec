@@ -29,13 +29,13 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	075
-Release:	2
+Version:	076
+Release:	0.1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	024ce408f74b05ff6b52b4ff250359da
+# Source0-md5:	9054b6e8e2b20a8e73e9a7bc7f4d67d0
 Source1:	%{name}.rules
 Source2:	%{name}.conf
 Source3:	start_udev
@@ -178,7 +178,8 @@ cp -a udev initrd-udev
 rm -rf $RPM_BUILD_ROOT
 
 %if %{with main}
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{agents.d/usb,rules.d,scripts,devices}
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{agents.d/usb,rules.d} \
+	$RPM_BUILD_ROOT/lib/udev/devices
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -198,15 +199,18 @@ install %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/udev/agents.d/usb/digicam
 install %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/persistent.rules
 install %{SOURCE9} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/hotplug_map.rules
 
-install %{SOURCE20} $RPM_BUILD_ROOT%{_sbindir}/udev_ieee1394_helper
-install %{SOURCE21} $RPM_BUILD_ROOT%{_sbindir}/udev_input_helper
-install %{SOURCE22} $RPM_BUILD_ROOT%{_sbindir}/udev_net_helper
-install %{SOURCE23} $RPM_BUILD_ROOT%{_sbindir}/udev_input_coldplug
+# Default location for rule sripts and helper programs is now: /lib/udev/
+# Everything that is not useful on the commandline should go into this
+# directory.
+install %{SOURCE20} $RPM_BUILD_ROOT/lib/udev/udev_ieee1394_helper
+install %{SOURCE21} $RPM_BUILD_ROOT/lib/udev/udev_input_helper
+install %{SOURCE22} $RPM_BUILD_ROOT/lib/udev/udev_net_helper
+install %{SOURCE23} $RPM_BUILD_ROOT/lib/udev/udev_input_coldplug
+install extras/dvb.sh $RPM_BUILD_ROOT/lib/udev
+install extras/eventrecorder.sh $RPM_BUILD_ROOT/lib/udev
+install extras/raid-devfs.sh $RPM_BUILD_ROOT/lib/udev
 
 install extras/path_id $RPM_BUILD_ROOT%{_sbindir}
-install extras/dvb.sh $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts
-install extras/raid-devfs.sh $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts
-install extras/eventrecorder.sh $RPM_BUILD_ROOT%{_sbindir}
 install uevent_listen $RPM_BUILD_ROOT%{_sbindir}
 install udevsynthesize $RPM_BUILD_ROOT%{_sbindir}
 
@@ -246,6 +250,24 @@ fi
 %doc libsysfs/libsysfs.txt
 %doc extras/start_udev
 
+%dir /lib/udev
+
+# /lib/udev/devices is recommended as a directory where packages or                                                  
+# the user can place real device nodes, which get copied over to /dev at                                                  
+# every boot. This should replace the various solutions with custom config                                                
+# files.    
+%dir /lib/udev/devices
+
+%attr(755,root,root) /lib/udev/create_floppy_devices
+%attr(755,root,root) /lib/udev/dvb.sh
+%attr(755,root,root) /lib/udev/eventrecorder.sh
+%attr(755,root,root) /lib/udev/firmware_helper
+%attr(755,root,root) /lib/udev/raid-devfs.sh
+%attr(755,root,root) /lib/udev/udev_ieee1394_helper
+%attr(755,root,root) /lib/udev/udev_input_coldplug
+%attr(755,root,root) /lib/udev/udev_input_helper
+%attr(755,root,root) /lib/udev/udev_net_helper
+
 %attr(755,root,root) %{_sbindir}/ata_id
 %attr(755,root,root) %{_sbindir}/cdrom_id
 %attr(755,root,root) %{_sbindir}/dasd_id
@@ -254,13 +276,6 @@ fi
 %attr(755,root,root) %{_sbindir}/scsi_id
 %attr(755,root,root) %{_sbindir}/usb_id
 %attr(755,root,root) %{_sbindir}/vol_id
-
-%attr(755,root,root) %{_sbindir}/create_floppy_devices
-%attr(755,root,root) %{_sbindir}/firmware_helper
-%attr(755,root,root) %{_sbindir}/udev_ieee1394_helper
-%attr(755,root,root) %{_sbindir}/udev_input_coldplug
-%attr(755,root,root) %{_sbindir}/udev_input_helper
-%attr(755,root,root) %{_sbindir}/udev_net_helper
 
 %attr(755,root,root) %{_sbindir}/start_udev
 %attr(755,root,root) %{_sbindir}/udev
@@ -271,17 +286,13 @@ fi
 %attr(755,root,root) %{_sbindir}/udevsynthesize
 %attr(755,root,root) %{_sbindir}/uevent_listen
  
-%attr(755,root,root) %{_sbindir}/eventrecorder.sh
-
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_prefix}/sbin/*
 
 %dir %{_sysconfdir}/udev
 %dir %{_sysconfdir}/udev/agents.d
 %dir %{_sysconfdir}/udev/agents.d/usb
-%dir %{_sysconfdir}/udev/devices
 %dir %{_sysconfdir}/udev/rules.d
-%dir %{_sysconfdir}/udev/scripts
 
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/scsi_id.config
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/udev.rules
@@ -289,8 +300,6 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/persistent.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/udev.conf
 %{_sysconfdir}/udev/rules.d/hotplug_map.rules
-
-%attr(755,root,root) %{_sysconfdir}/udev/scripts/*
 
 %{_mandir}/man8/*
 
