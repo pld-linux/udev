@@ -28,7 +28,6 @@ ACTION=="add", SUBSYSTEM=="pcmcia", MODALIAS=="*", \
         RUN+="/bin/sh -c 'echo 1 > /sys/$DEVPATH/allow_func_id_match'"
 ACTION=="add", SUBSYSTEM=="ieee1394", MODALIAS=="*", \
         RUN+="/sbin/modprobe $modalias"
-
 ACTION=="add", SUBSYSTEM=="ieee1394", MODALIAS=="*", \
 	RUN+="/sbin/modprobe $modalias"
 
@@ -60,19 +59,19 @@ ACTION=="add", SUBSYSTEM=="scsi", SYSFS{type}=="[23689]", \
 
 # helpers	      
 ACTION=="add", SUBSYSTEM=="net", ENV{INTERFACE}=="*", \
-	RUN+="/sbin/udev_net_helper"
+	RUN+="/lib/udev/udev_net_helper"
 	
 ACTION=="remove", SUBSYSTEM=="net", ENV{INTERFACE}=="*", \
-	RUN+="/sbin/udev_net_helper"
+	RUN+="/lib/udev/udev_net_helper"
 
 ACTION=="add", SUBSYSTEM=="input", \
-	RUN+="/sbin/udev_input_helper"
+	RUN+="/lib/udev/udev_input_helper"
 
 ACTION=="add", SUBSYSTEM=="ieee1394", \
-	RUN+="/sbin/udev_ieee1394_helper"
+	RUN+="/lib/udev/udev_ieee1394_helper"
 	
 ACTION=="remove", SUBSYSTEM=="ieee1394", \
-	RUN+="/sbin/udev_ieee1394_helper"
+	RUN+="/lib/udev/udev_ieee1394_helper"
 
 ACTION=="add", SUBSYSTEM=="firmware", \
-	RUN+="/sbin/firmware_helper"
+	RUN+="/lib/udev/firmware_helper"
