@@ -65,6 +65,7 @@ Patch0:		%{name}-synthesize-02.patch
 Patch1:		%{name}-synthesize-md
 Patch2:		%{name}-synthesize-preserve_env
 Patch3:		%{name}-coldplug.patch
+URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 BuildRequires:	device-mapper-devel
 BuildRequires:	libselinux-devel >= 1.17.13
 BuildRequires:	sed >= 4.0
