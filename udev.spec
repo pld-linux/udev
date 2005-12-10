@@ -29,13 +29,13 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	076
+Version:	077
 Release:	0.1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	9054b6e8e2b20a8e73e9a7bc7f4d67d0
+# Source0-md5:	61ec646daf7795e9777e8f33975408fe
 Source1:	%{name}.rules
 Source2:	%{name}.conf
 Source3:	start_udev
@@ -50,8 +50,7 @@ Source4:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
 Source5:	%{name}_import_usermap
 Source6:	%{name}-modprobe.rules
 Source7:	%{name}-digicam
-Source8:	%{name}-persistent.rules
-Source9:	%{name}-hotplug_map.rules
+Source8:	%{name}-hotplug_map.rules
 # hotplug usb maps
 Source10:	%{name}-usb.digicam
 Source11:	%{name}-usb.distmap
@@ -192,13 +191,12 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.permissions
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/udev.rules
-install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.conf
+install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sbindir}/start_udev
 install %{SOURCE5} $RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap
 install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/modprobe.rules
 install %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/udev/agents.d/usb/digicam
-install %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/persistent.rules
-install %{SOURCE9} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/hotplug_map.rules
+install %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/hotplug_map.rules
 
 # Default location for rule sripts and helper programs is now: /lib/udev/
 # Everything that is not useful on the commandline should go into this
@@ -207,13 +205,16 @@ install %{SOURCE20} $RPM_BUILD_ROOT/lib/udev/udev_ieee1394_helper
 install %{SOURCE21} $RPM_BUILD_ROOT/lib/udev/udev_input_helper
 install %{SOURCE22} $RPM_BUILD_ROOT/lib/udev/udev_net_helper
 install %{SOURCE23} $RPM_BUILD_ROOT/lib/udev/udev_input_coldplug
-install extras/dvb.sh $RPM_BUILD_ROOT/lib/udev
 install extras/eventrecorder.sh $RPM_BUILD_ROOT/lib/udev
+install extras/ide-devfs.sh $RPM_BUILD_ROOT/lib/udev
 install extras/raid-devfs.sh $RPM_BUILD_ROOT/lib/udev
+install extras/scsi-devfs.sh $RPM_BUILD_ROOT/lib/udev
 
 install extras/path_id $RPM_BUILD_ROOT%{_sbindir}
 install uevent_listen $RPM_BUILD_ROOT%{_sbindir}
 install udevsynthesize $RPM_BUILD_ROOT%{_sbindir}
+
+install etc/udev/persistent.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
 
 %endif
 
@@ -249,7 +250,6 @@ fi
 %doc ChangeLog FAQ README RELEASE-NOTES TODO
 %doc docs/{overview,udev_vs_devfs,writing_udev_rules}
 %doc libsysfs/libsysfs.txt
-%doc extras/start_udev
 
 %dir /lib/udev
 
@@ -260,10 +260,13 @@ fi
 %dir /lib/udev/devices
 
 %attr(755,root,root) /lib/udev/create_floppy_devices
-%attr(755,root,root) /lib/udev/dvb.sh
 %attr(755,root,root) /lib/udev/eventrecorder.sh
 %attr(755,root,root) /lib/udev/firmware_helper
+
+%attr(755,root,root) /lib/udev/ide-devfs.sh
 %attr(755,root,root) /lib/udev/raid-devfs.sh
+%attr(755,root,root) /lib/udev/scsi-devfs.sh
+
 %attr(755,root,root) /lib/udev/udev_ieee1394_helper
 %attr(755,root,root) /lib/udev/udev_input_coldplug
 %attr(755,root,root) /lib/udev/udev_input_helper
