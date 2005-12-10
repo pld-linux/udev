@@ -92,7 +92,7 @@ input_boot_events ()
 		debug_mesg "LED=$LED"
 		debug_mesg "SND=$SND"
 		debug_mesg "FF=$FF"
-		/sbin/udev_input_helper < /dev/null
+		/lib/udev/udev_input_helper < /dev/null
 		input_reset_state
 	    ;;
 	esac
