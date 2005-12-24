@@ -28,8 +28,6 @@ ACTION=="add", SUBSYSTEM=="pcmcia", MODALIAS=="*", \
         RUN+="/bin/sh -c 'echo 1 > /sys/$DEVPATH/allow_func_id_match'"
 ACTION=="add", SUBSYSTEM=="ieee1394", MODALIAS=="*", \
         RUN+="/sbin/modprobe $modalias"
-ACTION=="add", SUBSYSTEM=="ieee1394", MODALIAS=="*", \
-	RUN+="/sbin/modprobe $modalias"
 
 # disks & magneto-optical disk:
 ACTION=="add", SUBSYSTEM=="scsi", SYSFS{type}=="[07]", \
