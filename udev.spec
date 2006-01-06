@@ -9,7 +9,7 @@
 %bcond_with	glibc	# link initrd version with static glibc
 %bcond_without	main	# don't compile main package, use for debugging initrd build
 
-%ifarch %{x8664}
+%ifarch %{x8664} sparc
 %define		with_klibc 1
 %endif
 
