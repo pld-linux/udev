@@ -1,3 +1,8 @@
+# workarounds needed to synchronize with sysfs
+ACTION=="add", DEVPATH=="/devices/*", ENV{PHYSDEVBUS}=="?*", \
+    WAIT_FOR_SYSFS="bus"
+ACTION=="add", SUBSYSTEM=="net", WAIT_FOR_SYSFS="address"
+
 # allow pci cold plug for usb controllers only
 # alias pci:v*d*sv*sd*bc0Csc03i10* ohci-hcd
 # alias pci:v*d*sv*sd*bc0Csc03i20* ehci-hcd
