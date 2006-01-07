@@ -15,10 +15,6 @@ ACTION=="add", SUBSYSTEM=="pci", ENV{UDEV_START}=="1", MODALIAS=="*", \
 ACTION=="add", SUBSYSTEM=="pci", ENV{UDEV_START}!="1", MODALIAS=="*", \
         RUN+="/sbin/modprobe $modalias"
 
-# libusb device access (mount usbfs or usbdev nodes)
-DEVPATH=="/module/usbcore", ACTION=="add", \
-	RUN+="/bin/sh -c 'sleep 1; /bin/mount -t usbfs usbfs /proc/bus/usb'"
-
 # usbhid should be loaded before usbmouse, or else some Microsoft mice
 # move vertically only
 ACTION=="add", MODALIAS="usb:v*p*d*dc*dsc*dp*ic03isc01ip02*", \
