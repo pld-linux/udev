@@ -30,7 +30,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	079
-Release:	1
+Release:	1.1
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -49,12 +49,10 @@ Source4:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
 # http://lwn.net/Articles/123932/
 Source5:	%{name}_import_usermap
 Source6:	%{name}-modprobe.rules
-Source7:	%{name}-digicam
-Source8:	%{name}-hotplug_map.rules
+Source7:	%{name}-hotplug_map.rules
 # hotplug usb maps
-Source10:	%{name}-usb.digicam
-Source11:	%{name}-usb.distmap
-Source12:	%{name}-usb.handmap
+Source10:	%{name}-usb.distmap
+Source11:	%{name}-usb.handmap
 # helpers
 Source20:	%{name}-ieee1394.helper
 Source21:	%{name}-input.helper
@@ -95,23 +93,6 @@ A userspace implementation of devfs for 2.5 and higher kernels.
 %description -l pl
 Implementacja devfs w przestrzeni u¿ytkownika dla j±der 2.5 i
 wy¿szych.
-
-%package digicam
-Summary:	udev agent for USB digital cameras
-Summary(pl):	Agent udev dla aparatów cyfrowych na USB
-Group:		Applications/System
-Requires(pre):	/usr/bin/getgid
-Requires(pre):	/usr/sbin/groupadd
-Requires(postun):	/usr/sbin/groupdel
-Requires:	%{name} = %{epoch}:%{version}-%{release}
-Provides:	group(digicam)
-Obsoletes:	hotplug-digicam
-                                                                                                         
-%description digicam
-udev agent for USB digital cameras.
-
-%description digicam -l pl
-Agent udev dla aparatów cyfrowych na USB.
 
 %package initrd
 Summary:	A userspace implementation of devfs - static binary for initrd
@@ -195,8 +176,7 @@ install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sbindir}/start_udev
 install %{SOURCE5} $RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap
 install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/modprobe.rules
-install %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/udev/agents.d/usb/digicam
-install %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/hotplug_map.rules
+install %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/hotplug_map.rules
 
 # Default location for rule sripts and helper programs is now: /lib/udev/
 # Everything that is not useful on the commandline should go into this
@@ -227,14 +207,6 @@ ln -s initrd-udev $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%pre digicam
-%groupadd -P %{name}-digicam -g 135 digicam
-
-%postun digicam
-if [ "$1" = "0" ]; then
-	%groupremove digicam
-fi
-	    
 %triggerpostun -- dev
 if [ "$2" = 0 ]; then
 	# need to kill and restart udevd as after obsoleting dev package the
@@ -318,7 +290,3 @@ fi
 %attr(755,root,root) %{_sbindir}/initrd-udev
 %attr(755,root,root) %{_sbindir}/udevstart.initrd
 %endif
-
-%files digicam
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_sysconfdir}/udev/agents.d/usb/digicam
