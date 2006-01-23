@@ -30,7 +30,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	079
-Release:	2
+Release:	3
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -50,6 +50,7 @@ Source4:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
 Source5:	%{name}_import_usermap
 Source6:	%{name}-modprobe.rules
 Source7:	%{name}-hotplug_map.rules
+Source8:	%{name}-links.conf
 # hotplug usb maps
 Source10:	%{name}-usb.distmap
 Source11:	%{name}-usb.handmap
@@ -73,7 +74,6 @@ BuildRequires:	sed >= 4.0
 %{?with_klibc:BuildRequires:	klibc-static}
 %{?with_klibc:BuildRequires:	linux-libc-headers}
 %endif
-Requires:	MAKEDEV
 Requires:	coreutils
 Provides:	dev = 3.0.0
 # Obsoletes:	hotplug
@@ -177,6 +177,7 @@ install %{SOURCE3} $RPM_BUILD_ROOT%{_sbindir}/start_udev
 install %{SOURCE5} $RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap
 install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/modprobe.rules
 install %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/hotplug_map.rules
+install %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
 
 # Default location for rule sripts and helper programs is now: /lib/udev/
 # Everything that is not useful on the commandline should go into this
@@ -271,9 +272,10 @@ fi
 %dir %{_sysconfdir}/udev/rules.d
 
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/scsi_id.config
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/udev.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/links.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/modprobe.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/persistent-disk.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/udev.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/udev.conf
 %{_sysconfdir}/udev/rules.d/hotplug_map.rules
 
