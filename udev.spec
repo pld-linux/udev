@@ -29,24 +29,18 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	079
-Release:	3
+Version:	082
+Release:	0.1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	981fc92fd2eeb4d4d13c182c447af6bf
+# Source0-md5:	b5f240bd8538946ca0586955ae34e94e
 Source1:	%{name}.rules
 Source2:	%{name}.conf
 Source3:	start_udev
 Source4:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
 # Source4-md5:	7b2b881a8531fd84da7cae9152dc4e39
-# from Mandriva CVS:
-# http://cvs.mandriva.com/cgi-bin/cvsweb.cgi/SPECS/udev/
-# Needed for the automatic module loading w/o hotplug to work
-# see:
-# http://qa.mandrivalinux.com/twiki/bin/view/Main/Udev
-# http://lwn.net/Articles/123932/
 Source5:	%{name}_import_usermap
 Source6:	%{name}-modprobe.rules
 Source7:	%{name}-hotplug_map.rules
@@ -59,10 +53,6 @@ Source20:	%{name}-ieee1394.helper
 Source21:	%{name}-input.helper
 Source22:	%{name}-net.helper
 Source23:	%{name}-input-coldplug
-Patch0:		%{name}-synthesize-02.patch
-Patch1:		%{name}-synthesize-md
-Patch2:		%{name}-synthesize-preserve_env
-Patch3:		%{name}-coldplug.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 BuildRequires:	device-mapper-devel
 BuildRequires:	libselinux-devel >= 1.17.13
@@ -109,10 +99,6 @@ initrd.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 %build
 %if %{with initrd}
@@ -193,7 +179,6 @@ install extras/scsi-devfs.sh $RPM_BUILD_ROOT/lib/udev
 
 install extras/path_id $RPM_BUILD_ROOT%{_sbindir}
 install uevent_listen $RPM_BUILD_ROOT%{_sbindir}
-install udevsynthesize $RPM_BUILD_ROOT%{_sbindir}
 
 install etc/udev/persistent-disk.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
 
@@ -222,7 +207,6 @@ fi
 %defattr(644,root,root,755)
 %doc ChangeLog FAQ README RELEASE-NOTES TODO
 %doc docs/{overview,udev_vs_devfs,writing_udev_rules}
-%doc libsysfs/libsysfs.txt
 
 %dir /lib/udev
 
@@ -255,12 +239,8 @@ fi
 %attr(755,root,root) %{_sbindir}/vol_id
 
 %attr(755,root,root) %{_sbindir}/start_udev
-%attr(755,root,root) %{_sbindir}/udev
 %attr(755,root,root) %{_sbindir}/udevcontrol
 %attr(755,root,root) %{_sbindir}/udevd
-%attr(755,root,root) %{_sbindir}/udevsend
-%attr(755,root,root) %{_sbindir}/udevstart
-%attr(755,root,root) %{_sbindir}/udevsynthesize
 %attr(755,root,root) %{_sbindir}/uevent_listen
  
 %attr(755,root,root) %{_bindir}/*
@@ -279,6 +259,7 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/udev.conf
 %{_sysconfdir}/udev/rules.d/hotplug_map.rules
 
+%{_mandir}/man7/*
 %{_mandir}/man8/*
 
 %dev(c,1,3) %attr(666,root,root) /dev/null
