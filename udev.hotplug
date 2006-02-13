@@ -1,9 +1,0 @@
-#!/bin/sh
-
-if [ -f /etc/sysconfig/udev ]; then
-        . /etc/sysconfig/udev
-fi
-
-[ "$USE_UDEV" != "yes" ] && exit 0
-
-exec /sbin/udevsend "$@"
