@@ -29,13 +29,13 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	084
+Version:	085
 Release:	0.1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	143b3691ae5e6f96995e5749894f78e4
+# Source0-md5:	14d5b6525cd97e5c602451965284e97a
 Source1:	%{name}.rules
 Source2:	%{name}.conf
 Source3:	start_udev
@@ -66,16 +66,17 @@ BuildRequires:	sed >= 4.0
 %endif
 Requires:	coreutils
 Provides:	dev = 3.0.0
-# Obsoletes:	hotplug
-# Obsoletes:	hotplug-input
-# Obsoletes:	hotplug-net
-# Obsoletes:	hotplug-pci
-# Obsoletes:	dev
+Obsoletes:	dev
+Obsoletes:	hotplug
+Obsoletes:	hotplug-input
+Obsoletes:	hotplug-net
+Obsoletes:	hotplug-pci
 Obsoletes:	udev-dev
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
 %define		extras		extras/ata_id extras/cdrom_id extras/dasd_id extras/edd_id extras/floppy extras/firmware extras/scsi_id extras/usb_id extras/volume_id
+%define		static_extras	extras/ata_id extras/cdrom_id extras/dasd_id extras/edd_id extras/scsi_id extras/usb_id extras/volume_id
 
 %description
 A userspace implementation of devfs for 2.5 and higher kernels.
@@ -116,13 +117,22 @@ initrd.
 	%{?with_klibc:KLCC=%{_bindir}/klcc CC="klcc"} \
 	%{?with_klibc:LD="klcc %{rpmldflags} -static"} \
 	DEBUG=%{!?debug:false}%{?debug:true} \
-	OPTIMIZATION="%{rpmcflags}" \
+	STRIP="/bin/true" \
 	USE_KLIBC=%{!?with_klibc:false}%{?with_klibc:true} \
-	USE_LOG=true \
+	USE_LOG=false \
 	USE_SELINUX=false \
-	EXTRAS=""
+	USE_STATIC=true \
+	EXTRAS="%{static_extras}"
 
 cp -a udev initrd-udev
+cp -a extras/ata_id/ata_id initrd-ata_id
+cp -a extras/cdrom_id/cdrom_id initrd-cdrom_id
+cp -a extras/dasd_id/dasd_id initrd-dasd_id
+cp -a extras/edd_id/edd_id initrd-edd_id
+cp -a extras/scsi_id/scsi_id initrd-scsi_id
+cp -a extras/usb_id/usb_id initrd-usb_id
+cp -a extras/volume_id/vol_id initrd-vol_id
+
 %if %{with main}
 %{__make} clean
 %endif
@@ -133,7 +143,7 @@ cp -a udev initrd-udev
 	udevdir=/dev \
 	CC="%{__cc}" \
 	DEBUG=%{!?debug:false}%{?debug:true} \
-	OPTIMIZATION="%{rpmcflags}" \
+	OPTFLAGS="%{rpmcflags}" \
 	USE_KLIBC=false \
 	USE_LOG=true \
 	EXTRAS="%{extras}"
@@ -186,7 +196,7 @@ install etc/udev/persistent-disk.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.
 
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_sbindir}
-install -m755 initrd-udev $RPM_BUILD_ROOT%{_sbindir}/initrd-udev
+install -m755 initrd-* $RPM_BUILD_ROOT%{_sbindir}
 ln -s initrd-udev $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
 %endif
 
@@ -270,6 +280,6 @@ fi
 %if %{with initrd}
 %files initrd
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_sbindir}/initrd-udev
+%attr(755,root,root) %{_sbindir}/initrd-*
 %attr(755,root,root) %{_sbindir}/udevstart.initrd
 %endif
