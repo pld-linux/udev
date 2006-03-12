@@ -29,13 +29,13 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	086
+Version:	087
 Release:	0.1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	a9da78603d4394f960cb865df3f81934
+# Source0-md5:	8659e14a4f376b33134c72df180bfbbe
 Source1:	%{name}.rules
 Source2:	%{name}.conf
 Source3:	start_udev
@@ -49,10 +49,7 @@ Source8:	%{name}-links.conf
 Source10:	%{name}-usb.distmap
 Source11:	%{name}-usb.handmap
 # helpers
-Source20:	%{name}-ieee1394.helper
-Source21:	%{name}-input.helper
-Source22:	%{name}-net.helper
-Source23:	%{name}-input-coldplug
+Source20:	%{name}-net.helper
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 BuildRequires:	device-mapper-devel
 BuildRequires:	libselinux-devel >= 1.17.13
@@ -155,7 +152,7 @@ cp -a extras/volume_id/vol_id initrd-vol_id
 rm -rf $RPM_BUILD_ROOT
 
 %if %{with main}
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{agents.d/usb,rules.d} \
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d \
 	$RPM_BUILD_ROOT/lib/udev/devices
 
 %{__make} install \
@@ -178,20 +175,14 @@ install %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
 # Default location for rule sripts and helper programs is now: /lib/udev/
 # Everything that is not useful on the commandline should go into this
 # directory.
-install %{SOURCE20} $RPM_BUILD_ROOT/lib/udev/udev_ieee1394_helper
-install %{SOURCE21} $RPM_BUILD_ROOT/lib/udev/udev_input_helper
-install %{SOURCE22} $RPM_BUILD_ROOT/lib/udev/udev_net_helper
-install %{SOURCE23} $RPM_BUILD_ROOT/lib/udev/udev_input_coldplug
+install %{SOURCE20} $RPM_BUILD_ROOT/lib/udev/udev_net_helper
 install extras/eventrecorder.sh $RPM_BUILD_ROOT/lib/udev
-install extras/ide-devfs.sh $RPM_BUILD_ROOT/lib/udev
-install extras/raid-devfs.sh $RPM_BUILD_ROOT/lib/udev
-install extras/scsi-devfs.sh $RPM_BUILD_ROOT/lib/udev
 
 install extras/path_id $RPM_BUILD_ROOT%{_sbindir}
 install uevent_listen $RPM_BUILD_ROOT%{_sbindir}
 
-install etc/udev/persistent-disk.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
-
+install etc/udev/*.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
+install etc/udev/suse/60-persistent-input.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
 %endif
 
 %if %{with initrd}
@@ -230,13 +221,6 @@ fi
 %attr(755,root,root) /lib/udev/eventrecorder.sh
 %attr(755,root,root) /lib/udev/firmware_helper
 
-%attr(755,root,root) /lib/udev/ide-devfs.sh
-%attr(755,root,root) /lib/udev/raid-devfs.sh
-%attr(755,root,root) /lib/udev/scsi-devfs.sh
-
-%attr(755,root,root) /lib/udev/udev_ieee1394_helper
-%attr(755,root,root) /lib/udev/udev_input_coldplug
-%attr(755,root,root) /lib/udev/udev_input_helper
 %attr(755,root,root) /lib/udev/udev_net_helper
 
 %attr(755,root,root) %{_sbindir}/ata_id
@@ -257,14 +241,13 @@ fi
 %attr(755,root,root) %{_prefix}/sbin/*
 
 %dir %{_sysconfdir}/udev
-%dir %{_sysconfdir}/udev/agents.d
-%dir %{_sysconfdir}/udev/agents.d/usb
 %dir %{_sysconfdir}/udev/rules.d
 
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/scsi_id.config
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/links.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/05-udev-early.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/modprobe.rules
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/persistent-disk.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/*persistent-*.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/udev.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/udev.conf
 %{_sysconfdir}/udev/rules.d/hotplug_map.rules
