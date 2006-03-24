@@ -1,5 +1,6 @@
 # TODO
 # - initrd build with uclibc on amd64 produces non-working binary (illegal instruction from open("/dev/null"))
+# - rewrite in sh/sed, or move to (tools?) subpackage udev_import_usermap (bc adds perl dep)
 #
 # Conditional build:
 %bcond_without	initrd	# build without udev-initrd
