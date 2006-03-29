@@ -87,7 +87,7 @@ write_rule() {
   fi
 
   [ "$comment" ] && echo "# $comment"
-  echo "ACTION==\"add\", $match, SYMLINK+=\"$link\", ENV{GENERATED}=\"1\""
+  echo "ACTION==\"add\", $match, SYMLINK+=\"$link\", ENV{GENERATED}=\"1\", GROUP=\"cdwrite\""
   } >> $RULES_FILE
   SYMLINKS="$SYMLINKS $link"
 }
