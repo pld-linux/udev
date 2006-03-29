@@ -31,7 +31,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	088
-Release:	0.1
+Release:	0.2
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -46,6 +46,7 @@ Source5:	%{name}_import_usermap
 Source6:	%{name}-modprobe.rules
 Source7:	%{name}-hotplug_map.rules
 Source8:	%{name}-links.conf
+Source9:	%{name}-write_cd_aliases
 # hotplug usb maps
 Source10:	%{name}-usb.distmap
 Source11:	%{name}-usb.handmap
@@ -176,6 +177,7 @@ install %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
 # Default location for rule sripts and helper programs is now: /lib/udev/
 # Everything that is not useful on the commandline should go into this
 # directory.
+install %{SOURCE9} $RPM_BUILD_ROOT/lib/udev/write_cd_aliases
 install %{SOURCE20} $RPM_BUILD_ROOT/lib/udev/udev_net_helper
 install extras/eventrecorder.sh $RPM_BUILD_ROOT/lib/udev
 
@@ -221,6 +223,7 @@ fi
 %attr(755,root,root) /lib/udev/create_floppy_devices
 %attr(755,root,root) /lib/udev/eventrecorder.sh
 %attr(755,root,root) /lib/udev/firmware_helper
+%attr(755,root,root) /lib/udev/write_cd_aliases
 
 %attr(755,root,root) /lib/udev/udev_net_helper
 
