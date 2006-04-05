@@ -217,7 +217,7 @@ install %{SOURCE9} $RPM_BUILD_ROOT/lib/udev/write_cd_aliases
 install %{SOURCE20} $RPM_BUILD_ROOT/lib/udev/udev_net_helper
 install extras/eventrecorder.sh $RPM_BUILD_ROOT/lib/udev
 
-install extras/path_id/path_id $RPM_BUILD_ROOT/lib/udev
+install extras/path_id/path_id $RPM_BUILD_ROOT%{_sbindir}
 install uevent_listen $RPM_BUILD_ROOT%{_sbindir}
 
 touch etc/udev/60-persistent-cd.rules
@@ -268,10 +268,10 @@ fi
 %attr(755,root,root) /lib/udev/cdrom_id
 %attr(755,root,root) /lib/udev/dasd_id
 %attr(755,root,root) /lib/udev/edd_id
-%attr(755,root,root) /lib/udev/path_id
 %attr(755,root,root) /lib/udev/scsi_id
 %attr(755,root,root) /lib/udev/usb_id
 %attr(755,root,root) /lib/udev/vol_id
+%attr(755,root,root) %{_sbindir}/path_id
 
 %attr(755,root,root) %{_sbindir}/start_udev
 %attr(755,root,root) %{_sbindir}/udevcontrol
