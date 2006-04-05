@@ -30,13 +30,13 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	088
-Release:	0.2
+Version:	089
+Release:	0.1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	2bd1ee23baf4280af510667c1b40cd3d
+# Source0-md5:	ed2d885527da9c5f72abd9a43cb1af98
 Source1:	%{name}.rules
 Source2:	%{name}.conf
 Source3:	start_udev
@@ -63,6 +63,7 @@ BuildRequires:	sed >= 4.0
 %{?with_klibc:BuildRequires:	klibc-static}
 %{?with_klibc:BuildRequires:	linux-libc-headers}
 %endif
+Requires:	libvolume_id = %{epoch}:%{version}-%{release}
 Requires:	coreutils
 Provides:	dev = 3.0.0
 Obsoletes:	dev
@@ -96,6 +97,41 @@ A userspace implementation of devfs - static binary for initrd.
 %description initrd -l pl
 Implementacja devfs w przestrzeni u¿ytkownika - statyczna binarka dla
 initrd.
+
+%package -n libvolume_id
+Summary:	libvolume_id library
+Summary(pl):	Biblioteka libvolume_id
+Group:		Libraries
+
+%description -n libvolume_id
+libvolume_id library.
+
+%description -n libvolume_id -l pl
+Biblioteka libvolume_id.
+
+%package -n libvolume_id-devel
+Summary:	Header files for libvolume_id library
+Summary(pl):	Pliki nag³ówkowe biblioteki libvolume_id
+Group:		Development/Libraries
+Requires:	libvolume_id = %{epoch}:%{version}-%{release}
+
+%description -n libvolume_id-devel
+This is the package containing the header files for libvolume_id library.
+
+%description -n libvolume_id-devel -l pl
+Ten pakiet zawiera pliki nagBówkowe biblioteki libvolume_id.
+
+%package -n libvolume_id-static
+Summary:	Static libvolume_id library
+Summary(pl):	Statyczna biblioteka libvolume_id
+Group:		Development/Libraries
+Requires:	libvolume_id-devel = %{epoch}:%{version}-%{release}
+
+%description -n libvolume_id-static
+Static libvolume_id library.
+
+%description -n libvolume_id-static -l pl
+Statyczna biblioteka libvolume_id.
 
 %prep
 %setup -q
@@ -181,9 +217,10 @@ install %{SOURCE9} $RPM_BUILD_ROOT/lib/udev/write_cd_aliases
 install %{SOURCE20} $RPM_BUILD_ROOT/lib/udev/udev_net_helper
 install extras/eventrecorder.sh $RPM_BUILD_ROOT/lib/udev
 
-install extras/path_id $RPM_BUILD_ROOT%{_sbindir}
+install extras/path_id/path_id $RPM_BUILD_ROOT/lib/udev
 install uevent_listen $RPM_BUILD_ROOT%{_sbindir}
 
+touch etc/udev/60-persistent-cd.rules
 install etc/udev/*.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
 install etc/udev/suse/60-persistent-input.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
 %endif
@@ -227,14 +264,14 @@ fi
 
 %attr(755,root,root) /lib/udev/udev_net_helper
 
-%attr(755,root,root) %{_sbindir}/ata_id
-%attr(755,root,root) %{_sbindir}/cdrom_id
-%attr(755,root,root) %{_sbindir}/dasd_id
-%attr(755,root,root) %{_sbindir}/edd_id
-%attr(755,root,root) %{_sbindir}/path_id
-%attr(755,root,root) %{_sbindir}/scsi_id
-%attr(755,root,root) %{_sbindir}/usb_id
-%attr(755,root,root) %{_sbindir}/vol_id
+%attr(755,root,root) /lib/udev/ata_id
+%attr(755,root,root) /lib/udev/cdrom_id
+%attr(755,root,root) /lib/udev/dasd_id
+%attr(755,root,root) /lib/udev/edd_id
+%attr(755,root,root) /lib/udev/path_id
+%attr(755,root,root) /lib/udev/scsi_id
+%attr(755,root,root) /lib/udev/usb_id
+%attr(755,root,root) /lib/udev/vol_id
 
 %attr(755,root,root) %{_sbindir}/start_udev
 %attr(755,root,root) %{_sbindir}/udevcontrol
@@ -271,3 +308,16 @@ fi
 %attr(755,root,root) %{_sbindir}/initrd-*
 %attr(755,root,root) %{_sbindir}/udevstart.initrd
 %endif
+
+%files -n libvolume_id
+%defattr(644,root,root,755)
+%attr(755,root,root) /lib/lib*.so.*.*.*
+
+%files -n libvolume_id-devel
+%defattr(644,root,root,755)
+%{_includedir}/*.h
+%{_pkgconfigdir}/*.pc
+
+%files -n libvolume_id-static
+%defattr(644,root,root,755)
+%{_libdir}/lib*.a
