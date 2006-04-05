@@ -1,4 +1,5 @@
 # TODO
+# - initrd needs love (is proapbly completly unusable in current form)
 # - initrd build with uclibc on amd64 produces non-working binary (illegal instruction from open("/dev/null"))
 # - rewrite in sh/sed, or move to (tools?) subpackage udev_import_usermap (bc adds perl dep)
 #
@@ -52,6 +53,7 @@ Source10:	%{name}-usb.distmap
 Source11:	%{name}-usb.handmap
 # helpers
 Source20:	%{name}-net.helper
+Patch0:		%{name}-paths.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 BuildRequires:	device-mapper-devel
 BuildRequires:	libselinux-devel >= 1.17.13
@@ -135,7 +137,7 @@ Statyczna biblioteka libvolume_id.
 
 %prep
 %setup -q
-
+%patch0 -p1
 %build
 %if %{with initrd}
 %{__make} \
@@ -160,6 +162,9 @@ Statyczna biblioteka libvolume_id.
 	EXTRAS="%{static_extras}"
 
 cp -a udev initrd-udev
+
+# FIXME, cause I'm broken - your initrd
+%if 0
 cp -a extras/ata_id/ata_id initrd-ata_id
 cp -a extras/cdrom_id/cdrom_id initrd-cdrom_id
 cp -a extras/dasd_id/dasd_id initrd-dasd_id
@@ -167,6 +172,7 @@ cp -a extras/edd_id/edd_id initrd-edd_id
 cp -a extras/scsi_id/scsi_id initrd-scsi_id
 cp -a extras/usb_id/usb_id initrd-usb_id
 cp -a extras/volume_id/vol_id initrd-vol_id
+%endif
 
 %if %{with main}
 %{__make} clean
