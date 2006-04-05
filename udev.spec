@@ -1,5 +1,5 @@
 # TODO
-# - initrd needs love (is proapbly completly unusable in current form)
+# - initrd needs love (is propably completly unusable in current form)
 # - initrd build with uclibc on amd64 produces non-working binary (illegal instruction from open("/dev/null"))
 # - rewrite in sh/sed, or move to (tools?) subpackage udev_import_usermap (bc adds perl dep)
 #
@@ -138,6 +138,7 @@ Statyczna biblioteka libvolume_id.
 %prep
 %setup -q
 %patch0 -p1
+
 %build
 %if %{with initrd}
 %{__make} \
