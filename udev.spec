@@ -184,6 +184,8 @@ cp -a extras/volume_id/vol_id initrd-vol_id
 %if %{with main}
 %{__make} \
 	udevdir=/dev \
+	libdir=/%{_lib} \
+	usrlibdir=%{_libdir} \
 	CC="%{__cc}" \
 	DEBUG=%{!?debug:false}%{?debug:true} \
 	OPTFLAGS="%{rpmcflags}" \
@@ -203,7 +205,9 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d \
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
-	initdir=%{_initrddir} \
+	initdir=/etc/rc.d/init.d \
+	libdir=/%{_lib} \
+	usrlibdir=%{_libdir} \
 	EXTRAS="%{extras}"
 
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.rules
@@ -249,6 +253,9 @@ if [ "$2" = 0 ]; then
 	umask 000
 	/sbin/start_udev || exit 0
 fi
+
+%post	-n libvolume_id -p /sbin/ldconfig
+%postun	-n libvolume_id -p /sbin/ldconfig
 
 %if %{with main}
 %files
@@ -319,13 +326,14 @@ fi
 
 %files -n libvolume_id
 %defattr(644,root,root,755)
-%attr(755,root,root) /lib/lib*.so.*.*.*
+%attr(755,root,root) /%{_lib}/libvolume_id.so.*.*.*
 
 %files -n libvolume_id-devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libvolume_id.so
 %{_includedir}/*.h
 %{_pkgconfigdir}/*.pc
 
 %files -n libvolume_id-static
 %defattr(644,root,root,755)
-%{_libdir}/lib*.a
+%{_libdir}/libvolume_id.a
