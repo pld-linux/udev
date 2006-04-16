@@ -31,13 +31,13 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	089
+Version:	090
 Release:	0.1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	ed2d885527da9c5f72abd9a43cb1af98
+# Source0-md5:	44acf418a23b0be826aa55828ada07db
 Source1:	%{name}.rules
 Source2:	%{name}.conf
 Source3:	start_udev
@@ -160,7 +160,8 @@ Statyczna biblioteka libvolume_id.
 	USE_LOG=false \
 	USE_SELINUX=false \
 	USE_STATIC=true \
-	EXTRAS="%{static_extras}"
+	EXTRAS="%{static_extras}" \
+	V=1
 
 cp -a udev initrd-udev
 
@@ -282,6 +283,7 @@ fi
 %attr(755,root,root) %{_sbindir}/start_udev
 %attr(755,root,root) %{_sbindir}/udevcontrol
 %attr(755,root,root) %{_sbindir}/udevd
+%attr(755,root,root) %{_sbindir}/udevsettle
 %attr(755,root,root) %{_sbindir}/udevtrigger
 %attr(755,root,root) %{_sbindir}/uevent_listen
  
