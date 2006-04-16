@@ -54,6 +54,7 @@ Source11:	%{name}-usb.handmap
 # helpers
 Source20:	%{name}-net.helper
 Patch0:		%{name}-paths.patch
+Patch1:		%{name}-ioctl.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 BuildRequires:	device-mapper-devel
 BuildRequires:	libselinux-devel >= 1.17.13
@@ -138,6 +139,7 @@ Statyczna biblioteka libvolume_id.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %if %{with initrd}
