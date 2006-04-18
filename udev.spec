@@ -78,6 +78,7 @@ Obsoletes:	hotplug-input
 Obsoletes:	hotplug-net
 Obsoletes:	hotplug-pci
 Obsoletes:	udev-dev
+Conflicts:	kernel < 3:2.6.15
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
