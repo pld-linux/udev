@@ -38,21 +38,24 @@ License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
 # Source0-md5:	44acf418a23b0be826aa55828ada07db
-Source1:	%{name}.rules
-Source2:	%{name}.conf
-Source3:	start_udev
-Source4:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
-# Source4-md5:	7b2b881a8531fd84da7cae9152dc4e39
-Source5:	%{name}_import_usermap
-Source6:	%{name}-modprobe.rules
-Source7:	%{name}-hotplug_map.rules
-Source8:	%{name}-links.conf
-Source9:	%{name}-write_cd_aliases
-# hotplug usb maps
-Source10:	%{name}-usb.distmap
-Source11:	%{name}-usb.handmap
-# helpers
-Source20:	%{name}-net.helper
+# rules
+Source1:	%{name}-alsa.rules
+Source2:	%{name}-hotplug_map.rules
+Source3:	%{name}-modprobe.rules
+Source4:	%{name}.rules
+# configs
+Source10:	%{name}.conf
+Source11:	%{name}-links.conf
+# scripts / helpers
+Source20:	%{name}_import_usermap
+Source21:	%{name}-net.helper
+Source22:	%{name}-write_cd_aliases
+Source23:	start_udev
+# misc
+Source30:	%{name}-usb.distmap
+Source31:	%{name}-usb.handmap
+Source32:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
+# Source32-md5:	7b2b881a8531fd84da7cae9152dc4e39
 Patch0:		%{name}-paths.patch
 Patch1:		%{name}-ioctl.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
@@ -193,9 +196,10 @@ cp -a extras/volume_id/vol_id initrd-vol_id
 	OPTFLAGS="%{rpmcflags}" \
 	USE_KLIBC=false \
 	USE_LOG=true \
-	EXTRAS="%{extras}"
+	EXTRAS="%{extras}" \
+	V=1
 
-%{__cc} %{rpmcflags} %{SOURCE4} -o uevent_listen
+%{__cc} %{rpmcflags} %{SOURCE32} -o uevent_listen
 %endif
 
 %install
@@ -216,26 +220,26 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.rules
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.permissions
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 
-install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/udev.rules
-install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev
-install %{SOURCE3} $RPM_BUILD_ROOT%{_sbindir}/start_udev
-install %{SOURCE5} $RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap
-install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/modprobe.rules
-install %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/hotplug_map.rules
-install %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
-
-# Default location for rule sripts and helper programs is now: /lib/udev/
-# Everything that is not useful on the commandline should go into this
-# directory.
-install %{SOURCE9} $RPM_BUILD_ROOT/lib/udev/write_cd_aliases
-install %{SOURCE20} $RPM_BUILD_ROOT/lib/udev/udev_net_helper
-install extras/eventrecorder.sh $RPM_BUILD_ROOT/lib/udev
-
-install extras/path_id/path_id $RPM_BUILD_ROOT/lib/udev
-install uevent_listen $RPM_BUILD_ROOT%{_sbindir}
-
+# install rules
+install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/40-alsa.rules
+install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/55-hotplug_map.rules
+install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/51-modprobe.rules
+install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev-default.rules
 install etc/udev/*.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
 install etc/udev/suse/60-persistent-input.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
+
+# install configs
+install %{SOURCE10} $RPM_BUILD_ROOT%{_sysconfdir}/udev
+install %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
+
+# install executables (scripts, helpers, etc.)
+install %{SOURCE20} $RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap
+install %{SOURCE21} $RPM_BUILD_ROOT/lib/udev/udev_net_helper
+install %{SOURCE22} $RPM_BUILD_ROOT/lib/udev/write_cd_aliases
+install %{SOURCE23} $RPM_BUILD_ROOT%{_sbindir}/start_udev
+install extras/eventrecorder.sh $RPM_BUILD_ROOT/lib/udev
+install extras/path_id/path_id $RPM_BUILD_ROOT/lib/udev
+install uevent_listen $RPM_BUILD_ROOT%{_sbindir}
 %endif
 
 %if %{with initrd}
@@ -305,11 +309,13 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/scsi_id.config
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/links.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/05-udev-early.rules
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/modprobe.rules
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/*persistent-*.rules
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/udev.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-alsa.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/50-udev-default.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/51-modprobe.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/60-persistent-input.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/60-persistent-storage.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/udev.conf
-%{_sysconfdir}/udev/rules.d/hotplug_map.rules
+%{_sysconfdir}/udev/rules.d/55-hotplug_map.rules
 
 %{_mandir}/man7/*
 %{_mandir}/man8/*
