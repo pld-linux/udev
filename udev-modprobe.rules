@@ -1,4 +1,5 @@
-ACTION!="add", GOTO="hotplug_not_add_event"
+ACTION!="add", GOTO="hot
+plug_not_add_event"
 
 # check a driver is already loaded
 ENV{PHYSDEVDRIVER}=="?*", GOTO="hotplug_driver_loaded"
@@ -41,4 +42,4 @@ SUBSYSTEM=="firmware", RUN+="/lib/udev/firmware_helper"
 
 LABEL="hotplug_not_add_event"
 
-SUBSYSTEM=="net", ENV{INTERFACE}=="*", RUN+="/lib/udev/udev_net_helper"
+SUBSYSTEM=="net", ENV{INTERFACE}=="*", RUN+="/lib/udev/net_helper"
