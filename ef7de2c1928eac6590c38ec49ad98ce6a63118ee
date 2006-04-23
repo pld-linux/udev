@@ -1,0 +1,5 @@
+- create persistent cdrom and network rules, replaced/added scripts for
+  pesistent rule creation, added udev.blacklist to avoid autoloading
+  framebuffer drivers, added functions.udev file to hold functions in one
+  place , dropped eventrecorder (not very useful)
+  NFY - work in progress!
