@@ -1,0 +1,13 @@
+#!/bin/sh
+
+. /etc/udev/functions.udev
+
+read_rules
+
+add_first_available "cdrom"
+[ -n "$ID_CDROM_CD_RW" ]  && add_first_available "cdrw"
+[ -n "$ID_CDROM_DVD" ]    && add_first_available "dvd"
+[ -n "$ID_CDROM_DVD_RW" ] && add_first_available "dvdrw"
+
+write_rule "ENV{ID_PATH}==\"$ID_PATH\""
+echo $RESULTS
