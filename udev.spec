@@ -57,10 +57,8 @@ Source25:	%{name}-net_name_helper
 # misc
 Source30:	%{name}-usb.distmap
 Source31:	%{name}-usb.handmap
-Source32:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
-Source33:	%{name}.blacklist
-Source34:	%{name}-functions
-# Source32-md5:	7b2b881a8531fd84da7cae9152dc4e39
+Source32:	%{name}.blacklist
+Source33:	%{name}-functions
 Patch0:		%{name}-paths.patch
 Patch1:		%{name}-ioctl.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
@@ -204,8 +202,6 @@ cp -a extras/volume_id/vol_id initrd-vol_id
 	USE_LOG=true \
 	EXTRAS="%{extras}" \
 	V=1
-
-%{__cc} %{rpmcflags} %{SOURCE32} -o uevent_listen
 %endif
 
 %install
@@ -247,12 +243,11 @@ install %{SOURCE23} $RPM_BUILD_ROOT/lib/udev/create_persistent
 install %{SOURCE24} $RPM_BUILD_ROOT/lib/udev/cdrom_helper
 install %{SOURCE25} $RPM_BUILD_ROOT/lib/udev/net_name_helper
 install extras/path_id/path_id $RPM_BUILD_ROOT/lib/udev
-install uevent_listen $RPM_BUILD_ROOT%{_sbindir}
 %endif
 
 # install misc
-install %{SOURCE33} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev.blacklist
-install %{SOURCE34} $RPM_BUILD_ROOT%{_sysconfdir}/udev/functions.udev
+install %{SOURCE32} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev.blacklist
+install %{SOURCE33} $RPM_BUILD_ROOT%{_sysconfdir}/udev/functions.udev
 
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_sbindir}
@@ -309,7 +304,6 @@ fi
 %attr(755,root,root) %{_sbindir}/udevd
 %attr(755,root,root) %{_sbindir}/udevsettle
 %attr(755,root,root) %{_sbindir}/udevtrigger
-%attr(755,root,root) %{_sbindir}/uevent_listen
  
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_prefix}/sbin/*
