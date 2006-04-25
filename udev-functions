@@ -1,4 +1,6 @@
 #!/bin/sh
+MAX_LOOPS=1024
+UDEV_RULES_FILE=/etc/udev/rules.d/60-persistent-${SUBSYSTEM}.rules
 
 already_exists() {
     echo $EXISTING | grep -q "\b$1\b"

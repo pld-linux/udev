@@ -4,8 +4,6 @@ if [ -z "$SUBSYSTEM" ]; then
     exit -1
 fi
 
-MAX_LOOPS=1024
-UDEV_RULES_FILE=/etc/udev/rules.d/60-persistent-${SUBSYSTEM}.rules
 if [ $SUBSYSTEM = "net" ]; then
     TARGET="NAME"
     ADD=""
