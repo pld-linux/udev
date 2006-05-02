@@ -41,4 +41,4 @@ SUBSYSTEM=="firmware", RUN+="/lib/udev/firmware_helper"
 
 LABEL="hotplug_not_add_event"
 
-SUBSYSTEM=="net", ENV{INTERFACE}=="*", RUN+="/lib/udev/net_helper"
+#SUBSYSTEM=="net", ENV{INTERFACE}=="*", RUN+="/lib/udev/net_helper"
