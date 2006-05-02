@@ -186,7 +186,9 @@ cp -a extras/volume_id/vol_id initrd-vol_id
 %endif
 
 %if %{with main}
-%{__make} clean
+%{__make} clean \
+	EXTRAS="%{static_extras}" \
+	V=1
 %endif
 %endif
 
