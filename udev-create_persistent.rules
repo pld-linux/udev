@@ -1,9 +1,9 @@
-SUBSYSTEM=="block", ACTION=="add", ENV{ID_CDROM}=="?*", \
-    ENV{GENERATED}!="yes", \
-    PROGRAM="/usr/bin/flock /sys/block /lib/udev/cdrom_helper", \
-    SYMLINK+="%c"
+#SUBSYSTEM=="block", ACTION=="add", ENV{ID_CDROM}=="?*", \
+#    ENV{GENERATED}!="yes", \
+#    PROGRAM="/usr/bin/flock /sys/block /lib/udev/cdrom_helper", \
+#    SYMLINK+="%c"
     
-SUBSYSTEM=="net", ACTION=="add", SYSFS{address}=="?*", \
-    ENV{GENERATED}!="yes", \
-    PROGRAM="/usr/bin/flock /sys/class/net /lib/udev/net_name_helper %s{address}", \
-    NAME="%c"
+#SUBSYSTEM=="net", ACTION=="add", SYSFS{address}=="?*", \
+#    ENV{GENERATED}!="yes", \
+#    PROGRAM="/usr/bin/flock /sys/class/net /lib/udev/net_name_helper %s{address}", \
+#    NAME="%c"
