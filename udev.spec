@@ -32,7 +32,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	091
-Release:	0.2
+Release:	0.3
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -43,7 +43,7 @@ Source1:	%{name}-alsa.rules
 Source2:	%{name}-hotplug_map.rules
 Source3:	%{name}-modprobe.rules
 Source4:	%{name}.rules
-Source5:	%{name}-create_persistent.rules
+Source5:	%{name}-early.rules
 # configs
 Source10:	%{name}.conf
 Source11:	%{name}-links.conf
@@ -51,14 +51,10 @@ Source11:	%{name}-links.conf
 Source20:	%{name}_import_usermap
 Source21:	%{name}-net.helper
 Source22:	start_udev
-Source23:	%{name}-create_persistent
-Source24:	%{name}-cdrom_helper
-Source25:	%{name}-net_name_helper
 # misc
 Source30:	%{name}-usb.distmap
 Source31:	%{name}-usb.handmap
 Source32:	%{name}.blacklist
-Source33:	%{name}-functions
 Patch0:		%{name}-paths.patch
 Patch1:		%{name}-ioctl.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
@@ -225,13 +221,13 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.permissions
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 
 # install rules
+install etc/udev/60-persistent-storage.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
+install etc/udev/suse/60-persistent-input.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/40-alsa.rules
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/55-hotplug_map.rules
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/51-modprobe.rules
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev-default.rules
-install etc/udev/*.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
-install etc/udev/suse/60-persistent-input.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
-install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/70-create_persistent.rules
+install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/05-early.rules
 
 # install configs
 install %{SOURCE10} $RPM_BUILD_ROOT%{_sysconfdir}/udev
@@ -241,15 +237,11 @@ install %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
 install %{SOURCE20} $RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap
 install %{SOURCE21} $RPM_BUILD_ROOT/lib/udev/net_helper
 install %{SOURCE22} $RPM_BUILD_ROOT%{_sbindir}/start_udev
-install %{SOURCE23} $RPM_BUILD_ROOT/lib/udev/create_persistent
-install %{SOURCE24} $RPM_BUILD_ROOT/lib/udev/cdrom_helper
-install %{SOURCE25} $RPM_BUILD_ROOT/lib/udev/net_name_helper
 install extras/path_id/path_id $RPM_BUILD_ROOT/lib/udev
 %endif
 
 # install misc
 install %{SOURCE32} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev.blacklist
-install %{SOURCE33} $RPM_BUILD_ROOT%{_sysconfdir}/udev/functions.udev
 
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_sbindir}
@@ -287,7 +279,6 @@ fi
 %dir /lib/udev/devices
 
 %attr(755,root,root) /lib/udev/create_floppy_devices
-%attr(755,root,root) /lib/udev/create_persistent
 %attr(755,root,root) /lib/udev/firmware_helper
 
 %attr(755,root,root) /lib/udev/*_helper
@@ -312,18 +303,16 @@ fi
 
 %dir %{_sysconfdir}/udev
 %dir %{_sysconfdir}/udev/rules.d
-%{_sysconfdir}/udev/functions.udev
 
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modprobe.d/udev.blacklist
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/scsi_id.config
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/links.conf
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/05-udev-early.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/05-early.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-alsa.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/50-udev-default.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/51-modprobe.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/60-persistent-input.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/60-persistent-storage.rules
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/70-create_persistent.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/udev.conf
 %{_sysconfdir}/udev/rules.d/55-hotplug_map.rules
 
