@@ -1,3 +1,4 @@
+ACTION!="add", GOTO="hotplug_end"
 SUBSYSTEM=="usb", SYSFS{idProduct}=="c281", SYSFS{idVendor}=="046d", RUN+="/sbin/modprobe -q iforce"
 SUBSYSTEM=="usb", SYSFS{idProduct}=="0002", SYSFS{idVendor}=="0553", RUN+="/sbin/modprobe -q cpia_usb"
 SUBSYSTEM=="usb", SYSFS{bDeviceSubClass}=="00", SYSFS{bDeviceClass}=="02", SYSFS{bDeviceProtocol}=="00", RUN+="/sbin/modprobe -q acm"
@@ -238,4 +239,4 @@ SUBSYSTEM=="usb", SYSFS{idProduct}=="0024", SYSFS{idVendor}=="056a", RUN+="/sbin
 SUBSYSTEM=="usb", SYSFS{idProduct}=="0011", SYSFS{idVendor}=="056a", RUN+="/sbin/modprobe -q evdev"
 SUBSYSTEM=="usb", SYSFS{idProduct}=="0042", SYSFS{idVendor}=="056a", RUN+="/sbin/modprobe -q evdev"
 SUBSYSTEM=="usb", SYSFS{idProduct}=="0001", SYSFS{idVendor}=="1212", RUN+="/sbin/modprobe -q usblcd"
-
+LABEL="hotplug_end"
