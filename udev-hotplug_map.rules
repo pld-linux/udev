@@ -219,6 +219,7 @@ SUBSYSTEM=="usb", SYSFS{idProduct}=="0021", SYSFS{idVendor}=="056a", RUN+="/sbin
 SUBSYSTEM=="usb", SYSFS{idProduct}=="0022", SYSFS{idVendor}=="056a", RUN+="/sbin/modprobe -q wacom"
 SUBSYSTEM=="usb", SYSFS{idProduct}=="0023", SYSFS{idVendor}=="056a", RUN+="/sbin/modprobe -q wacom"
 SUBSYSTEM=="usb", SYSFS{idProduct}=="0024", SYSFS{idVendor}=="056a", RUN+="/sbin/modprobe -q wacom"
+SUBSYSTEM=="usb", SYSFS{idProduct}=="0061", SYSFS{idVendor}=="056a", RUN+="/sbin/modprobe -q wacom"
 SUBSYSTEM=="usb", SYSFS{idProduct}=="4200", SYSFS{idVendor}=="066f", RUN+="/sbin/modprobe -q stir4200"
 SUBSYSTEM=="usb", SYSFS{bDeviceClass}=="09", SYSFS{bInterfaceClass}=="09", RUN+="/sbin/modprobe -q usbcore"
 SUBSYSTEM=="usb", SYSFS{bInterfaceSubClass}=="01", SYSFS{bInterfaceProtocol}=="01", SYSFS{bInterfaceClass}=="03"
