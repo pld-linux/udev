@@ -1,14 +1,13 @@
-diff -aurN udev-089.orig/etc/udev/suse/60-persistent-input.rules udev-089/etc/udev/suse/60-persistent-input.rules
---- udev-089.orig/etc/udev/suse/60-persistent-input.rules	2006-04-03 14:41:10.000000000 +0200
-+++ udev-089/etc/udev/suse/60-persistent-input.rules	2006-04-05 20:21:26.888079712 +0200
+--- etc/udev/suse/60-persistent-input.rules	2006-05-12 15:25:17.000000000 +0200
++++ etc/udev/suse/60-persistent-input.rules-new	2006-05-13 19:54:12.329993064 +0200
 @@ -3,7 +3,7 @@
  KERNEL=="input[0-9]*", GOTO="persistent_input_end"
  
  # usb devices
 -BUS=="usb", IMPORT{program}="/sbin/usb_id -x"
 +BUS=="usb", IMPORT{program}="usb_id -x"
- BUS=="usb", SYSFS{bInterfaceClass}="03", SYSFS{bInterfaceProtocol}="01", ENV{ID_CLASS}="kbd"
- BUS=="usb", SYSFS{bInterfaceClass}="03", SYSFS{bInterfaceProtocol}="02", ENV{ID_CLASS}="mouse"
+ BUS=="usb", SYSFS{bInterfaceClass}=="03", SYSFS{bInterfaceProtocol}=="01", ENV{ID_CLASS}="kbd"
+ BUS=="usb", SYSFS{bInterfaceClass}=="03", SYSFS{bInterfaceProtocol}=="02", ENV{ID_CLASS}="mouse"
  
 @@ -12,7 +12,7 @@
  KERNEL=="event*", ENV{ID_BUS}=="?*", ENV{ID_SERIAL}=="?*", ENV{ID_CLASS}=="?*", SYMLINK+="input/by-id/$env{ID_BUS}-$env{ID_SERIAL}-event-$env{ID_CLASS}"
