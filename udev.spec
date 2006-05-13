@@ -31,13 +31,13 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	091
-Release:	0.3
+Version:	092
+Release:	0.1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	4151022ea7b4dcfaa768c1b7bf2ab9e5
+# Source0-md5:	5e9ff419ac0132531990a7c5db80ef3e
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}-hotplug_map.rules
@@ -56,7 +56,6 @@ Source30:	%{name}-usb.distmap
 Source31:	%{name}-usb.handmap
 Source32:	%{name}.blacklist
 Patch0:		%{name}-paths.patch
-Patch1:		%{name}-ioctl.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 BuildRequires:	device-mapper-devel
 BuildRequires:	libselinux-devel >= 1.17.13
@@ -141,8 +140,7 @@ Statyczna biblioteka libvolume_id.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
+%patch0 -p0
 
 %build
 %if %{with initrd}
