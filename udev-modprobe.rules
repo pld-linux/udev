@@ -37,7 +37,7 @@ SUBSYSTEM=="scsi_device", SYSFS{type}=="[23689]", \
 
 LABEL="hotplug_driver_loaded"
 
-SUBSYSTEM=="firmware", RUN+="/lib/udev/firmware_helper"
+SUBSYSTEM=="firmware", RUN+="/lib/udev/firmware.sh"
 SUBSYSTEM=="net", RUN+="/lib/udev/net_helper"
 
 LABEL="hotplug_not_add_event"
