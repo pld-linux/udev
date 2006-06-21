@@ -239,7 +239,7 @@ install extras/path_id/path_id $RPM_BUILD_ROOT/lib/udev
 %endif
 
 # install misc
-install %{SOURCE32} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev.blacklist
+install %{SOURCE32} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev_blacklist.conf
 
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_sbindir}
@@ -302,7 +302,7 @@ fi
 %dir %{_sysconfdir}/udev
 %dir %{_sysconfdir}/udev/rules.d
 
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modprobe.d/udev.blacklist
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modprobe.d/udev_blacklist.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/scsi_id.config
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/links.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/05-early.rules
