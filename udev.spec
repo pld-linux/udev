@@ -49,14 +49,14 @@ Source9:	%{name}-early.rules
 Source10:	%{name}-persistent-input.rules
 Source11:	%{name}-persistent-storage.rules
 Source12:       %{name}.blacklist
-# hotplug usb maps
-Source20:	%{name}-usb.distmap
-Source21:	%{name}-usb.handmap
 # helpers
 Source20:	%{name}-ieee1394.helper
 Source21:	%{name}-input.helper
 Source22:	%{name}-net.helper
 Source23:	%{name}-input-coldplug
+# hotplug usb maps
+Source30:	%{name}-usb.distmap
+Source31:	%{name}-usb.handmap
 Patch0:		%{name}-synthesize-02.patch
 Patch1:		%{name}-synthesize-md
 Patch2:		%{name}-synthesize-preserve_env
