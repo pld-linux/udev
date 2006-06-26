@@ -30,7 +30,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	079
-Release:	4
+Release:	4.9
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -41,19 +41,17 @@ Source2:	%{name}.conf
 Source3:	start_udev
 Source4:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
 # Source4-md5:	7b2b881a8531fd84da7cae9152dc4e39
-# from Mandriva CVS:
-# http://cvs.mandriva.com/cgi-bin/cvsweb.cgi/SPECS/udev/
-# Needed for the automatic module loading w/o hotplug to work
-# see:
-# http://qa.mandrivalinux.com/twiki/bin/view/Main/Udev
-# http://lwn.net/Articles/123932/
 Source5:	%{name}_import_usermap
 Source6:	%{name}-modprobe.rules
 Source7:	%{name}-hotplug_map.rules
 Source8:	%{name}-links.conf
+Source9:	%{name}-early.rules
+Source10:	%{name}-persistent-input.rules
+Source11:	%{name}-persistent-storage.rules
+Source12:       %{name}.blacklist
 # hotplug usb maps
-Source10:	%{name}-usb.distmap
-Source11:	%{name}-usb.handmap
+Source20:	%{name}-usb.distmap
+Source21:	%{name}-usb.handmap
 # helpers
 Source20:	%{name}-ieee1394.helper
 Source21:	%{name}-input.helper
@@ -159,7 +157,7 @@ cp -a udev initrd-udev
 rm -rf $RPM_BUILD_ROOT
 
 %if %{with main}
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/{agents.d/usb,rules.d} \
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/{modprobe.d,udev/rules.d} \
 	$RPM_BUILD_ROOT/lib/udev/devices
 
 %{__make} install \
@@ -171,31 +169,34 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.rules
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.permissions
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 
-install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/udev.rules
+# install rules
+install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev-default.rules
+install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/51-modprobe.rules
+install %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/55-hotplug_map.rules
+install %{SOURCE9} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/05-early.rules
+install %{SOURCE10} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/60-persistent-input.rules
+install %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/60-persistent-storage.rules
+
+# configs
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev
-install %{SOURCE3} $RPM_BUILD_ROOT%{_sbindir}/start_udev
-install %{SOURCE5} $RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap
-install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/modprobe.rules
-install %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/hotplug_map.rules
 install %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
 
-# Default location for rule sripts and helper programs is now: /lib/udev/
-# Everything that is not useful on the commandline should go into this
-# directory.
+# executables
 install %{SOURCE20} $RPM_BUILD_ROOT/lib/udev/udev_ieee1394_helper
 install %{SOURCE21} $RPM_BUILD_ROOT/lib/udev/udev_input_helper
 install %{SOURCE22} $RPM_BUILD_ROOT/lib/udev/udev_net_helper
 install %{SOURCE23} $RPM_BUILD_ROOT/lib/udev/udev_input_coldplug
-install extras/eventrecorder.sh $RPM_BUILD_ROOT/lib/udev
+install %{SOURCE3} $RPM_BUILD_ROOT%{_sbindir}/start_udev
+install %{SOURCE5} $RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap
 install extras/ide-devfs.sh $RPM_BUILD_ROOT/lib/udev
 install extras/raid-devfs.sh $RPM_BUILD_ROOT/lib/udev
 install extras/scsi-devfs.sh $RPM_BUILD_ROOT/lib/udev
-
 install extras/path_id $RPM_BUILD_ROOT%{_sbindir}
 install uevent_listen $RPM_BUILD_ROOT%{_sbindir}
 install udevsynthesize $RPM_BUILD_ROOT%{_sbindir}
 
-install etc/udev/persistent-disk.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
+# misc
+install %{SOURCE12} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev_blacklist.conf
 
 %endif
 
@@ -233,7 +234,6 @@ fi
 %dir /lib/udev/devices
 
 %attr(755,root,root) /lib/udev/create_floppy_devices
-%attr(755,root,root) /lib/udev/eventrecorder.sh
 %attr(755,root,root) /lib/udev/firmware_helper
 
 %attr(755,root,root) /lib/udev/ide-devfs.sh
@@ -267,17 +267,19 @@ fi
 %attr(755,root,root) %{_prefix}/sbin/*
 
 %dir %{_sysconfdir}/udev
-%dir %{_sysconfdir}/udev/agents.d
-%dir %{_sysconfdir}/udev/agents.d/usb
 %dir %{_sysconfdir}/udev/rules.d
 
+%{_sysconfdir}/modprobe.d/udev_blacklist.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/scsi_id.config
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/links.conf
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/modprobe.rules
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/persistent-disk.rules
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/udev.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/udev.conf
-%{_sysconfdir}/udev/rules.d/hotplug_map.rules
+
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/05-early.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/50-udev-default.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/51-modprobe.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/60-persistent-input.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/60-persistent-storage.rules
+%{_sysconfdir}/udev/rules.d/55-hotplug_map.rules
 
 %{_mandir}/man8/*
 
