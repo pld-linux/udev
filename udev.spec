@@ -30,7 +30,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	079
-Release:	5
+Release:	5.9
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -51,9 +51,7 @@ Source11:	%{name}-persistent-storage.rules
 Source12:       %{name}.blacklist
 # helpers
 Source20:	%{name}-ieee1394.helper
-Source21:	%{name}-input.helper
-Source22:	%{name}-net.helper
-Source23:	%{name}-input-coldplug
+Source21:	%{name}-net.helper
 # hotplug usb maps
 Source30:	%{name}-usb.distmap
 Source31:	%{name}-usb.handmap
@@ -183,9 +181,7 @@ install %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
 
 # executables
 install %{SOURCE20} $RPM_BUILD_ROOT/lib/udev/udev_ieee1394_helper
-install %{SOURCE21} $RPM_BUILD_ROOT/lib/udev/udev_input_helper
-install %{SOURCE22} $RPM_BUILD_ROOT/lib/udev/udev_net_helper
-install %{SOURCE23} $RPM_BUILD_ROOT/lib/udev/udev_input_coldplug
+install %{SOURCE21} $RPM_BUILD_ROOT/lib/udev/udev_net_helper
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sbindir}/start_udev
 install %{SOURCE5} $RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap
 install extras/ide-devfs.sh $RPM_BUILD_ROOT/lib/udev
@@ -241,8 +237,6 @@ fi
 %attr(755,root,root) /lib/udev/scsi-devfs.sh
 
 %attr(755,root,root) /lib/udev/udev_ieee1394_helper
-%attr(755,root,root) /lib/udev/udev_input_coldplug
-%attr(755,root,root) /lib/udev/udev_input_helper
 %attr(755,root,root) /lib/udev/udev_net_helper
 
 %attr(755,root,root) %{_sbindir}/ata_id
