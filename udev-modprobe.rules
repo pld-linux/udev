@@ -21,14 +21,10 @@ MODALIAS=="usb:v*p*d*dc*dsc*dp*ic03isc01ip02*", \
 	RUN+="/sbin/modprobe usbhid"
 
 # modprobe on hot plug (and cold plug, which is processed by udevstart)
-SUBSYSTEM=="usb", MODALIAS=="*", \
-        RUN+="/sbin/modprobe $modalias"
-SUBSYSTEM=="pcmcia", MODALIAS=="*", \
-        RUN+="/sbin/modprobe $modalias"
-SUBSYSTEM=="pcmcia", MODALIAS=="*", \
-        RUN+="/bin/sh -c 'echo 1 > /sys/$DEVPATH/allow_func_id_match'"
-SUBSYSTEM=="ieee1394", MODALIAS=="*", \
-        RUN+="/sbin/modprobe $modalias"
+SUBSYSTEM=="ide",	MODALIAS=="*", RUN+="/sbin/modprobe $modalias"
+SUBSYSTEM=="ieee1394",	MODALIAS=="*", RUN+="/sbin/modprobe $modalias"
+SUBSYSTEM=="input",	MODALIAS=="*", RUN+="/sbin/modprobe $modalias"
+SUBSYSTEM=="usb",	MODALIAS=="*", RUN+="/sbin/modprobe $modalias"
 
 # disks & magneto-optical disk:
 SUBSYSTEM=="scsi", SYSFS{type}=="[07]", \
@@ -61,9 +57,6 @@ LABEL="hotplug_driver_loaded"
 # helpers	      
 SUBSYSTEM=="net", ENV{INTERFACE}=="*", \
 	RUN+="/lib/udev/udev_net_helper"
-
-SUBSYSTEM=="input", \
-	RUN+="/lib/udev/udev_input_helper"
 
 SUBSYSTEM=="ieee1394", \
 	RUN+="/lib/udev/udev_ieee1394_helper"
