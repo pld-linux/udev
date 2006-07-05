@@ -30,7 +30,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	079
-Release:	5.9
+Release:	5.99
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -126,11 +126,12 @@ initrd.
 	%{?with_klibc:KLCC=%{_bindir}/klcc CC="klcc"} \
 	%{?with_klibc:LD="klcc %{rpmldflags} -static"} \
 	DEBUG=%{!?debug:false}%{?debug:true} \
-	OPTIMIZATION="%{rpmcflags}" \
+	OPTFLAGS="%{rpmcflags}" \
 	USE_KLIBC=%{!?with_klibc:false}%{?with_klibc:true} \
-	USE_LOG=true \
+	USE_LOG=false \
 	USE_SELINUX=false \
-	EXTRAS=""
+	EXTRAS="" \
+	V=1
 
 cp -a udev initrd-udev
 %if %{with main}
@@ -143,10 +144,11 @@ cp -a udev initrd-udev
 	udevdir=/dev \
 	CC="%{__cc}" \
 	DEBUG=%{!?debug:false}%{?debug:true} \
-	OPTIMIZATION="%{rpmcflags}" \
+	OPTFLAGS="%{rpmcflags}" \
 	USE_KLIBC=false \
 	USE_LOG=true \
-	EXTRAS="%{extras}"
+	EXTRAS="%{extras}" \
+	V=1
 
 %{__cc} %{rpmcflags} %{SOURCE4} -o uevent_listen
 %endif
