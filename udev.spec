@@ -30,7 +30,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	079
-Release:	5.99
+Release:	6
 Epoch:		1
 License:	GPL
 Group:		Base
