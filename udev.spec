@@ -139,6 +139,8 @@ Statyczna biblioteka libvolume_id.
 
 %prep
 %setup -q
+sed 's/$(CC) -shared/$(LD) -shared/' \
+	 -i extras/volume_id/lib/Makefile
 
 %build
 %if %{with initrd}
@@ -190,6 +192,7 @@ cp -a extras/volume_id/vol_id initrd-vol_id
 	libdir=/%{_lib} \
 	usrlibdir=%{_libdir} \
 	CC="%{__cc}" \
+	LD="%{__cc} %{rpmldflags}" \
 	DEBUG=%{!?debug:false}%{?debug:true} \
 	OPTFLAGS="%{rpmcflags}" \
 	USE_KLIBC=false \
