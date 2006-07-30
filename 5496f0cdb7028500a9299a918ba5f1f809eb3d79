@@ -1,0 +1,3 @@
+- need USE_KLIBC=true for klibc build otherwise incompatible CFLAGS are passed
+  in Makefile
+- fix make clean
