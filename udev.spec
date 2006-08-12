@@ -271,10 +271,10 @@ fi
 
 %dir /lib/udev
 
-# /lib/udev/devices is recommended as a directory where packages or                                                  
-# the user can place real device nodes, which get copied over to /dev at                                                  
-# every boot. This should replace the various solutions with custom config                                                
-# files.    
+# /lib/udev/devices is recommended as a directory where packages or
+# the user can place real device nodes, which get copied over to /dev at
+# every boot. This should replace the various solutions with custom config
+# files.
 %dir /lib/udev/devices
 
 %attr(755,root,root) /lib/udev/create_floppy_devices
