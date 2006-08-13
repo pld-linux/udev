@@ -31,19 +31,19 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	096
-Release:	0.1
+Version:	097
+Release:	1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	f4effef7807ce1dc91ab581686ef197b
+# Source0-md5:	8299024491eb4de95e5ca6d53ec9bda9
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}-hotplug_map.rules
 Source3:	%{name}-modprobe.rules
 Source4:	%{name}.rules
-Source5:	%{name}-early.rules
+Source5:	%{name}-example.rules
 # configs
 Source10:	%{name}.conf
 Source11:	%{name}-links.conf
@@ -220,13 +220,12 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.permissions
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 
 # install rules
-install etc/udev/60-persistent-storage.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
-install etc/udev/suse/60-persistent-input.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
+install etc/udev/rules.d/*.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/40-alsa.rules
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/55-hotplug_map.rules
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/51-modprobe.rules
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev-default.rules
-install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/05-early.rules
+install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/10-udev-example.rules
 
 # install configs
 install %{SOURCE10} $RPM_BUILD_ROOT%{_sysconfdir}/udev
@@ -306,13 +305,15 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modprobe.d/udev_blacklist.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/scsi_id.config
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/links.conf
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/05-early.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/05-udev-early.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-alsa.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/50-udev-default.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/51-modprobe.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/60-persistent-input.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/60-persistent-storage.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/95-udev-late.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/udev.conf
+%{_sysconfdir}/udev/rules.d/10-udev-example.rules
 %{_sysconfdir}/udev/rules.d/55-hotplug_map.rules
 
 %{_mandir}/man7/*
