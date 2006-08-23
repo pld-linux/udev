@@ -11,6 +11,7 @@
 %bcond_with	glibc	# link initrd version with static glibc
 %bcond_without	main	# don't compile main package, use for debugging initrd build
 
+# NOTE: klibc support dropped upstream!
 %ifarch %{x8664} sparc alpha
 %define		with_klibc 1
 %endif
