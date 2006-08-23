@@ -15,6 +15,12 @@
 # ACTION!="add", GOTO="local_end"
 #
 # BUS=="ide", ID=="0.1", SYMLINK+="cdrom" 
+# BUS=="ide", ID=="0.1", SYMLINK+="dvd" 
+#
 # BUS=="ide", ID=="1.1", SYMLINK+="cdrom1"
+# BUS=="ide", ID=="1.1", SYMLINK+="dvd1"
+# BUS=="ide", ID=="1.1", SYMLINK+="cdrw"
+# BUS=="ide", ID=="1.1", SYMLINK+="dvdrw"
+#
 #
 # LABEL="local_end"
