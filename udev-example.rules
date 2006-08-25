@@ -22,5 +22,11 @@
 # BUS=="ide", ID=="1.1", SYMLINK+="cdrw"
 # BUS=="ide", ID=="1.1", SYMLINK+="dvdrw"
 #
+# dynamic symlinks for cdroms:
+#
+# ENV{ID_CDROM}=="?*",		SYMLINK+="cdrom",	GROUP="cdwrite"
+# ENV{ID_CDROM_CD_RW}=="?*",	SYMLINK+="cdrw",	GROUP="cdwrite"
+# ENV{ID_CDROM_DVD}=="?*",	SYMLINK+="dvd",		GROUP="cdwrite"
+# ENV{ID_CDROM_DVD_R}=="?*",	SYMLINK+="dvdrw",	GROUP="cdwrite"
 #
 # LABEL="local_end"
