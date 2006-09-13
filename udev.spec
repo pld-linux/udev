@@ -103,6 +103,14 @@ A userspace implementation of devfs - static binary for initrd.
 Implementacja devfs w przestrzeni u¿ytkownika - statyczna binarka dla
 initrd.
 
+%package tools
+Summary:	udev tools
+Group:		Base
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+
+%description tools
+udev tools - programs not needed for bootup.
+
 %prep
 %setup -q
 %patch0 -p1
@@ -259,8 +267,9 @@ fi
 %attr(755,root,root) %{_sbindir}/udevsynthesize
 %attr(755,root,root) %{_sbindir}/uevent_listen
  
-%attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_prefix}/sbin/*
+%attr(755,root,root) %{_bindir}/udevinfo
+%attr(755,root,root) %{_bindir}/udevtest
+%attr(755,root,root) %{_prefix}/sbin/udevmonitor
 
 %dir %{_sysconfdir}/udev
 %dir %{_sysconfdir}/udev/rules.d
@@ -290,3 +299,7 @@ fi
 %attr(755,root,root) %{_sbindir}/initrd-udev
 %attr(755,root,root) %{_sbindir}/udevstart.initrd
 %endif
+
+%files tools
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_prefix}/sbin/udev_import_usermap
