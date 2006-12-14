@@ -33,7 +33,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	103
-Release:	0.1
+Release:	0.4
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -168,7 +168,12 @@ sed 's/$(CC) -shared/$(LD) -shared/' \
 	V=1
 
 cp -a udev initrd-udev
+cp -a udevd initrd-udevd
+cp -a udevtrigger initrd-udevtrigger
+cp -a udevsettle initrd-udevsettle
 
+# What is this FIXME business and why is initrd
+# broken, if it's fine?
 # FIXME, cause I'm broken - your initrd
 %if 0
 cp -a extras/ata_id/ata_id initrd-ata_id
