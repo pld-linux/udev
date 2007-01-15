@@ -57,13 +57,13 @@ BuildRequires:	libselinux-devel >= 1.17.13
 BuildRequires:	sed >= 4.0
 %if %{with initrd}
 %{?with_dietlibc:BuildRequires:	dietlibc-static}
-%{?with_uClibc:BuildRequires:	uClibc-static >= 0.9.28}
 %{?with_glibc:BuildRequires:	glibc-static}
 %{?with_klibc:BuildRequires:	klibc-static}
 %{?with_klibc:BuildRequires:	linux-libc-headers}
+%{?with_uClibc:BuildRequires:	uClibc-static >= 0.9.28}
 %endif
-Requires:	libvolume_id = %{epoch}:%{version}-%{release}
 Requires:	coreutils
+Requires:	libvolume_id = %{epoch}:%{version}-%{release}
 Provides:	dev = 3.0.0
 Obsoletes:	dev
 Obsoletes:	hotplug
@@ -116,7 +116,8 @@ Group:		Development/Libraries
 Requires:	libvolume_id = %{epoch}:%{version}-%{release}
 
 %description -n libvolume_id-devel
-This is the package containing the header files for libvolume_id library.
+This is the package containing the header files for libvolume_id
+library.
 
 %description -n libvolume_id-devel -l pl
 Ten pakiet zawiera pliki nagBówkowe biblioteki libvolume_id.
@@ -245,7 +246,7 @@ install %{SOURCE32} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev_blacklist.conf
 
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_sbindir}
-install -m755 initrd-* $RPM_BUILD_ROOT%{_sbindir}
+install initrd-* $RPM_BUILD_ROOT%{_sbindir}
 ln -s initrd-udev $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
 %endif
 
@@ -297,7 +298,7 @@ fi
 %attr(755,root,root) %{_sbindir}/udevd
 %attr(755,root,root) %{_sbindir}/udevsettle
 %attr(755,root,root) %{_sbindir}/udevtrigger
- 
+
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_prefix}/sbin/*
 
