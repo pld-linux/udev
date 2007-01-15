@@ -28,7 +28,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	103
-Release:	0.4
+Release:	0.5
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -299,8 +299,10 @@ fi
 %attr(755,root,root) %{_sbindir}/udevsettle
 %attr(755,root,root) %{_sbindir}/udevtrigger
 
-%attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_prefix}/sbin/*
+%attr(755,root,root) %{_bindir}/udevinfo
+%attr(755,root,root) %{_bindir}/udevtest
+%attr(755,root,root) %{_prefix}/sbin/udev_import_usermap
+%attr(755,root,root) %{_prefix}/sbin/udevmonitor
 
 %dir %{_sysconfdir}/udev
 %dir %{_sysconfdir}/udev/rules.d
