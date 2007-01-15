@@ -1,7 +1,6 @@
 # TODO
 # - initrd needs love (is probably completly unusable in current form)
 # - initrd build with uclibc on amd64 produces non-working binary (illegal instruction from open("/dev/null"))
-# - rewrite in sh/sed, or move to (tools?) subpackage udev_import_usermap (bc adds perl dep)
 #
 # Conditional build:
 %bcond_without	initrd	# build without udev-initrd
@@ -133,6 +132,14 @@ Static libvolume_id library.
 
 %description -n libvolume_id-static -l pl
 Statyczna biblioteka libvolume_id.
+
+%package tools
+Summary:	udev tools
+Group:		Base
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+
+%description tools
+udev tools - programs not needed for bootup.
 
 %prep
 %setup -q
@@ -301,7 +308,6 @@ fi
 
 %attr(755,root,root) %{_bindir}/udevinfo
 %attr(755,root,root) %{_bindir}/udevtest
-%attr(755,root,root) %{_prefix}/sbin/udev_import_usermap
 %attr(755,root,root) %{_prefix}/sbin/udevmonitor
 
 %dir %{_sysconfdir}/udev
@@ -336,6 +342,10 @@ fi
 %attr(755,root,root) %{_sbindir}/initrd-*
 %attr(755,root,root) %{_sbindir}/udevstart.initrd
 %endif
+
+%files tools
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_prefix}/sbin/udev_import_usermap
 
 %files -n libvolume_id
 %defattr(644,root,root,755)
