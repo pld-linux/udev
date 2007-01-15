@@ -48,7 +48,7 @@ Source8:	%{name}-links.conf
 Source9:	%{name}-early.rules
 Source10:	%{name}-persistent-input.rules
 Source11:	%{name}-persistent-storage.rules
-Source12:       %{name}.blacklist
+Source12:	%{name}.blacklist
 # helpers
 Source20:	%{name}-ieee1394.helper
 Source21:	%{name}-net.helper
@@ -65,18 +65,18 @@ BuildRequires:	libselinux-devel >= 1.17.13
 BuildRequires:	sed >= 4.0
 %if %{with initrd}
 %{?with_dietlibc:BuildRequires:	dietlibc-static}
-%{?with_uClibc:BuildRequires:	uClibc-static >= 0.9.28}
 %{?with_glibc:BuildRequires:	glibc-static}
 %{?with_klibc:BuildRequires:	klibc-static}
 %{?with_klibc:BuildRequires:	linux-libc-headers}
+%{?with_uClibc:BuildRequires:	uClibc-static >= 0.9.28}
 %endif
 Requires:	coreutils
 Provides:	dev = 3.0.0
+# Obsoletes:	dev
 # Obsoletes:	hotplug
 # Obsoletes:	hotplug-input
 # Obsoletes:	hotplug-net
 # Obsoletes:	hotplug-pci
-# Obsoletes:	dev
 Obsoletes:	udev-dev
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -208,7 +208,7 @@ install %{SOURCE12} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev_blacklist.conf
 
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_sbindir}
-install -m755 initrd-udev $RPM_BUILD_ROOT%{_sbindir}/initrd-udev
+install initrd-udev $RPM_BUILD_ROOT%{_sbindir}/initrd-udev
 ln -s initrd-udev $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
 %endif
 
@@ -233,10 +233,10 @@ fi
 
 %dir /lib/udev
 
-# /lib/udev/devices is recommended as a directory where packages or                                                  
-# the user can place real device nodes, which get copied over to /dev at                                                  
-# every boot. This should replace the various solutions with custom config                                                
-# files.    
+# /lib/udev/devices is recommended as a directory where packages or
+# the user can place real device nodes, which get copied over to /dev at
+# every boot. This should replace the various solutions with custom config
+# files.
 %dir /lib/udev/devices
 
 %attr(755,root,root) /lib/udev/create_floppy_devices
@@ -266,7 +266,7 @@ fi
 %attr(755,root,root) %{_sbindir}/udevstart
 %attr(755,root,root) %{_sbindir}/udevsynthesize
 %attr(755,root,root) %{_sbindir}/uevent_listen
- 
+
 %attr(755,root,root) %{_bindir}/udevinfo
 %attr(755,root,root) %{_bindir}/udevtest
 %attr(755,root,root) %{_prefix}/sbin/udevmonitor
