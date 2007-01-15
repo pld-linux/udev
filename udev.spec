@@ -26,13 +26,13 @@
 Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
-Version:	103
-Release:	0.5
+Version:	104
+Release:	1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	7360ce47b5ec3f9fa71f18071ecb8b97
+# Source0-md5:	9bcfc782d40db2b406a9c1172defda8f
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}-hotplug_map.rules
@@ -170,7 +170,6 @@ sed 's/$(CC) -shared/$(LD) -shared/' \
 	EXTRAS="%{static_extras}" \
 	V=1
 
-cp -a udev initrd-udev
 cp -a udevd initrd-udevd
 cp -a udevtrigger initrd-udevtrigger
 cp -a udevsettle initrd-udevsettle
