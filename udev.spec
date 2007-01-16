@@ -27,7 +27,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	104
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -249,6 +249,9 @@ install extras/path_id/path_id $RPM_BUILD_ROOT/lib/udev
 
 # install misc
 install %{SOURCE32} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev_blacklist.conf
+
+# fix man page symlink
+ln -sf udevd.8.gz $RPM_BUILD_ROOT%{_mandir}/man8/udevcontrol.8
 
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_sbindir}
