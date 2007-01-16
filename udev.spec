@@ -251,7 +251,8 @@ install extras/path_id/path_id $RPM_BUILD_ROOT/lib/udev
 install %{SOURCE32} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev_blacklist.conf
 
 # fix man page symlink
-ln -sf udevd.8.gz $RPM_BUILD_ROOT%{_mandir}/man8/udevcontrol.8
+rm -f $RPM_BUILD_ROOT%{_mandir}/man8/udevcontrol.8
+echo '.so udevd.8' > $RPM_BUILD_ROOT%{_mandir}/man8/udevcontrol.8
 
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_sbindir}
