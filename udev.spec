@@ -135,11 +135,15 @@ Statyczna biblioteka libvolume_id.
 
 %package tools
 Summary:	udev tools
+Summary(pl):	Narzêdzia udev
 Group:		Base
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description tools
 udev tools - programs not needed for bootup.
+
+%description tools -l pl
+Narzêdzia udev - programy nie wymagane do startu systemu.
 
 %prep
 %setup -q
