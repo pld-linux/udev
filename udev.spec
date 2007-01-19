@@ -27,7 +27,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	104
-Release:	2
+Release:	3
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -261,7 +261,7 @@ echo '.so udevd.8' > $RPM_BUILD_ROOT%{_mandir}/man8/udevcontrol.8
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_sbindir}
 install initrd-* $RPM_BUILD_ROOT%{_sbindir}
-ln -s initrd-udev $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
+ln -s initrd-udevd $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
 %endif
 
 %clean
