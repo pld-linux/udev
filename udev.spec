@@ -174,6 +174,7 @@ sed 's/$(CC) -shared/$(LD) -shared/' \
 	EXTRAS="%{static_extras}" \
 	V=1
 
+cp -a udev initrd-udev
 cp -a udevd initrd-udevd
 cp -a udevtrigger initrd-udevtrigger
 cp -a udevsettle initrd-udevsettle
@@ -261,7 +262,7 @@ echo '.so udevd.8' > $RPM_BUILD_ROOT%{_mandir}/man8/udevcontrol.8
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_sbindir}
 install initrd-* $RPM_BUILD_ROOT%{_sbindir}
-ln -s initrd-udevd $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
+ln -s initrd-udev $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
 %endif
 
 %clean
