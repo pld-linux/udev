@@ -9,6 +9,7 @@
 %bcond_with	dietlibc	# link initrd version with static dietlibc (currently broken and unsupported)
 %bcond_with	glibc	# link initrd version with static glibc
 %bcond_without	main	# don't compile main package, use for debugging initrd build
+%bcond_without  selinux # build without SELinux support
 
 # if one of the *libc is enabled disable default uClibc
 %if %{with dietlibc} && %{with uClibc}
@@ -52,7 +53,7 @@ Source31:	%{name}-usb.handmap
 Source32:	%{name}.blacklist
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 BuildRequires:	device-mapper-devel
-BuildRequires:	libselinux-devel >= 1.17.13
+%{?with_selinux:BuildRequires:       libselinux-devel >= 1.17.13}
 BuildRequires:	sed >= 4.0
 %if %{with initrd}
 %{?with_dietlibc:BuildRequires:	dietlibc-static}
