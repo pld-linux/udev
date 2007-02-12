@@ -25,7 +25,7 @@
 %endif
 
 Summary:	A userspace implementation of devfs
-Summary(pl):	Implementacja devfs w przestrzeni uøytkownika
+Summary(pl.UTF-8):   Implementacja devfs w przestrzeni u≈ºytkownika
 Name:		udev
 Version:	104
 Release:	3
@@ -81,37 +81,37 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 A userspace implementation of devfs for 2.5 and higher kernels.
 
-%description -l pl
-Implementacja devfs w przestrzeni uøytkownika dla j±der 2.5 i
-wyøszych.
+%description -l pl.UTF-8
+Implementacja devfs w przestrzeni u≈ºytkownika dla jƒÖder 2.5 i
+wy≈ºszych.
 
 %package initrd
 Summary:	A userspace implementation of devfs - static binary for initrd
-Summary(pl):	Implementacja devfs w przestrzeni uøytkownika - statyczna binarka dla initrd
+Summary(pl.UTF-8):   Implementacja devfs w przestrzeni u≈ºytkownika - statyczna binarka dla initrd
 Group:		Base
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description initrd
 A userspace implementation of devfs - static binary for initrd.
 
-%description initrd -l pl
-Implementacja devfs w przestrzeni uøytkownika - statyczna binarka dla
+%description initrd -l pl.UTF-8
+Implementacja devfs w przestrzeni u≈ºytkownika - statyczna binarka dla
 initrd.
 
 %package -n libvolume_id
 Summary:	libvolume_id library
-Summary(pl):	Biblioteka libvolume_id
+Summary(pl.UTF-8):   Biblioteka libvolume_id
 Group:		Libraries
 
 %description -n libvolume_id
 libvolume_id library.
 
-%description -n libvolume_id -l pl
+%description -n libvolume_id -l pl.UTF-8
 Biblioteka libvolume_id.
 
 %package -n libvolume_id-devel
 Summary:	Header files for libvolume_id library
-Summary(pl):	Pliki nag≥Ûwkowe biblioteki libvolume_id
+Summary(pl.UTF-8):   Pliki nag≈Ç√≥wkowe biblioteki libvolume_id
 Group:		Development/Libraries
 Requires:	libvolume_id = %{epoch}:%{version}-%{release}
 
@@ -119,32 +119,32 @@ Requires:	libvolume_id = %{epoch}:%{version}-%{release}
 This is the package containing the header files for libvolume_id
 library.
 
-%description -n libvolume_id-devel -l pl
-Ten pakiet zawiera pliki nagBÛwkowe biblioteki libvolume_id.
+%description -n libvolume_id-devel -l pl.UTF-8
+Ten pakiet zawiera pliki nagB√≥wkowe biblioteki libvolume_id.
 
 %package -n libvolume_id-static
 Summary:	Static libvolume_id library
-Summary(pl):	Statyczna biblioteka libvolume_id
+Summary(pl.UTF-8):   Statyczna biblioteka libvolume_id
 Group:		Development/Libraries
 Requires:	libvolume_id-devel = %{epoch}:%{version}-%{release}
 
 %description -n libvolume_id-static
 Static libvolume_id library.
 
-%description -n libvolume_id-static -l pl
+%description -n libvolume_id-static -l pl.UTF-8
 Statyczna biblioteka libvolume_id.
 
 %package tools
 Summary:	udev tools
-Summary(pl):	NarzÍdzia udev
+Summary(pl.UTF-8):   Narzƒôdzia udev
 Group:		Base
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description tools
 udev tools - programs not needed for bootup.
 
-%description tools -l pl
-NarzÍdzia udev - programy nie wymagane do startu systemu.
+%description tools -l pl.UTF-8
+Narzƒôdzia udev - programy nie wymagane do startu systemu.
 
 %prep
 %setup -q
