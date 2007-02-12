@@ -10,7 +10,7 @@
 %bcond_without	devmapper # does't build multipath-tools
 #
 Summary:	A userspace implementation of devfs
-Summary(pl):	Implementacja devfs w przestrzeni uøytkownika
+Summary(pl.UTF-8):   Implementacja devfs w przestrzeni u≈ºytkownika
 Name:		udev
 Version:	025
 Release:	0.1
@@ -39,21 +39,21 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 A userspace implementation of devfs for 2.5 and higher kernels.
 
-%description -l pl
-Implementacja devfs w przestrzeni uøytkownika dla j±der 2.5 i
-wyøszych.
+%description -l pl.UTF-8
+Implementacja devfs w przestrzeni u≈ºytkownika dla jƒÖder 2.5 i
+wy≈ºszych.
 
 %package initrd
 Summary:	A userspace implementation of devfs - static binary for initrd
-Summary(pl):	Implementacja devfs w przestrzeni uøytkownika - statyczna binarka dla initrd
+Summary(pl.UTF-8):   Implementacja devfs w przestrzeni u≈ºytkownika - statyczna binarka dla initrd
 Group:		Base
 Requires:	%{name} = %{version}-%{release}
 
 %description initrd
 A userspace implementation of devfs - static binary for initrd.
 
-%description initrd -l pl
-Implementacja devfs w przestrzeni uøytkownika - statyczna binarka dla
+%description initrd -l pl.UTF-8
+Implementacja devfs w przestrzeni u≈ºytkownika - statyczna binarka dla
 initrd.
 
 %prep
