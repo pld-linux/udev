@@ -25,7 +25,7 @@
 %endif
 
 Summary:	A userspace implementation of devfs
-Summary(pl.UTF-8):   Implementacja devfs w przestrzeni użytkownika
+Summary(pl.UTF-8):	Implementacja devfs w przestrzeni użytkownika
 Name:		udev
 Version:	104
 Release:	3
@@ -87,7 +87,7 @@ wyższych.
 
 %package initrd
 Summary:	A userspace implementation of devfs - static binary for initrd
-Summary(pl.UTF-8):   Implementacja devfs w przestrzeni użytkownika - statyczna binarka dla initrd
+Summary(pl.UTF-8):	Implementacja devfs w przestrzeni użytkownika - statyczna binarka dla initrd
 Group:		Base
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -100,7 +100,7 @@ initrd.
 
 %package -n libvolume_id
 Summary:	libvolume_id library
-Summary(pl.UTF-8):   Biblioteka libvolume_id
+Summary(pl.UTF-8):	Biblioteka libvolume_id
 Group:		Libraries
 
 %description -n libvolume_id
@@ -111,7 +111,7 @@ Biblioteka libvolume_id.
 
 %package -n libvolume_id-devel
 Summary:	Header files for libvolume_id library
-Summary(pl.UTF-8):   Pliki nagłówkowe biblioteki libvolume_id
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki libvolume_id
 Group:		Development/Libraries
 Requires:	libvolume_id = %{epoch}:%{version}-%{release}
 
@@ -124,7 +124,7 @@ Ten pakiet zawiera pliki nagBówkowe biblioteki libvolume_id.
 
 %package -n libvolume_id-static
 Summary:	Static libvolume_id library
-Summary(pl.UTF-8):   Statyczna biblioteka libvolume_id
+Summary(pl.UTF-8):	Statyczna biblioteka libvolume_id
 Group:		Development/Libraries
 Requires:	libvolume_id-devel = %{epoch}:%{version}-%{release}
 
@@ -136,7 +136,7 @@ Statyczna biblioteka libvolume_id.
 
 %package tools
 Summary:	udev tools
-Summary(pl.UTF-8):   Narzędzia udev
+Summary(pl.UTF-8):	Narzędzia udev
 Group:		Base
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
