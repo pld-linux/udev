@@ -30,7 +30,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	079
-Release:	6
+Release:	7
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -110,6 +110,9 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description tools
 udev tools - programs not needed for bootup.
+
+%description tools -l pl
+Narzêdzia udev - programy nie wymagane do startu systemu.
 
 %prep
 %setup -q
