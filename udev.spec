@@ -40,7 +40,7 @@ Source1:	%{name}.rules
 Source2:	%{name}.conf
 Source3:	start_udev
 Source4:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/uevent_listen.c
-# Source4-md5:	6e216e1c77ef4dee0ae3756e269171f7
+# Source4-md5:	4acb96094bc60cbdca72daa4c3e0152f
 Source5:	%{name}_import_usermap
 Source6:	%{name}-modprobe.rules
 Source7:	%{name}-hotplug_map.rules
