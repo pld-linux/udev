@@ -76,8 +76,8 @@ Conflicts:	kernel < 3:2.6.15
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
-%define		extras		extras/ata_id extras/cdrom_id extras/dasd_id extras/edd_id extras/floppy extras/firmware extras/scsi_id extras/usb_id extras/volume_id
-%define		static_extras	extras/ata_id extras/cdrom_id extras/dasd_id extras/edd_id extras/scsi_id extras/usb_id extras/volume_id
+%define		extras		extras/ata_id extras/cdrom_id extras/dasd_id extras/edd_id extras/floppy extras/firmware extras/path_id extras/run_directory extras/scsi_id extras/usb_id extras/volume_id
+%define		static_extras	extras/ata_id extras/cdrom_id extras/dasd_id extras/edd_id extras/floppy extras/scsi_id extras/usb_id extras/run_directory extras/volume_id
 
 %description
 A userspace implementation of devfs for 2.5 and higher kernels.
@@ -151,8 +151,7 @@ Narzędzia udev - programy nie wymagane do startu systemu.
 %setup -q
 %patch0 -p1
 
-sed 's/$(CC) -shared/$(LD) -shared/' \
-	 -i extras/volume_id/lib/Makefile
+sed 's/$(CC) -shared/$(LD) -shared/' -i extras/volume_id/lib/Makefile
 
 %build
 %if %{with initrd}
@@ -205,8 +204,6 @@ cp -a extras/volume_id/vol_id initrd-vol_id
 %if %{with main}
 %{__make} \
 	udevdir=/dev \
-	libdir=/%{_lib} \
-	usrlibdir=%{_libdir} \
 	CC="%{__cc}" \
 	LD="%{__cc} %{rpmldflags}" \
 	DEBUG=%{!?debug:false}%{?debug:true} \
@@ -222,12 +219,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{with main}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/{modprobe.d,udev/rules.d} \
-	$RPM_BUILD_ROOT/lib/udev/devices
+	$RPM_BUILD_ROOT/%{_lib}/udev/devices
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
 	initdir=/etc/rc.d/init.d \
 	libdir=/%{_lib} \
+	libudevdir=/%{_lib}/udev \
 	usrlibdir=%{_libdir} \
 	EXTRAS="%{extras}"
 
@@ -250,9 +248,10 @@ install %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
 
 # install executables (scripts, helpers, etc.)
 install %{SOURCE20} $RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap
-install %{SOURCE21} $RPM_BUILD_ROOT/lib/udev/net_helper
+install %{SOURCE21} $RPM_BUILD_ROOT/%{_lib}/udev/net_helper
 install %{SOURCE22} $RPM_BUILD_ROOT%{_sbindir}/start_udev
-install extras/path_id/path_id $RPM_BUILD_ROOT/lib/udev
+
+install extras/path_id/path_id $RPM_BUILD_ROOT/%{_lib}/udev
 %endif
 
 # install misc
@@ -289,27 +288,29 @@ fi
 %doc ChangeLog FAQ README RELEASE-NOTES TODO
 %doc docs/{overview,udev_vs_devfs,writing_udev_rules}
 
-%dir /lib/udev
+%dir /%{_lib}/udev
 
-# /lib/udev/devices is recommended as a directory where packages or
+# /%{_lib}/udev/devices is recommended as a directory where packages or
 # the user can place real device nodes, which get copied over to /dev at
 # every boot. This should replace the various solutions with custom config
 # files.
-%dir /lib/udev/devices
+%dir /%{_lib}/udev/devices
 
-%attr(755,root,root) /lib/udev/create_floppy_devices
-%attr(755,root,root) /lib/udev/firmware.sh
+%attr(755,root,root) /%{_lib}/udev/create_floppy_devices
+%attr(755,root,root) /%{_lib}/udev/firmware.sh
 
-%attr(755,root,root) /lib/udev/*_helper
+%attr(755,root,root) /%{_lib}/udev/*_helper
 
-%attr(755,root,root) /lib/udev/ata_id
-%attr(755,root,root) /lib/udev/cdrom_id
-%attr(755,root,root) /lib/udev/dasd_id
-%attr(755,root,root) /lib/udev/edd_id
-%attr(755,root,root) /lib/udev/path_id
-%attr(755,root,root) /lib/udev/scsi_id
-%attr(755,root,root) /lib/udev/usb_id
-%attr(755,root,root) /lib/udev/vol_id
+%attr(755,root,root) /%{_lib}/udev/udev_run_devd
+%attr(755,root,root) /%{_lib}/udev/udev_run_hotplugd
+%attr(755,root,root) /%{_lib}/udev/ata_id
+%attr(755,root,root) /%{_lib}/udev/cdrom_id
+%attr(755,root,root) /%{_lib}/udev/dasd_id
+%attr(755,root,root) /%{_lib}/udev/edd_id
+%attr(755,root,root) /%{_lib}/udev/path_id
+%attr(755,root,root) /%{_lib}/udev/scsi_id
+%attr(755,root,root) /%{_lib}/udev/usb_id
+%attr(755,root,root) /%{_lib}/udev/vol_id
 
 %attr(755,root,root) %{_sbindir}/start_udev
 %attr(755,root,root) %{_sbindir}/udevcontrol
