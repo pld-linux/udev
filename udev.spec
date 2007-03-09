@@ -51,6 +51,7 @@ Source22:	start_udev
 Source30:	%{name}-usb.distmap
 Source31:	%{name}-usb.handmap
 Source32:	%{name}.blacklist
+Patch0:		%{name}-lib64.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 BuildRequires:	device-mapper-devel
 %{?with_selinux:BuildRequires:       libselinux-devel >= 1.17.13}
@@ -148,6 +149,8 @@ Narzędzia udev - programy nie wymagane do startu systemu.
 
 %prep
 %setup -q
+%patch0 -p1
+
 sed 's/$(CC) -shared/$(LD) -shared/' \
 	 -i extras/volume_id/lib/Makefile
 
