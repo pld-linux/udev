@@ -27,13 +27,13 @@
 Summary:	A userspace implementation of devfs
 Summary(pl.UTF-8):	Implementacja devfs w przestrzeni użytkownika
 Name:		udev
-Version:	106
+Version:	108
 Release:	1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	320ccd2d0f4540d10e021bafa14f8985
+# Source0-md5:	67935abde67b23e7c6e86e0be77c5e4b
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}-hotplug_map.rules
@@ -76,8 +76,8 @@ Conflicts:	kernel < 3:2.6.15
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
-%define		extras		extras/ata_id extras/cdrom_id extras/dasd_id extras/edd_id extras/floppy extras/firmware extras/path_id extras/run_directory extras/scsi_id extras/usb_id extras/volume_id
-%define		static_extras	extras/ata_id extras/cdrom_id extras/dasd_id extras/edd_id extras/floppy extras/scsi_id extras/usb_id extras/run_directory extras/volume_id
+%define		extras		extras/ata_id extras/cdrom_id extras/edd_id extras/floppy extras/firmware extras/path_id extras/scsi_id extras/usb_id extras/volume_id
+%define		static_extras	extras/ata_id extras/cdrom_id extras/edd_id extras/floppy extras/scsi_id extras/usb_id extras/volume_id
 
 %description
 A userspace implementation of devfs for 2.5 and higher kernels.
@@ -187,7 +187,6 @@ cp -a udevsettle initrd-udevsettle
 %if 0
 cp -a extras/ata_id/ata_id initrd-ata_id
 cp -a extras/cdrom_id/cdrom_id initrd-cdrom_id
-cp -a extras/dasd_id/dasd_id initrd-dasd_id
 cp -a extras/edd_id/edd_id initrd-edd_id
 cp -a extras/scsi_id/scsi_id initrd-scsi_id
 cp -a extras/usb_id/usb_id initrd-usb_id
@@ -203,6 +202,9 @@ cp -a extras/volume_id/vol_id initrd-vol_id
 
 %if %{with main}
 %{__make} \
+	libudevdir=/%{_lib}/udev \
+	libdir=/%{_lib} \
+	usrlibdir=%{_libdir} \
 	udevdir=/dev \
 	CC="%{__cc}" \
 	LD="%{__cc} %{rpmldflags}" \
@@ -224,9 +226,10 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/{modprobe.d,udev/rules.d} \
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
 	initdir=/etc/rc.d/init.d \
-	libdir=/%{_lib} \
-	libudevdir=/%{_lib}/udev \
-	usrlibdir=%{_libdir} \
+        libudevdir=/%{_lib}/udev \
+        libdir=/%{_lib} \
+        usrlibdir=%{_libdir} \
+        udevdir=/dev \
 	EXTRAS="%{extras}"
 
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.rules
@@ -304,11 +307,8 @@ sed -i -e 's#IMPORT{program}="/sbin/#IMPORT{program}="#g' /etc/udev/rules.d/*.ru
 
 %attr(755,root,root) /%{_lib}/udev/*_helper
 
-%attr(755,root,root) /%{_lib}/udev/udev_run_devd
-%attr(755,root,root) /%{_lib}/udev/udev_run_hotplugd
 %attr(755,root,root) /%{_lib}/udev/ata_id
 %attr(755,root,root) /%{_lib}/udev/cdrom_id
-%attr(755,root,root) /%{_lib}/udev/dasd_id
 %attr(755,root,root) /%{_lib}/udev/edd_id
 %attr(755,root,root) /%{_lib}/udev/path_id
 %attr(755,root,root) /%{_lib}/udev/scsi_id
