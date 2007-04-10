@@ -151,7 +151,8 @@ Narzędzia udev - programy nie wymagane do startu systemu.
 %setup -q
 %patch0 -p1
 
-sed 's/$(CC) -shared/$(LD) -shared/' -i extras/volume_id/lib/Makefile
+sed -i -e 's/$(CC) -shared/$(LD) -shared/' extras/volume_id/lib/Makefile
+sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' *.c
 
 %build
 %if %{with initrd}
