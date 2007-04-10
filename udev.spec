@@ -28,7 +28,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl.UTF-8):	Implementacja devfs w przestrzeni użytkownika
 Name:		udev
 Version:	108
-Release:	1
+Release:	1.2
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -152,7 +152,7 @@ Narzędzia udev - programy nie wymagane do startu systemu.
 %patch0 -p1
 
 sed -i -e 's/$(CC) -shared/$(LD) -shared/' extras/volume_id/lib/Makefile
-sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' *.c
+sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' *.c extras/rule_generator/write_*
 
 %build
 %if %{with initrd}
@@ -242,7 +242,7 @@ install etc/udev/rules.d/*.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
 install etc/udev/suse/64-device-mapper.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/40-alsa.rules
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/55-hotplug_map.rules
-install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/51-modprobe.rules
+sed -e 's#/lib/udev/#/%{_lib}/udev/#g' %{SOURCE3} > $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/51-modprobe.rules
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev-default.rules
 install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/10-udev-example.rules
 
