@@ -283,8 +283,9 @@ if [ "$2" = 0 ]; then
 	/sbin/start_udev || exit 0
 fi
 
-%triggerpostun -- udev < 106
+%triggerpostun -- udev < 108
 sed -i -e 's#IMPORT{program}="/sbin/#IMPORT{program}="#g' /etc/udev/rules.d/*.rules
+sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' /etc/udev/rules.d/*.rules
 
 %post	-n libvolume_id -p /sbin/ldconfig
 %postun	-n libvolume_id -p /sbin/ldconfig
