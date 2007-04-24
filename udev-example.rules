@@ -4,9 +4,9 @@
 # ACTION!="add", GOTO="local_end"
 # SUBSYSTEM!="net", GOTO="local_end"
 #
-# DRIVER=="?*", SYSFS{address}=="00:01:02:03:04:05", SYSFS{device}=="0x1111", NAME="wireless"
-# DRIVER=="?*", SYSFS{address}=="00:11:12:13:14:15", SYSFS{device}=="0x2222", NAME="lan"
-# DRIVER=="?*", SYSFS{address}=="00:aa:bb:cc:dd:ee:ff:11", SYSFS{device}=="0x3333", NAME="firewire"
+# KERNEL=="eth?", DRIVER=="?*", SYSFS{address}=="00:01:02:03:04:05", SYSFS{device}=="0x1111", NAME="wireless"
+# KERNEL=="eth?", DRIVER=="?*", SYSFS{address}=="00:11:12:13:14:15", SYSFS{device}=="0x2222", NAME="lan"
+# KERNEL=="eth?", DRIVER=="?*", SYSFS{address}=="00:aa:bb:cc:dd:ee:ff:11", SYSFS{device}=="0x3333", NAME="firewire"
 #
 # LABEL="local_end"
 #
