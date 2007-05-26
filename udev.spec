@@ -248,6 +248,7 @@ install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/10-udev-example.ru
 
 # install configs
 install %{SOURCE10} $RPM_BUILD_ROOT%{_sysconfdir}/udev
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/scripts
 install %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
 
 # install executables (scripts, helpers, etc.)
@@ -259,6 +260,7 @@ install extras/path_id/path_id $RPM_BUILD_ROOT/%{_lib}/udev
 
 install extras/volume_id/lib/*.a $RPM_BUILD_ROOT%{_libdir}
 %endif
+
 
 # install misc
 install %{SOURCE32} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev_blacklist.conf
@@ -330,6 +332,7 @@ sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' /etc/udev/rules.d/*.rules
 %attr(755,root,root) %{_prefix}/sbin/udevmonitor
 
 %dir %{_sysconfdir}/udev
+%dir %{_sysconfdir}/udev/scripts
 %dir %{_sysconfdir}/udev/rules.d
 
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modprobe.d/udev_blacklist.conf
