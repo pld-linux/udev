@@ -1,25 +1,6 @@
---- udev-091/Makefile.lib64	2006-04-25 22:39:59.000000000 +0200
-+++ udev-091/Makefile	2006-05-03 18:16:31.000000000 +0200
-@@ -103,6 +103,8 @@
- libudevdir =	${prefix}/lib/udev
- mandir =	${prefix}/usr/share/man
- configdir =	${etcdir}/udev
-+libdir ?= 	${prefix}/lib
-+usrlibdir ?= 	${prefix}/usr/lib
- udevdir =	/dev
- DESTDIR =
- 
-@@ -179,6 +181,8 @@
- 			RANLIB="$(RANLIB)" \
- 			LIB_OBJS="$(LIB_OBJS)" \
- 			LIBUDEV="$(PWD)/$(LIBUDEV)" \
-+			libdir=$(libdir) \
-+			usrlibdir=$(usrlibdir) \
- 			-C $$target $@ || exit 1; \
- 	done;
- .PHONY: all
---- udev-091/extras/volume_id/lib/Makefile.lib64	2006-05-03 18:15:28.000000000 +0200
-+++ udev-091/extras/volume_id/lib/Makefile	2006-05-03 18:15:53.000000000 +0200
+diff -ur udev-111.org/extras/volume_id/lib/Makefile udev-111/extras/volume_id/lib/Makefile
+--- udev-111.org/extras/volume_id/lib/Makefile	2007-05-10 12:42:56.000000000 +0200
++++ udev-111/extras/volume_id/lib/Makefile	2007-05-26 12:37:34.079711135 +0200
 @@ -4,9 +4,9 @@
  #
  # Released under the GNU General Public License, version 2.
@@ -31,10 +12,11 @@
 +libdir ?=	${prefix}/lib
 +usrlibdir ?=	${prefix}/usr/lib
  
- INSTALL = /usr/bin/install -c
+ INSTALL = install -c
  INSTALL_DATA  = ${INSTALL} -m 644
---- udev-091/extras/volume_id/Makefile.lib64	2006-04-25 22:39:59.000000000 +0200
-+++ udev-091/extras/volume_id/Makefile	2006-05-03 18:16:14.000000000 +0200
+diff -ur udev-111.org/extras/volume_id/Makefile udev-111/extras/volume_id/Makefile
+--- udev-111.org/extras/volume_id/Makefile	2007-05-10 12:42:56.000000000 +0200
++++ udev-111/extras/volume_id/Makefile	2007-05-26 12:38:38.650029152 +0200
 @@ -17,6 +17,9 @@
  libudevdir =	${prefix}/lib/udev
  mandir =	${prefix}/usr/share/man
@@ -43,17 +25,38 @@
 +usrlibdir ?=    ${prefix}/usr/lib
 +
  
- INSTALL = /usr/bin/install -c
+ INSTALL = install -c
  INSTALL_PROGRAM = ${INSTALL}
-@@ -32,7 +35,10 @@
+@@ -34,7 +37,10 @@
  	$(Q) $(CC) -c $(CFLAGS) $< -o $@
  
- lib/libvolume_id.a:
--	$(Q) $(MAKE) -C lib
-+	$(Q) $(MAKE) \
+ lib:
+-	$(Q) $(MAKE) -C $@
++	$(Q) $(MAKE) -C $@ \
 +		libdir=$(libdir) \
-+		usrlibdir=$(usrlibdir) \
-+		-C lib
++		usrlibdir=$(usrlibdir)
++
+ .PHONY: lib
  
- $(PROG): %: $(HEADERS) %.o lib/libvolume_id.a
- 	$(E) "  LD      " $@
+ lib/libvolume_id.a: lib
+diff -ur udev-111.org/Makefile udev-111/Makefile
+--- udev-111.org/Makefile	2007-05-10 12:42:56.000000000 +0200
++++ udev-111/Makefile	2007-05-26 12:37:34.079711135 +0200
+@@ -98,6 +98,8 @@
+ libudevdir =	${prefix}/lib/udev
+ mandir =	${prefix}/usr/share/man
+ configdir =	${etcdir}/udev
++libdir ?= 	${prefix}/lib
++usrlibdir ?= 	${prefix}/usr/lib
+ udevdir =	/dev
+ DESTDIR =
+ 
+@@ -168,6 +170,8 @@
+ 			RANLIB="$(RANLIB)" \
+ 			LIB_OBJS="$(LIB_OBJS)" \
+ 			LIBUDEV="$(PWD)/$(LIBUDEV)" \
++			libdir=$(libdir) \
++			usrlibdir=$(usrlibdir) \
+ 			-C $$target $@ || exit 1; \
+ 	done;
+ .PHONY: all
