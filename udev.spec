@@ -28,7 +28,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl.UTF-8):	Implementacja devfs w przestrzeni użytkownika
 Name:		udev
 Version:	111
-Release:	0.1
+Release:	1
 Epoch:		1
 License:	GPL
 Group:		Base
