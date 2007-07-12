@@ -24,16 +24,16 @@
 %undefine	with_uClibc
 %endif
 
-Summary:	A userspace implementation of devfs
-Summary(pl.UTF-8):	Implementacja devfs w przestrzeni użytkownika
+Summary:	Device manager for the Linux 2.6 kernel series
+Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
-Version:	112
+Version:	113
 Release:	1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	89448564541dec05cfbe4176048f2886
+# Source0-md5:	cb9a227206b9d85ae8cfc88fc51c1710
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}-hotplug_map.rules
@@ -80,11 +80,14 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		static_extras	extras/ata_id extras/cdrom_id extras/edd_id extras/floppy extras/scsi_id extras/usb_id extras/volume_id
 
 %description
-A userspace implementation of devfs for 2.5 and higher kernels.
+udev is the device manager for the Linux 2.6 kernel series. Its
+primary function is managing device nodes in /dev. It is the
+successor of devfs and hotplug.
 
 %description -l pl.UTF-8
-Implementacja devfs w przestrzeni użytkownika dla jąder 2.5 i
-wyższych.
+udev jest zarządcą urządzeń dla Linuksa 2.6. Jego główną funkcją jest
+zarządzanie węzłami urządzeń w katalogu /dev. Jest następcą devfs i
+hotpluga.
 
 %package initrd
 Summary:	A userspace implementation of devfs - static binary for initrd
