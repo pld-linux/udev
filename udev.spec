@@ -11,6 +11,10 @@
 %bcond_without	main	# don't compile main package, use for debugging initrd build
 %bcond_without	selinux	# build without SELinux support
 
+%ifarch sparc sparc64
+%define		with_glibc 1
+%endif
+
 # if one of the *libc is enabled disable default uClibc
 %if %{with dietlibc} && %{with uClibc}
 %undefine	with_uClibc
