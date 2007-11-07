@@ -30,7 +30,7 @@ Summary:	A userspace implementation of devfs
 Summary(pl):	Implementacja devfs w przestrzeni u¿ytkownika
 Name:		udev
 Version:	079
-Release:	9
+Release:	10
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -203,6 +203,8 @@ install extras/scsi-devfs.sh $RPM_BUILD_ROOT/lib/udev
 install extras/path_id $RPM_BUILD_ROOT%{_sbindir}
 install uevent_listen $RPM_BUILD_ROOT%{_sbindir}
 install udevsynthesize $RPM_BUILD_ROOT%{_sbindir}
+mv $RPM_BUILD_ROOT{%{_sbindir},/lib/udev}/scsi_id
+ln -s /lib/udev/scsi_id $RPM_BUILD_ROOT%{_sbindir}
 
 # misc
 install %{SOURCE12} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev_blacklist.conf
@@ -251,6 +253,7 @@ fi
 
 %attr(755,root,root) /lib/udev/udev_ieee1394_helper
 %attr(755,root,root) /lib/udev/udev_net_helper
+%attr(755,root,root) /lib/udev/scsi_id
 
 %attr(755,root,root) %{_sbindir}/ata_id
 %attr(755,root,root) %{_sbindir}/cdrom_id
