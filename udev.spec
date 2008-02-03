@@ -31,13 +31,13 @@
 Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
-Version:	116
-Release:	1
+Version:	118
+Release:	0.1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	02c49d93ffda4a104c853c082138b835
+# Source0-md5:	39ab2404464c7026c65eb878827192b9
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}-hotplug_map.rules
@@ -58,7 +58,7 @@ Source32:	%{name}.blacklist
 Patch0:		%{name}-lib64.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 BuildRequires:	device-mapper-devel
-%{?with_selinux:BuildRequires:       libselinux-devel >= 1.17.13}
+%{?with_selinux:BuildRequires:	libselinux-devel >= 1.17.13}
 BuildRequires:	sed >= 4.0
 %if %{with initrd}
 %{?with_dietlibc:BuildRequires:	dietlibc-static}
@@ -67,14 +67,9 @@ BuildRequires:	sed >= 4.0
 %{?with_klibc:BuildRequires:	linux-libc-headers}
 %{?with_uClibc:BuildRequires:	uClibc-static >= 0.9.28}
 %endif
-Requires:	coreutils
-Requires:	libvolume_id = %{epoch}:%{version}-%{release}
+Requires:	%{name}-core = %{epoch}:%{version}-%{release}
 Provides:	dev = 3.0.0
 Obsoletes:	dev
-Obsoletes:	hotplug
-Obsoletes:	hotplug-input
-Obsoletes:	hotplug-net
-Obsoletes:	hotplug-pci
 Obsoletes:	udev-dev
 Conflicts:	kernel < 3:2.6.15
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -85,13 +80,31 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 udev is the device manager for the Linux 2.6 kernel series. Its
-primary function is managing device nodes in /dev. It is the
-successor of devfs and hotplug.
+primary function is managing device nodes in /dev. It is the successor
+of devfs and hotplug.
 
 %description -l pl.UTF-8
 udev jest zarządcą urządzeń dla Linuksa 2.6. Jego główną funkcją jest
 zarządzanie węzłami urządzeń w katalogu /dev. Jest następcą devfs i
 hotpluga.
+
+%package core
+Summary:	A userspace implementation of devfs - core part of udev
+Summary(pl.UTF-8):	Implementacja devfs w przestrzeni użytkownika - główna część udev
+Group:		Base
+Requires:	coreutils
+Requires:	libvolume_id = %{epoch}:%{version}-%{release}
+Obsoletes:	hotplug
+Obsoletes:	hotplug-input
+Obsoletes:	hotplug-net
+Obsoletes:	hotplug-pci
+Conflicts:	kernel < 3:2.6.15
+
+%description core
+A userspace implementation of devfs - core part of udev.
+
+%description core -l pl.UTF-8
+Implementacja devfs w przestrzeni użytkownika - główna część udev.
 
 %package initrd
 Summary:	A userspace implementation of devfs - static binary for initrd
@@ -146,7 +159,7 @@ Statyczna biblioteka libvolume_id.
 Summary:	udev tools
 Summary(pl.UTF-8):	Narzędzia udev
 Group:		Base
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}-core = %{epoch}:%{version}-%{release}
 
 %description tools
 udev tools - programs not needed for bootup.
@@ -186,8 +199,7 @@ sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' *.c extras/rule_generator/write_*
 	V=1
 
 cp -a udevd initrd-udevd
-cp -a udevtrigger initrd-udevtrigger
-cp -a udevsettle initrd-udevsettle
+cp -a udevadm initrd-udevadm
 
 # What is this FIXME business and why is initrd
 # broken, if it's fine?
@@ -284,7 +296,7 @@ ln -s initrd-udevd $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%triggerpostun -- dev
+%triggerpostun core -- dev
 if [ "$2" = 0 ]; then
 	# need to kill and restart udevd as after obsoleting dev package the
 	# /dev tree will remain empty. umask is needed as otherwise udev will
@@ -293,7 +305,7 @@ if [ "$2" = 0 ]; then
 	/sbin/start_udev || exit 0
 fi
 
-%triggerpostun -- udev < 108
+%triggerpostun core -- udev < 108
 sed -i -e 's#IMPORT{program}="/sbin/#IMPORT{program}="#g' /etc/udev/rules.d/*.rules
 sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' /etc/udev/rules.d/*.rules
 
@@ -302,6 +314,12 @@ sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' /etc/udev/rules.d/*.rules
 
 %if %{with main}
 %files
+%defattr(644,root,root,755)
+%dev(c,1,3) %attr(666,root,root) /dev/null
+%dev(c,5,1) %attr(660,root,console) /dev/console
+%dev(c,1,5) %attr(666,root,root) /dev/zero
+
+%files core
 %defattr(644,root,root,755)
 %doc ChangeLog FAQ README RELEASE-NOTES TODO
 %doc docs/{overview,udev_vs_devfs,writing_udev_rules}
@@ -330,6 +348,7 @@ sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' /etc/udev/rules.d/*.rules
 %attr(755,root,root) %{_sbindir}/start_udev
 %attr(755,root,root) %{_sbindir}/udevcontrol
 %attr(755,root,root) %{_sbindir}/udevd
+%attr(755,root,root) %{_sbindir}/udevadm
 %attr(755,root,root) %{_sbindir}/udevsettle
 %attr(755,root,root) %{_sbindir}/udevtrigger
 
@@ -357,10 +376,6 @@ sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' /etc/udev/rules.d/*.rules
 
 %{_mandir}/man7/*
 %{_mandir}/man8/*
-
-%dev(c,1,3) %attr(666,root,root) /dev/null
-%dev(c,5,1) %attr(660,root,console) /dev/console
-%dev(c,1,5) %attr(666,root,root) /dev/zero
 %endif
 
 %if %{with initrd}
