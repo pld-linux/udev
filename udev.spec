@@ -70,6 +70,10 @@ BuildRequires:	sed >= 4.0
 Requires:	%{name}-core = %{epoch}:%{version}-%{release}
 Provides:	dev = 3.0.0
 Obsoletes:	dev
+Obsoletes:	hotplug
+Obsoletes:	hotplug-input
+Obsoletes:	hotplug-net
+Obsoletes:	hotplug-pci
 Obsoletes:	udev-dev
 Conflicts:	kernel < 3:2.6.15
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -94,10 +98,7 @@ Summary(pl.UTF-8):	Implementacja devfs w przestrzeni użytkownika - główna cz�
 Group:		Base
 Requires:	coreutils
 Requires:	libvolume_id = %{epoch}:%{version}-%{release}
-Obsoletes:	hotplug
-Obsoletes:	hotplug-input
-Obsoletes:	hotplug-net
-Obsoletes:	hotplug-pci
+Requires:	uname(release) >= 2.6.15
 Conflicts:	kernel < 3:2.6.15
 
 %description core
@@ -374,7 +375,7 @@ sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' /etc/udev/rules.d/*.rules
 %{_sysconfdir}/udev/rules.d/10-udev-example.rules
 %{_sysconfdir}/udev/rules.d/55-hotplug_map.rules
 
-%{_mandir}/man7/*
+%{_mandir}/man7/udev.7*
 %{_mandir}/man8/*
 %endif
 
@@ -392,12 +393,13 @@ sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' /etc/udev/rules.d/*.rules
 %files -n libvolume_id
 %defattr(644,root,root,755)
 %attr(755,root,root) /%{_lib}/libvolume_id.so.*.*.*
+%attr(755,root,root) %ghost /%{_lib}/libvolume_id.so.0
 
 %files -n libvolume_id-devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libvolume_id.so
-%{_includedir}/*.h
-%{_pkgconfigdir}/*.pc
+%{_includedir}/libvolume_id.h
+%{_pkgconfigdir}/libvolume_id.pc
 
 %files -n libvolume_id-static
 %defattr(644,root,root,755)
