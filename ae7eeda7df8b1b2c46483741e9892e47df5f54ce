@@ -1,0 +1,2 @@
+- up to 118; try approach with separating core part to udev-core (which can be
+  installed without messing with /dev/ contents)
