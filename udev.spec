@@ -75,7 +75,6 @@ Obsoletes:	hotplug-input
 Obsoletes:	hotplug-net
 Obsoletes:	hotplug-pci
 Obsoletes:	udev-dev
-Conflicts:	kernel < 3:2.6.15
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
@@ -99,7 +98,6 @@ Group:		Base
 Requires:	coreutils
 Requires:	libvolume_id = %{epoch}:%{version}-%{release}
 Requires:	uname(release) >= 2.6.15
-Conflicts:	kernel < 3:2.6.15
 
 %description core
 A userspace implementation of devfs - core part of udev.
