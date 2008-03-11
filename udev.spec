@@ -32,7 +32,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	118
-Release:	2
+Release:	3
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -290,8 +290,6 @@ echo '.so udevd.8' > $RPM_BUILD_ROOT%{_mandir}/man8/udevcontrol.8
 install -d $RPM_BUILD_ROOT%{_sbindir}
 install initrd-* $RPM_BUILD_ROOT%{_sbindir}
 ln -s initrd-udevd $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
-ln -s initrd-udevadm $RPM_BUILD_ROOT%{_sbindir}/initrd-udevsettle
-ln -s initrd-udevadm $RPM_BUILD_ROOT%{_sbindir}/initrd-udevtrigger
 %endif
 
 %clean
