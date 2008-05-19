@@ -32,7 +32,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	120
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -264,6 +264,11 @@ sed -e 's#/lib/udev/#/%{_lib}/udev/#g' %{SOURCE3} > $RPM_BUILD_ROOT%{_sysconfdir
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev-default.rules
 install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/10-udev-example.rules
 
+cat <<EOF >$RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/05-udev-early.rules
+# sysfs is populated after the event is sent
+ACTION=="add", SUBSYSTEM=="scsi", WAIT_FOR_SYSFS="ioerr_cnt"
+EOF
+
 # install configs
 install %{SOURCE10} $RPM_BUILD_ROOT%{_sysconfdir}/udev
 install %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
@@ -359,6 +364,7 @@ sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' /etc/udev/rules.d/*.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modprobe.d/udev_blacklist.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/scsi_id.config
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/links.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/05-udev-early.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-alsa.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/50-udev-default.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/51-modprobe.rules
