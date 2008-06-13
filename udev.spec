@@ -31,13 +31,13 @@
 Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
-Version:	120
-Release:	2
+Version:	124
+Release:	1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	71d10400458de14f6e46f52a1a591532
+# Source0-md5:	4da0471c0ca3a2a2a77692f67120c03d
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}-hotplug_map.rules
@@ -287,10 +287,6 @@ install extras/volume_id/lib/*.a $RPM_BUILD_ROOT%{_libdir}
 # install misc
 install %{SOURCE32} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev_blacklist.conf
 
-# fix man page symlink
-rm -f $RPM_BUILD_ROOT%{_mandir}/man8/udevcontrol.8
-echo '.so udevd.8' > $RPM_BUILD_ROOT%{_mandir}/man8/udevcontrol.8
-
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_sbindir}
 install initrd-* $RPM_BUILD_ROOT%{_sbindir}
@@ -350,11 +346,9 @@ sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' /etc/udev/rules.d/*.rules
 %attr(755,root,root) /%{_lib}/udev/vol_id
 
 %attr(755,root,root) %{_sbindir}/start_udev
-%attr(755,root,root) %{_sbindir}/udevcontrol
 %attr(755,root,root) %{_sbindir}/udevd
 %attr(755,root,root) %{_sbindir}/udevadm
 %attr(755,root,root) %{_sbindir}/udevsettle
-%attr(755,root,root) %{_sbindir}/udevtrigger
 
 %attr(755,root,root) %{_bindir}/udevinfo
 
