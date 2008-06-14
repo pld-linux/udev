@@ -32,7 +32,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	124
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL
 Group:		Base
