@@ -45,8 +45,6 @@ Source2:	%{name}-hotplug_map.rules
 Source3:	%{name}-modprobe.rules
 #Source4:	%{name}.rules
 Source5:	%{name}-example.rules
-# configs
-Source10:	%{name}.conf
 Source11:	%{name}-links.conf
 # scripts / helpers
 Source20:	%{name}_import_usermap
@@ -270,7 +268,6 @@ ACTION=="add", SUBSYSTEM=="scsi", WAIT_FOR_SYSFS="ioerr_cnt"
 EOF
 
 # install configs
-install %{SOURCE10} $RPM_BUILD_ROOT%{_sysconfdir}/udev
 install %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
 
 # install executables (scripts, helpers, etc.)
