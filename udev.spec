@@ -41,19 +41,13 @@ Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.
 # Source0-md5:	27832847086383309bb3acbde2486e29
 # rules
 Source1:	%{name}-alsa.rules
-Source2:	%{name}-hotplug_map.rules
-Source3:	%{name}-modprobe.rules
-#Source4:	%{name}.rules
-Source5:	%{name}-example.rules
-Source11:	%{name}-links.conf
+#Source2:	%{name}.rules
+Source3:	%{name}-links.conf
 # scripts / helpers
-Source20:	%{name}_import_usermap
-Source21:	%{name}-net.helper
-Source22:	start_udev
+Source10:	%{name}-net.helper
+Source11:	start_udev
 # misc
-Source30:	%{name}-usb.distmap
-Source31:	%{name}-usb.handmap
-Source32:	%{name}.blacklist
+Source20:	%{name}.blacklist
 Patch0:		%{name}-lib64.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 BuildRequires:	device-mapper-devel
@@ -153,18 +147,6 @@ Static libvolume_id library.
 %description -n libvolume_id-static -l pl.UTF-8
 Statyczna biblioteka libvolume_id.
 
-%package tools
-Summary:	udev tools
-Summary(pl.UTF-8):	Narzędzia udev
-Group:		Base
-Requires:	%{name}-core = %{epoch}:%{version}-%{release}
-
-%description tools
-udev tools - programs not needed for bootup.
-
-%description tools -l pl.UTF-8
-Narzędzia udev - programy nie wymagane do startu systemu.
-
 %prep
 %setup -q
 %patch0 -p1
@@ -257,32 +239,28 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 # install additional rules
 install rules/suse/64-device-mapper.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/40-alsa.rules
-install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/55-hotplug_map.rules
-sed -e 's#/lib/udev/#/%{_lib}/udev/#g' %{SOURCE3} > $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/51-modprobe.rules
-#install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev-pld.rules
-install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/10-udev-example.rules
+#install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev-pld.rules
 
+# needed on kernels < 2.6.25
 cat <<EOF >$RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/05-udev-early.rules
 # sysfs is populated after the event is sent
 ACTION=="add", SUBSYSTEM=="scsi", WAIT_FOR_SYSFS="ioerr_cnt"
 EOF
 
 # install configs
-install %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
+install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
 
 # install executables (scripts, helpers, etc.)
-install -D %{SOURCE20} $RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap
-install %{SOURCE21} $RPM_BUILD_ROOT/%{_lib}/udev/net_helper
-install %{SOURCE22} $RPM_BUILD_ROOT%{_sbindir}/start_udev
+install %{SOURCE10} $RPM_BUILD_ROOT/%{_lib}/udev/net_helper
+install %{SOURCE11} $RPM_BUILD_ROOT%{_sbindir}/start_udev
 
 install extras/path_id/path_id $RPM_BUILD_ROOT/%{_lib}/udev
 
 install extras/volume_id/lib/*.a $RPM_BUILD_ROOT%{_libdir}
 %endif
 
-
 # install misc
-install %{SOURCE32} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev_blacklist.conf
+install %{SOURCE20} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev_blacklist.conf
 
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_sbindir}
@@ -357,11 +335,8 @@ sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' /etc/udev/rules.d/*.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/links.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/05-udev-early.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-alsa.rules
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/51-modprobe.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/64-device-mapper.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/udev.conf
-%{_sysconfdir}/udev/rules.d/10-udev-example.rules
-%{_sysconfdir}/udev/rules.d/55-hotplug_map.rules
 
 # rules below are NOT supposed to be changed by users
 %dir /%{_lib}/udev/rules.d
@@ -385,10 +360,6 @@ sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' /etc/udev/rules.d/*.rules
 %attr(755,root,root) %{_sbindir}/initrd-*
 %attr(755,root,root) %{_sbindir}/udevstart.initrd
 %endif
-
-%files tools
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_prefix}/sbin/udev_import_usermap
 
 %files -n libvolume_id
 %defattr(644,root,root,755)
