@@ -1,4 +1,5 @@
 # TODO
+# - ! *************** ! SOURCE4 - pld rules needs cleanup (leaving only these that differ from original one; avoid duplication)
 # - initrd needs love (is probably completly unusable in current form)
 # - initrd build with uclibc on amd64 produces non-working binary (illegal instruction from open("/dev/null"))
 #
@@ -32,7 +33,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	125
-Release:	1
+Release:	1.1
 Epoch:		1
 License:	GPL
 Group:		Base
