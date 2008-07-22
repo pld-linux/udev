@@ -31,18 +31,18 @@
 Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
-Version:	124
-Release:	2
+Version:	125
+Release:	1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	4da0471c0ca3a2a2a77692f67120c03d
+# Source0-md5:	27832847086383309bb3acbde2486e29
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}-hotplug_map.rules
 Source3:	%{name}-modprobe.rules
-Source4:	%{name}.rules
+#Source4:	%{name}.rules
 Source5:	%{name}-example.rules
 # configs
 Source10:	%{name}.conf
@@ -255,13 +255,12 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.rules
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.permissions
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 
-# install rules
-install etc/udev/rules.d/*.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
-install etc/udev/suse/64-device-mapper.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
+# install additional rules
+install rules/suse/64-device-mapper.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/40-alsa.rules
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/55-hotplug_map.rules
 sed -e 's#/lib/udev/#/%{_lib}/udev/#g' %{SOURCE3} > $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/51-modprobe.rules
-install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev-default.rules
+#install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev-pld.rules
 install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/10-udev-example.rules
 
 cat <<EOF >$RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/05-udev-early.rules
@@ -322,7 +321,7 @@ sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' /etc/udev/rules.d/*.rules
 %files core
 %defattr(644,root,root,755)
 %doc ChangeLog FAQ README RELEASE-NOTES TODO
-%doc docs/{overview,udev_vs_devfs,writing_udev_rules}
+%doc docs/writing_udev_rules
 
 %dir /%{_lib}/udev
 
@@ -360,19 +359,23 @@ sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' /etc/udev/rules.d/*.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/links.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/05-udev-early.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-alsa.rules
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/50-udev-default.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/51-modprobe.rules
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/60-cdrom_id.rules
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/60-persistent-input.rules
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/60-persistent-storage.rules
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/60-persistent-storage-tape.rules
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/61-persistent-storage-edd.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/64-device-mapper.rules
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/80-drivers.rules
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/95-udev-late.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/udev.conf
 %{_sysconfdir}/udev/rules.d/10-udev-example.rules
 %{_sysconfdir}/udev/rules.d/55-hotplug_map.rules
+
+# rules below are NOT supposed to be changed by users
+%dir /%{_lib}/udev/rules.d
+/%{_lib}/udev/rules.d/50-udev-default.rules
+/%{_lib}/udev/rules.d/60-cdrom_id.rules
+/%{_lib}/udev/rules.d/60-persistent-input.rules
+/%{_lib}/udev/rules.d/60-persistent-storage-tape.rules
+/%{_lib}/udev/rules.d/60-persistent-storage.rules
+/%{_lib}/udev/rules.d/60-persistent-v4l.rules
+/%{_lib}/udev/rules.d/61-persistent-storage-edd.rules
+/%{_lib}/udev/rules.d/80-drivers.rules
+/%{_lib}/udev/rules.d/95-udev-late.rules
 
 %{_mandir}/man7/udev.7*
 %{_mandir}/man8/*
