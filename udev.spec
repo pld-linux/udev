@@ -41,7 +41,7 @@ Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.
 # Source0-md5:	27832847086383309bb3acbde2486e29
 # rules
 Source1:	%{name}-alsa.rules
-#Source2:	%{name}.rules
+Source2:	%{name}.rules
 Source3:	%{name}-links.conf
 # scripts / helpers
 Source10:	%{name}-net.helper
@@ -236,16 +236,19 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.rules
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.permissions
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 
-# install additional rules
-install rules/suse/64-device-mapper.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
-install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/40-alsa.rules
-#install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev-pld.rules
-
 # needed on kernels < 2.6.25
 cat <<EOF >$RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/05-udev-early.rules
 # sysfs is populated after the event is sent
 ACTION=="add", SUBSYSTEM=="scsi", WAIT_FOR_SYSFS="ioerr_cnt"
 EOF
+
+# install additional rules from udev package
+install rules/packages/{40-alsa,40-pilot-links,40-zaptel}.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
+install rules/suse/64-device-mapper.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
+
+# install custom rules from pld package
+install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/40-alsa-restore.rules
+install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/70-udev-pld.rules
 
 # install configs
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
@@ -253,8 +256,6 @@ install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
 # install executables (scripts, helpers, etc.)
 install %{SOURCE10} $RPM_BUILD_ROOT/%{_lib}/udev/net_helper
 install %{SOURCE11} $RPM_BUILD_ROOT%{_sbindir}/start_udev
-
-install extras/path_id/path_id $RPM_BUILD_ROOT/%{_lib}/udev
 
 install extras/volume_id/lib/*.a $RPM_BUILD_ROOT%{_libdir}
 %endif
@@ -335,7 +336,12 @@ sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' /etc/udev/rules.d/*.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/links.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/05-udev-early.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-alsa.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-alsa-restore.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-pilot-links.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-zaptel.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/64-device-mapper.rules
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/70-udev-pld.rules
+
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/udev.conf
 
 # rules below are NOT supposed to be changed by users
