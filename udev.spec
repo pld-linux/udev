@@ -1,5 +1,4 @@
 # TODO
-# - ! *************** ! SOURCE4 - pld rules needs cleanup (leaving only these that differ from original one; avoid duplication)
 # - initrd needs love (is probably completly unusable in current form)
 # - initrd build with uclibc on amd64 produces non-working binary (illegal instruction from open("/dev/null"))
 #
@@ -68,6 +67,7 @@ Obsoletes:	hotplug-input
 Obsoletes:	hotplug-net
 Obsoletes:	hotplug-pci
 Obsoletes:	udev-dev
+Obsoletes:	udev-tools
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
