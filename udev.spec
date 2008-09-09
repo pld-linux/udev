@@ -31,13 +31,13 @@
 Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
-Version:	125
-Release:	1.1
+Version:	127
+Release:	0.1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	27832847086383309bb3acbde2486e29
+# Source0-md5:	59ebde702f1ab557be15ae76d645665b
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}.rules
@@ -47,7 +47,6 @@ Source10:	%{name}-net.helper
 Source11:	start_udev
 # misc
 Source20:	%{name}.blacklist
-Patch0:		%{name}-lib64.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 BuildRequires:	device-mapper-devel
 %{?with_selinux:BuildRequires:	libselinux-devel >= 1.17.13}
@@ -59,6 +58,7 @@ BuildRequires:	sed >= 4.0
 %{?with_klibc:BuildRequires:	linux-libc-headers}
 %{?with_uClibc:BuildRequires:	uClibc-static >= 0.9.28}
 %endif
+BuildRequires:	libxslt-progs
 Requires:	%{name}-core = %{epoch}:%{version}-%{release}
 Provides:	dev = 3.0.0
 Obsoletes:	dev
@@ -111,6 +111,30 @@ A userspace implementation of devfs - static binary for initrd.
 Implementacja devfs w przestrzeni użytkownika - statyczna binarka dla
 initrd.
 
+%package devel
+Summary:	Header files and develpment documentation for udev
+Summary(pl.UTF-8):	Pliki nagłówkowe i dokumetacja do udev
+Group:		Development/Libraries
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+
+%description devel
+Header files and develpment documentation for udev.
+
+%description devel -l pl.UTF-8
+Pliki nagłówkowe i dokumentacja do udev.
+
+%package static
+Summary:	Static udev library
+Summary(pl.UTF-8):	Biblioteka statyczna udev
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
+
+%description static
+Static udev library.
+
+%description static -l pl.UTF-8
+Biblioteka statyczna udev.
+
 %package -n libvolume_id
 Summary:	libvolume_id library
 Summary(pl.UTF-8):	Biblioteka libvolume_id
@@ -149,18 +173,20 @@ Statyczna biblioteka libvolume_id.
 
 %prep
 %setup -q
-%patch0 -p1
-
-sed -i -e 's/$(CC) -shared/$(LD) -shared/' extras/volume_id/lib/Makefile
-sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' *.c extras/rule_generator/write_*
 
 %build
+%configure \
+	%{?debug:--enable-debug} \
+	--exec-prefix="" \
+	--libdir=/%{_lib} \
+	--with-libdir-name=%{_lib} \
+	--with-udev-prefix="" \
+	--enable-shared \
+	--enable-static \
+	--without-selinux \
+	--disable-logging
 %if %{with initrd}
 %{__make} \
-%ifarch athlon
-	ARCH=i386 \
-%endif
-	udevdir=/dev \
 	%{?with_uClibc:CC="%{_target_cpu}-uclibc-gcc"} \
 	%{?with_uClibc:LD="%{_target_cpu}-uclibc-gcc %{rpmldflags} -static"} \
 	%{?with_dietlibc:CC="%{_target_cpu}-dietlibc-gcc"} \
@@ -168,52 +194,28 @@ sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' *.c extras/rule_generator/write_*
 	%{?with_glibc:CC="%{_target_cpu}-pld-linux-gcc"} \
 	%{?with_glibc:LD="%{_target_cpu}-pld-linux-gcc %{rpmldflags} -static"} \
 	%{?with_klibc:KLCC=%{_bindir}/klcc CC="klcc"} \
-	%{?with_klibc:LD="klcc %{rpmldflags} -static"} \
-	DEBUG=%{!?debug:false}%{?debug:true} \
-	STRIP="/bin/true" \
-	USE_KLIBC=%{!?with_klibc:false}%{?with_klibc:true} \
-	USE_LOG=false \
-	USE_SELINUX=false \
-	USE_STATIC=true \
-	EXTRAS="%{static_extras}" \
-	V=1
+	%{?with_klibc:LD="klcc %{rpmldflags} -static"}
 
-cp -a udevd initrd-udevd
-cp -a udevadm initrd-udevadm
-
-# What is this FIXME business and why is initrd
-# broken, if it's fine?
-# FIXME, cause I'm broken - your initrd
-%if 0
-cp -a extras/ata_id/ata_id initrd-ata_id
-cp -a extras/cdrom_id/cdrom_id initrd-cdrom_id
-cp -a extras/edd_id/edd_id initrd-edd_id
-cp -a extras/scsi_id/scsi_id initrd-scsi_id
-cp -a extras/usb_id/usb_id initrd-usb_id
-cp -a extras/volume_id/vol_id initrd-vol_id
-%endif
+%{__make} install
+	DESTDIR=$(pwd)/udev-initrd
 
 %if %{with main}
-%{__make} clean \
-	EXTRAS="%{static_extras}" \
-	V=1
+%{__make} clean
 %endif
 %endif
 
 %if %{with main}
-%{__make} \
-	libudevdir=/%{_lib}/udev \
-	libdir=/%{_lib} \
-	usrlibdir=%{_libdir} \
-	udevdir=/dev \
-	CC="%{__cc}" \
-	LD="%{__cc} %{rpmldflags}" \
-	DEBUG=%{!?debug:false}%{?debug:true} \
-	OPTFLAGS="%{rpmcflags}" \
-	USE_KLIBC=false \
-	USE_LOG=true \
-	EXTRAS="%{extras}" \
-	V=1
+%configure \
+	%{?debug:--enable-debug} \
+	--exec-prefix="" \
+	--libdir=/%{_lib} \
+	--with-libdir-name=%{_lib} \
+	--with-udev-prefix="" \
+	--enable-shared \
+	--enable-static \
+	--with-selinux \
+	--enable-logging
+%{__make}
 %endif
 
 %install
@@ -221,16 +223,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{with main}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/{modprobe.d,udev/rules.d} \
-	$RPM_BUILD_ROOT/%{_lib}/udev/devices
+	$RPM_BUILD_ROOT/lib/udev/devices
 
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT \
-	initdir=/etc/rc.d/init.d \
-        libudevdir=/%{_lib}/udev \
-        libdir=/%{_lib} \
-        usrlibdir=%{_libdir} \
-        udevdir=/dev \
-	EXTRAS="%{extras}"
+	DESTDIR=$RPM_BUILD_ROOT
 
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.rules
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.permissions
@@ -254,10 +250,8 @@ install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/70-udev-pld.rules
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
 
 # install executables (scripts, helpers, etc.)
-install %{SOURCE10} $RPM_BUILD_ROOT/%{_lib}/udev/net_helper
+install %{SOURCE10} $RPM_BUILD_ROOT/lib/udev/net_helper
 install %{SOURCE11} $RPM_BUILD_ROOT%{_sbindir}/start_udev
-
-install extras/volume_id/lib/*.a $RPM_BUILD_ROOT%{_libdir}
 %endif
 
 # install misc
@@ -283,7 +277,10 @@ fi
 
 %triggerpostun core -- udev < 108
 sed -i -e 's#IMPORT{program}="/sbin/#IMPORT{program}="#g' /etc/udev/rules.d/*.rules
-sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' /etc/udev/rules.d/*.rules
+sed -i -e 's#/lib/udev/#/lib/udev/#g' /etc/udev/rules.d/*.rules
+
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
 
 %post	-n libvolume_id -p /sbin/ldconfig
 %postun	-n libvolume_id -p /sbin/ldconfig
@@ -297,36 +294,37 @@ sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' /etc/udev/rules.d/*.rules
 
 %files core
 %defattr(644,root,root,755)
-%doc ChangeLog FAQ README RELEASE-NOTES TODO
-%doc docs/writing_udev_rules
+%doc ChangeLog TODO docs/writing_udev_rules
 
-%dir /%{_lib}/udev
+%dir /lib/udev
 
-# /%{_lib}/udev/devices is recommended as a directory where packages or
+# /lib/udev/devices is recommended as a directory where packages or
 # the user can place real device nodes, which get copied over to /dev at
 # every boot. This should replace the various solutions with custom config
 # files.
-%dir /%{_lib}/udev/devices
+%dir /lib/udev/devices
 
-%attr(755,root,root) /%{_lib}/udev/create_floppy_devices
-%attr(755,root,root) /%{_lib}/udev/firmware.sh
+%attr(755,root,root) /lib/udev/create_floppy_devices
+%attr(755,root,root) /lib/udev/collect
+%attr(755,root,root) /lib/udev/firmware.sh
+%attr(755,root,root) /lib/udev/fstab_import
 
-%attr(755,root,root) /%{_lib}/udev/*_helper
+%attr(755,root,root) /lib/udev/*_helper
+%attr(755,root,root) /lib/udev/*_rules
 
-%attr(755,root,root) /%{_lib}/udev/ata_id
-%attr(755,root,root) /%{_lib}/udev/cdrom_id
-%attr(755,root,root) /%{_lib}/udev/edd_id
-%attr(755,root,root) /%{_lib}/udev/path_id
-%attr(755,root,root) /%{_lib}/udev/scsi_id
-%attr(755,root,root) /%{_lib}/udev/usb_id
-%attr(755,root,root) /%{_lib}/udev/vol_id
+%attr(755,root,root) /lib/udev/ata_id
+%attr(755,root,root) /lib/udev/cdrom_id
+%attr(755,root,root) /lib/udev/edd_id
+%attr(755,root,root) /lib/udev/path_id
+%attr(755,root,root) /lib/udev/scsi_id
+%attr(755,root,root) /lib/udev/usb_id
+%attr(755,root,root) /lib/udev/vol_id
 
 %attr(755,root,root) %{_sbindir}/start_udev
 %attr(755,root,root) %{_sbindir}/udevd
 %attr(755,root,root) %{_sbindir}/udevadm
-%attr(755,root,root) %{_sbindir}/udevsettle
 
-%attr(755,root,root) %{_bindir}/udevinfo
+%attr(755,root,root) /%{_lib}/libudev.so.*
 
 %dir %{_sysconfdir}/udev
 %dir %{_sysconfdir}/udev/rules.d
@@ -345,19 +343,33 @@ sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' /etc/udev/rules.d/*.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/udev.conf
 
 # rules below are NOT supposed to be changed by users
-%dir /%{_lib}/udev/rules.d
-/%{_lib}/udev/rules.d/50-udev-default.rules
-/%{_lib}/udev/rules.d/60-cdrom_id.rules
-/%{_lib}/udev/rules.d/60-persistent-input.rules
-/%{_lib}/udev/rules.d/60-persistent-storage-tape.rules
-/%{_lib}/udev/rules.d/60-persistent-storage.rules
-/%{_lib}/udev/rules.d/60-persistent-v4l.rules
-/%{_lib}/udev/rules.d/61-persistent-storage-edd.rules
-/%{_lib}/udev/rules.d/80-drivers.rules
-/%{_lib}/udev/rules.d/95-udev-late.rules
+/lib/udev/rule_generator.functions
+%dir /lib/udev/rules.d
+/lib/udev/rules.d/50-udev-default.rules
+/lib/udev/rules.d/60-cdrom_id.rules
+/lib/udev/rules.d/60-persistent-input.rules
+/lib/udev/rules.d/60-persistent-storage-tape.rules
+/lib/udev/rules.d/60-persistent-storage.rules
+/lib/udev/rules.d/60-persistent-v4l.rules
+/lib/udev/rules.d/61-persistent-storage-edd.rules
+/lib/udev/rules.d/75-cd-aliases-generator.rules
+/lib/udev/rules.d/75-persistent-net-generator.rules
+/lib/udev/rules.d/79-fstab_import.rules
+/lib/udev/rules.d/80-drivers.rules
+/lib/udev/rules.d/95-udev-late.rules
 
 %{_mandir}/man7/udev.7*
 %{_mandir}/man8/*
+
+%files devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libudev.so
+%{_pkgconfigdir}/*.pc
+%{_includedir}/*.h
+
+%files static
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libudev.a
 %endif
 
 %if %{with initrd}
@@ -370,7 +382,7 @@ sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' /etc/udev/rules.d/*.rules
 %files -n libvolume_id
 %defattr(644,root,root,755)
 %attr(755,root,root) /%{_lib}/libvolume_id.so.*.*.*
-%attr(755,root,root) %ghost /%{_lib}/libvolume_id.so.0
+%attr(755,root,root) %ghost /%{_lib}/libvolume_id.so.[0-9]
 
 %files -n libvolume_id-devel
 %defattr(644,root,root,755)
