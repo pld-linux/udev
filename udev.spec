@@ -3,13 +3,13 @@
 # - initrd build with uclibc on amd64 produces non-working binary (illegal instruction from open("/dev/null"))
 #
 # Conditional build:
-%bcond_without	initrd	# build without udev-initrd
-%bcond_without	uClibc	# link initrd version with static uClibc
-%bcond_with	klibc	# link initrd version with static klibc
+%bcond_without	initrd		# build without udev-initrd
+%bcond_without	uClibc		# link initrd version with static uClibc
+%bcond_with	klibc		# link initrd version with static klibc
 %bcond_with	dietlibc	# link initrd version with static dietlibc (currently broken and unsupported)
-%bcond_with	glibc	# link initrd version with static glibc
-%bcond_without	main	# don't compile main package, use for debugging initrd build
-%bcond_without	selinux	# build without SELinux support
+%bcond_with	glibc		# link initrd version with static glibc
+%bcond_without	main		# don't compile main package, use for debugging initrd build
+%bcond_without	selinux		# build without SELinux support
 
 %ifarch sparc sparc64
 %define		with_glibc 1
@@ -47,6 +47,7 @@ Source10:	%{name}-net.helper
 Source11:	start_udev
 # misc
 Source20:	%{name}.blacklist
+Patch0:		%{name}-err.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 BuildRequires:	device-mapper-devel
 %{?with_selinux:BuildRequires:	libselinux-devel >= 1.17.13}
@@ -88,6 +89,7 @@ hotpluga.
 Summary:	A userspace implementation of devfs - core part of udev
 Summary(pl.UTF-8):	Implementacja devfs w przestrzeni użytkownika - główna część udev
 Group:		Base
+Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	coreutils
 Requires:	libvolume_id = %{epoch}:%{version}-%{release}
 Requires:	uname(release) >= 2.6.15
@@ -111,29 +113,42 @@ A userspace implementation of devfs - static binary for initrd.
 Implementacja devfs w przestrzeni użytkownika - statyczna binarka dla
 initrd.
 
+%package libs
+Summary:	Shared libudev library
+Summary(pl.UTF-8):	Biblioteka współdzielona libudev
+Group:		Libraries
+Requires:	libselinux >= 1.17.13
+
+%description libs
+Shared libudev library.
+
+%description libs -l pl.UTF-8
+Biblioteka współdzielona libudev.
+
 %package devel
-Summary:	Header files and develpment documentation for udev
-Summary(pl.UTF-8):	Pliki nagłówkowe i dokumetacja do udev
+Summary:	Header file for libudev library
+Summary(pl.UTF-8):	Plik nagłówkowy biblioteki libudev
 Group:		Development/Libraries
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
+Requires:	libselinux-devel >= 1.17.13
 
 %description devel
-Header files and develpment documentation for udev.
+Header file for libudev library.
 
 %description devel -l pl.UTF-8
-Pliki nagłówkowe i dokumentacja do udev.
+Plik nagłówkowy biblioteki libudev.
 
 %package static
-Summary:	Static udev library
-Summary(pl.UTF-8):	Biblioteka statyczna udev
+Summary:	Static libudev library
+Summary(pl.UTF-8):	Biblioteka statyczna libudev
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
 
 %description static
-Static udev library.
+Static libudev library.
 
 %description static -l pl.UTF-8
-Biblioteka statyczna udev.
+Biblioteka statyczna libudev.
 
 %package -n libvolume_id
 Summary:	libvolume_id library
@@ -173,30 +188,26 @@ Statyczna biblioteka libvolume_id.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
+%if %{with initrd}
 %configure \
+	%{?with_uClibc:CC="%{_target_cpu}-uclibc-gcc"} \
+	%{?with_dietlibc:CC="%{_target_cpu}-dietlibc-gcc"} \
+	%{?with_klibc:CC="%{_bindir}/klcc"} \
 	%{?debug:--enable-debug} \
 	--exec-prefix="" \
 	--libdir=/%{_lib} \
+	--disable-logging \
+	--disable-shared \
+	--enable-static \
 	--with-libdir-name=%{_lib} \
 	--with-udev-prefix="" \
-	--enable-shared \
-	--enable-static \
-	--without-selinux \
-	--disable-logging
-%if %{with initrd}
-%{__make} \
-	%{?with_uClibc:CC="%{_target_cpu}-uclibc-gcc"} \
-	%{?with_uClibc:LD="%{_target_cpu}-uclibc-gcc %{rpmldflags} -static"} \
-	%{?with_dietlibc:CC="%{_target_cpu}-dietlibc-gcc"} \
-	%{?with_dietlibc:LD="%{_target_cpu}-dietlibc-gcc %{rpmldflags} -static"} \
-	%{?with_glibc:CC="%{_target_cpu}-pld-linux-gcc"} \
-	%{?with_glibc:LD="%{_target_cpu}-pld-linux-gcc %{rpmldflags} -static"} \
-	%{?with_klibc:KLCC=%{_bindir}/klcc CC="klcc"} \
-	%{?with_klibc:LD="klcc %{rpmldflags} -static"}
+	--without-selinux
+%{__make}
 
-%{__make} install
+%{__make} install \
 	DESTDIR=$(pwd)/udev-initrd
 
 %if %{with main}
@@ -209,12 +220,12 @@ Statyczna biblioteka libvolume_id.
 	%{?debug:--enable-debug} \
 	--exec-prefix="" \
 	--libdir=/%{_lib} \
-	--with-libdir-name=%{_lib} \
-	--with-udev-prefix="" \
+	--enable-logging \
 	--enable-shared \
 	--enable-static \
+	--with-libdir-name=%{_lib} \
 	--with-selinux \
-	--enable-logging
+	--with-udev-prefix=""
 %{__make}
 %endif
 
@@ -259,7 +270,8 @@ install %{SOURCE20} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev_blacklist.conf
 
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_sbindir}
-install initrd-* $RPM_BUILD_ROOT%{_sbindir}
+install udev-initrd/sbin/udevadm $RPM_BUILD_ROOT%{_sbindir}/initrd-udevadm
+install udev-initrd/sbin/udevd $RPM_BUILD_ROOT%{_sbindir}/initrd-udevd
 ln -s initrd-udevd $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
 %endif
 
@@ -279,8 +291,8 @@ fi
 sed -i -e 's#IMPORT{program}="/sbin/#IMPORT{program}="#g' /etc/udev/rules.d/*.rules
 sed -i -e 's#/lib/udev/#/lib/udev/#g' /etc/udev/rules.d/*.rules
 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%post	libs -p /sbin/ldconfig
+%postun	libs -p /sbin/ldconfig
 
 %post	-n libvolume_id -p /sbin/ldconfig
 %postun	-n libvolume_id -p /sbin/ldconfig
@@ -324,8 +336,6 @@ sed -i -e 's#/lib/udev/#/lib/udev/#g' /etc/udev/rules.d/*.rules
 %attr(755,root,root) %{_sbindir}/udevd
 %attr(755,root,root) %{_sbindir}/udevadm
 
-%attr(755,root,root) /%{_lib}/libudev.so.*
-
 %dir %{_sysconfdir}/udev
 %dir %{_sysconfdir}/udev/rules.d
 
@@ -361,11 +371,16 @@ sed -i -e 's#/lib/udev/#/lib/udev/#g' /etc/udev/rules.d/*.rules
 %{_mandir}/man7/udev.7*
 %{_mandir}/man8/*
 
+%files libs
+%defattr(644,root,root,755)
+%attr(755,root,root) /%{_lib}/libudev.so.*.*.*
+%attr(755,root,root) %ghost /%{_lib}/libudev.so.0
+
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libudev.so
-%{_pkgconfigdir}/*.pc
-%{_includedir}/*.h
+%{_includedir}/libudev.h
+%{_pkgconfigdir}/libudev.pc
 
 %files static
 %defattr(644,root,root,755)
@@ -382,7 +397,7 @@ sed -i -e 's#/lib/udev/#/lib/udev/#g' /etc/udev/rules.d/*.rules
 %files -n libvolume_id
 %defattr(644,root,root,755)
 %attr(755,root,root) /%{_lib}/libvolume_id.so.*.*.*
-%attr(755,root,root) %ghost /%{_lib}/libvolume_id.so.[0-9]
+%attr(755,root,root) %ghost /%{_lib}/libvolume_id.so.1
 
 %files -n libvolume_id-devel
 %defattr(644,root,root,755)
