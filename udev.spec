@@ -59,7 +59,6 @@ BuildRequires:	sed >= 4.0
 %{?with_uClibc:BuildRequires:	uClibc-static >= 0.9.28}
 %endif
 BuildRequires:	libxslt-progs
-Conflicts:	uname(release) < 2.6.25
 Requires:	%{name}-core = %{epoch}:%{version}-%{release}
 Provides:	dev = 3.0.0
 Obsoletes:	dev
@@ -92,7 +91,7 @@ Group:		Base
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	coreutils
 Requires:	libvolume_id = %{epoch}:%{version}-%{release}
-Requires:	uname(release) >= 2.6.15
+Conflicts:	uname(release) < 2.6.25
 
 %description core
 A userspace implementation of devfs - core part of udev.
