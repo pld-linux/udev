@@ -59,6 +59,7 @@ BuildRequires:	sed >= 4.0
 %{?with_uClibc:BuildRequires:	uClibc-static >= 0.9.28}
 %endif
 BuildRequires:	libxslt-progs
+Conflicts:	uname(release) < 2.6.25
 Requires:	%{name}-core = %{epoch}:%{version}-%{release}
 Provides:	dev = 3.0.0
 Obsoletes:	dev
@@ -240,12 +241,6 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/{modprobe.d,udev/rules.d} \
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.rules
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.permissions
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
-
-# needed on kernels < 2.6.25
-cat <<EOF >$RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/05-udev-early.rules
-# sysfs is populated after the event is sent
-ACTION=="add", SUBSYSTEM=="scsi", WAIT_FOR_SYSFS="ioerr_cnt"
-EOF
 
 # install additional rules from udev package
 install rules/packages/{40-alsa,40-pilot-links,40-zaptel}.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
