@@ -335,7 +335,6 @@ sed -i -e 's#/lib/udev/#/lib/udev/#g' /etc/udev/rules.d/*.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modprobe.d/udev_blacklist.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/scsi_id.config
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/links.conf
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/05-udev-early.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-alsa.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-alsa-restore.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-pilot-links.rules
