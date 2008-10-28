@@ -91,7 +91,7 @@ Group:		Base
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	coreutils
 Requires:	libvolume_id = %{epoch}:%{version}-%{release}
-Conflicts:	uname(release) < 2.6.25
+Requires:	uname(release) >= 2.6.25
 
 %description core
 A userspace implementation of devfs - core part of udev.
