@@ -280,8 +280,10 @@ if [ "$2" = 0 ]; then
 fi
 
 %triggerpostun core -- udev < 108
-sed -i -e 's#IMPORT{program}="/sbin/#IMPORT{program}="#g' /etc/udev/rules.d/*.rules
-sed -i -e 's#/lib/udev/#/lib/udev/#g' /etc/udev/rules.d/*.rules
+%{__sed} -i -e 's#IMPORT{program}="/sbin/#IMPORT{program}="#g' /etc/udev/rules.d/*.rules
+%if "%{_lib}" != "lib"
+%{__sed} -i -e 's#/%{_lib}/udev/#/lib/udev/#g' /etc/udev/rules.d/*.rules
+%endif
 
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
