@@ -32,7 +32,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	132
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -103,7 +103,7 @@ Implementacja devfs w przestrzeni użytkownika - główna część udev.
 Summary:	A userspace implementation of devfs - static binary for initrd
 Summary(pl.UTF-8):	Implementacja devfs w przestrzeni użytkownika - statyczna binarka dla initrd
 Group:		Base
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}-core = %{epoch}:%{version}-%{release}
 
 %description initrd
 A userspace implementation of devfs - static binary for initrd.
