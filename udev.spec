@@ -191,6 +191,9 @@ Statyczna biblioteka libvolume_id.
 %build
 %if %{with initrd}
 %configure \
+%if "%{?configure_cache}" == "1"
+	--cache-file=%{?configure_cache_file}%{!?configure_cache_file:configure}-initrd.cache \
+%endif
 	%{?with_uClibc:CC="%{_target_cpu}-uclibc-gcc"} \
 	%{?with_dietlibc:CC="%{_target_cpu}-dietlibc-gcc"} \
 	%{?with_klibc:CC="%{_bindir}/klcc"} \
