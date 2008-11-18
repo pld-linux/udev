@@ -32,7 +32,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	132
-Release:	2
+Release:	3
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -92,6 +92,7 @@ Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	coreutils
 Requires:	libvolume_id = %{epoch}:%{version}-%{release}
 Requires:	uname(release) >= 2.6.25
+Conflicts:	udev < 1:118-1
 
 %description core
 A userspace implementation of devfs - core part of udev.
