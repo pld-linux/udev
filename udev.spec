@@ -32,7 +32,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	132
-Release:	3
+Release:	4
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -360,7 +360,8 @@ fi
 /lib/udev/rules.d/60-persistent-v4l.rules
 /lib/udev/rules.d/61-persistent-storage-edd.rules
 /lib/udev/rules.d/75-cd-aliases-generator.rules
-/lib/udev/rules.d/75-persistent-net-generator.rules
+# It autogenerates network rules
+# /lib/udev/rules.d/75-persistent-net-generator.rules
 /lib/udev/rules.d/79-fstab_import.rules
 /lib/udev/rules.d/80-drivers.rules
 /lib/udev/rules.d/95-udev-late.rules
