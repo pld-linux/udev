@@ -32,7 +32,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	136
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -207,7 +207,8 @@ Statyczna biblioteka libvolume_id.
 	--with-libdir-name=%{_lib} \
 	--with-udev-prefix="" \
 	--without-selinux
-%{__make}
+%{__make} \
+	LDFLAGS="-all-static"
 
 %{__make} install \
 	DESTDIR=$(pwd)/udev-initrd
