@@ -1,6 +1,7 @@
 # TODO
 # - initrd needs love (is probably completly unusable in current form)
 # - initrd build with uclibc on amd64 produces non-working binary (illegal instruction from open("/dev/null"))
+# - consider adding cdrom, tape, dialout groups to match other distros
 #
 # Conditional build:
 %bcond_without	initrd		# build without udev-initrd
