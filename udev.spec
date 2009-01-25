@@ -272,6 +272,13 @@ install udev-initrd/sbin/udevd $RPM_BUILD_ROOT%{_sbindir}/initrd-udevd
 ln -s initrd-udevd $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
 %endif
 
+# PLDize
+sed -i  -e 's#GROUP="dialout"#GROUP="uucp"#g' \
+	-e 's#GROUP="cdrom"#GROUP="disk"#g' \
+	-e 's#GROUP="tape"#GROUP="disk"#g' \
+	$RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/*.rules \
+	$RPM_BUILD_ROOT/lib/udev/rules.d/*.rules
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
