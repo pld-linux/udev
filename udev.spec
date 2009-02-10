@@ -34,7 +34,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	137
-Release:	3
+Release:	4
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -49,6 +49,7 @@ Source10:	%{name}-net.helper
 Source11:	start_udev
 # misc
 Source20:	%{name}.blacklist
+Patch0:		%{name}-git.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 BuildRequires:	device-mapper-devel
 %{?with_selinux:BuildRequires:	libselinux-devel >= 1.17.13}
@@ -190,6 +191,7 @@ Statyczna biblioteka libvolume_id.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %if %{with initrd}
