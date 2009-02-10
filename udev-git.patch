@@ -1,0 +1,549 @@
+diff --git a/docs/writing_udev_rules/index.html b/docs/writing_udev_rules/index.html
+index 5fedb3f..ca4fb9d 100644
+--- a/docs/writing_udev_rules/index.html
++++ b/docs/writing_udev_rules/index.html
+@@ -52,7 +52,7 @@ The most recent version of this document can always be found at: <br />
+ <li>Finding suitable information from sysfs
+ 	<ul>
+ 	<li><a href="#sysfstree">The sysfs tree</a></li>
+-	<li><a href="#udevinfo">udevinfo</a></li>
++	<li><a href="#udevadm">udevadm info</a></li>
+ 	<li><a href="#sysfsalt">Alternative methods</a></li>
+ 	</ul>
+ </li>
+@@ -429,15 +429,15 @@ In a udev rule, I could use ATTR{size}=="234441648" to identify this disk. As ud
+ Although this serves as a useful introduction as to the structure of sysfs and exactly how udev matches values, manually trawling through sysfs is both time consuming and unnecessary.
+ </p>
+ 
+-<a name="udevinfo"></a>
+-<h3>udevinfo</h3>
++<a name="udevadm"></a>
++<h3>udevadm info</h3>
+ 
+ <p>
+-Enter <em>udevinfo</em>, which is probably the most straightforward tool you can use to construct rules. All you need to know is the sysfs device path of the device in question. A trimmed example is shown below:
++Enter <em>udevadm info</em>, which is probably the most straightforward tool you can use to construct rules. All you need to know is the sysfs device path of the device in question. A trimmed example is shown below:
+ </p>
+ 
+ <blockquote><pre>
+-# udevinfo -a -p /sys/block/sda
++# udevadm info -a -p /sys/block/sda
+ 
+ <span class="green">  looking at device '/block/sda':
+     KERNEL=="sda"
+@@ -476,7 +476,7 @@ Enter <em>udevinfo</em>, which is probably the most straightforward tool you can
+ </pre></blockquote>
+ 
+ <p>
+-As you can see, udevinfo simply produces a list of attributes you can use as-is as match keys in your udev rules. From the above example, I could produce (e.g.) either of the following two rules for this device:
++As you can see, udevadm info simply produces a list of attributes you can use as-is as match keys in your udev rules. From the above example, I could produce (e.g.) either of the following two rules for this device:
+ </p>
+ 
+ <blockquote><pre>
+@@ -495,24 +495,24 @@ You are usually provided with a large number of attributes, and you must pick a
+ </p>
+ 
+ <p>
+-Observe the effects of hierarchy in the udevinfo output. The <span class="green">green</span> section corresponding to the device in question uses the standard match keys such as KERNEL and ATTR. The <span class="blue">blue</span> and <span class="maroon">maroon</span> sections corresponding to parent devices use the parent-traversing variants such as SUBSYSTEMS and ATTRS. This is why the complexity introduced by the hierarchical structure is actually quite easy to deal with, just be sure to use the exact values that udevinfo suggests.
++Observe the effects of hierarchy in the udevadm info output. The <span class="green">green</span> section corresponding to the device in question uses the standard match keys such as KERNEL and ATTR. The <span class="blue">blue</span> and <span class="maroon">maroon</span> sections corresponding to parent devices use the parent-traversing variants such as SUBSYSTEMS and ATTRS. This is why the complexity introduced by the hierarchical structure is actually quite easy to deal with, just be sure to use the exact values that udevadm info suggests.
+ </p>
+ 
+ <p>
+-Another point to note is that it is common for text attributes to appear in the udevinfo output to be padded with spaces (e.g. see ST3120827AS above). In your rules, you can either specify the extra spaces, or you can cut them off as I have done.
++Another point to note is that it is common for text attributes to appear in the udevadm info output to be padded with spaces (e.g. see ST3120827AS above). In your rules, you can either specify the extra spaces, or you can cut them off as I have done.
+ </p>
+ 
+ <p>
+-The only complication with using udevinfo is that you are required to know the top-level device path (/sys/block/sda in the example above). This is not always obvious. However, as you are generally writing rules for device nodes which already exist, you can use udevinfo to look up the device path for you:
++The only complication with using udevadm info is that you are required to know the top-level device path (/sys/block/sda in the example above). This is not always obvious. However, as you are generally writing rules for device nodes which already exist, you can use udevadm info to look up the device path for you:
+ </p>
+ 
+-<blockquote><pre># udevinfo -a -p $(udevinfo -q path -n /dev/sda)</pre></blockquote>
++<blockquote><pre># udevadm info -a -p $(udevadm info -q path -n /dev/sda)</pre></blockquote>
+ 
+ <a name="sysfsalt"></a>
+ <h3>Alternative methods</h3>
+ 
+ <p>
+-Although udevinfo is almost certainly the most straightforward way of listing the exact attributes you can build rules from, some users are happier with other tools. Utilities such as <a href="http://www.kroah.com/linux/usb/">usbview</a> display a similar set of information, most of which can be used in rules.
++Although udevadm info is almost certainly the most straightforward way of listing the exact attributes you can build rules from, some users are happier with other tools. Utilities such as <a href="http://www.kroah.com/linux/usb/">usbview</a> display a similar set of information, most of which can be used in rules.
+ </p>
+ 
+ <h2>Advanced topics</h2>
+@@ -659,11 +659,11 @@ For example, the rule below sets the group ownership on my hard disk node, and e
+ <h3>USB Printer</h3>
+ 
+ <p>
+-I power on my printer, and it is assigned device node <em>/dev/lp0</em>. Not satisfied with such a bland name, I decide to use udevinfo to aid me in writing a rule which will provide an alternative name:
++I power on my printer, and it is assigned device node <em>/dev/lp0</em>. Not satisfied with such a bland name, I decide to use udevadm info to aid me in writing a rule which will provide an alternative name:
+ </p>
+ 
+ <blockquote><pre>
+-# udevinfo -a -p $(udevinfo -q path -n /dev/lp0)
++# udevadm info -a -p $(udevadm info -q path -n /dev/lp0)
+   looking at device '/class/usb/lp0':
+     KERNEL=="lp0"
+     SUBSYSTEM=="usb"
+@@ -695,7 +695,7 @@ Not all cameras work in this way: some of them use a non-storage protocol such a
+ </p>
+ 
+ <p>
+-A common complication with USB camera devices is that they usually identify themselves as a disk with a single partition, in this case <em>/dev/sdb</em> with <em>/dev/sdb1</em>. The sdb node is useless to me, but sdb1 is interesting - this is the one I want to mount. There is a problem here that because sysfs is chained, the useful attributes which udevinfo produces for /dev/sdb1 are identical to the ones for /dev/sdb. This results in your rule potentially matching <u>both</u> the raw disk and the partition, which is not what you want, your rule should be <b>specific</b>.
++A common complication with USB camera devices is that they usually identify themselves as a disk with a single partition, in this case <em>/dev/sdb</em> with <em>/dev/sdb1</em>. The sdb node is useless to me, but sdb1 is interesting - this is the one I want to mount. There is a problem here that because sysfs is chained, the useful attributes which udevadm info produces for /dev/sdb1 are identical to the ones for /dev/sdb. This results in your rule potentially matching <u>both</u> the raw disk and the partition, which is not what you want, your rule should be <b>specific</b>.
+ </p>
+ 
+ <p>
+@@ -703,7 +703,7 @@ To get around this, you simply need to think about what differs between sdb and
+ </p>
+ 
+ <blockquote><pre>
+-# udevinfo -a -p $(udevinfo -q path -n /dev/sdb1)
++# udevadm info -a -p $(udevadm info -q path -n /dev/sdb1)
+   looking at device '/block/sdb/sdb1':
+     KERNEL=="sdb1"
+     SUBSYSTEM=="block"
+@@ -781,7 +781,7 @@ These devices work as USB-serial devices, so by default, you only get the <em>tt
+ <blockquote><pre>SUBSYSTEMS=="usb", ATTRS{product}=="Palm Handheld", KERNEL=="ttyUSB*", SYMLINK+="pilot"</pre></blockquote>
+ 
+ <p>
+-Note that the product string seems to vary from product to product, so make sure that you check (using udevinfo) which one applies to you.
++Note that the product string seems to vary from product to product, so make sure that you check (using udevadm info) which one applies to you.
+ </p>
+ 
+ <a name="example-cdrom"></a>
+@@ -808,11 +808,11 @@ Even though they are referenced by names, network interfaces typically do not ha
+ </p>
+ 
+ <p>
+-It makes sense to simply match the MAC address of your interface in the rule, as this is unique. However, make sure that you use the <em>exact</em> MAC address as shown as udevinfo, because if you do not match the case exactly, your rule will not work.
++It makes sense to simply match the MAC address of your interface in the rule, as this is unique. However, make sure that you use the <em>exact</em> MAC address as shown as udevadm info, because if you do not match the case exactly, your rule will not work.
+ </p>
+ 
+ <blockquote><pre>
+-# udevinfo -a -p /sys/class/net/eth0
++# udevadm info -a -p /sys/class/net/eth0
+   looking at class device '/sys/class/net/eth0':
+     KERNEL=="eth0"
+     ATTR{address}=="00:52:8b:d5:04:48"
+diff --git a/extras/volume_id/lib/ddf_raid.c b/extras/volume_id/lib/ddf_raid.c
+index 58bdae9..32f20ce 100644
+--- a/extras/volume_id/lib/ddf_raid.c
++++ b/extras/volume_id/lib/ddf_raid.c
+@@ -87,7 +87,7 @@ int volume_id_probe_ddf_raid(struct volume_id *id, uint64_t off, uint64_t size)
+ 	return -1;
+ found:
+ 	volume_id_set_uuid(id, ddf->guid, DDF_GUID_LENGTH, UUID_STRING);
+-	snprintf(id->type_version, DDF_REV_LENGTH, "%s", ddf->ddf_rev);
++	snprintf(id->type_version, DDF_REV_LENGTH + 1, "%s", ddf->ddf_rev);
+ 	volume_id_set_usage(id, VOLUME_ID_RAID);
+ 	id->type = "ddf_raid_member";
+ 	return 0;
+diff --git a/extras/volume_id/lib/linux_swap.c b/extras/volume_id/lib/linux_swap.c
+index 1698e9d..53649bd 100644
+--- a/extras/volume_id/lib/linux_swap.c
++++ b/extras/volume_id/lib/linux_swap.c
+@@ -57,6 +57,7 @@ int volume_id_probe_linux_swap(struct volume_id *id, uint64_t off, uint64_t size
+ 				return -1;
+ 
+ 			if (memcmp(buf, "SWAP-SPACE", 10) == 0) {
++				id->type = "swap";
+ 				strcpy(id->type_version, "1");
+ 				goto found;
+ 			}
+diff --git a/rules/gentoo/40-gentoo.rules b/rules/gentoo/40-gentoo.rules
+index 99a1c66..4751b51 100644
+--- a/rules/gentoo/40-gentoo.rules
++++ b/rules/gentoo/40-gentoo.rules
+@@ -1,12 +1,25 @@
+ # do not edit this file, it will be overwritten on update
+ 
+-# capi devices
+-KERNEL=="capi",		NAME="capi20", SYMLINK+="isdn/capi20"
+-KERNEL=="capi*",	NAME="capi/%n"
+-
+ # old devfs path, removing this could break systems
+ # Bug 195839
+ KERNEL=="md[0-9]*",	SYMLINK+="md/%n"
+ KERNEL=="loop[0-9]*",	SYMLINK+="loop/%n"
+ KERNEL=="ram[0-9]*",	SYMLINK+="rd/%n"
+ 
++# keep devices after driver unload
++KERNEL=="ppp", OPTIONS+="ignore_remove"
++KERNEL=="tun", OPTIONS+="ignore_remove"
++
++
++# setting permissions
++SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", GROUP="usb"
++
++# dialout devices
++KERNEL=="ippp*|isdn*|dcbri*|rfcomm*|ttyACM[0-9]*|pilot", GROUP="dialout"
++
++# sound devices (oss)
++SUBSYSTEM=="snd",	GROUP="audio"
++
++# Sony Vaio Jogdial sonypi device
++KERNEL=="sonypi",	MODE="0666"
++
+diff --git a/rules/gentoo/65-permissions.rules b/rules/gentoo/65-permissions.rules
+deleted file mode 100644
+index 173e087..0000000
+--- a/rules/gentoo/65-permissions.rules
++++ /dev/null
+@@ -1,26 +0,0 @@
+-# do not edit this file, it will be overwritten on update
+-
+-SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", GROUP="usb", MODE="664"
+-
+-# cdrom devices
+-ENV{ID_CDROM}=="?*", GROUP="cdrom", MODE="660"
+-KERNEL=="pktcdvd|pktcdvd[0-9]*", GROUP="cdrom", MODE="660"
+-# assign cdrom-permission also to associated generic device (for cd-burning ...)
+-SUBSYSTEMS=="scsi", KERNEL=="sg[0-9]*", ATTRS{type}=="[45]", GROUP="cdrom", MODE="660"
+-
+-
+-# tape devices
+-KERNEL=="st[0-9]*|nst[0-9]*|ht[0-9]*|nht[0-9]*|pt[0-9]*|npt[0-9]*", \
+-	GROUP="tape", MODE="660"
+-SUBSYSTEMS=="scsi", KERNEL=="sg[0-9]*", ATTRS{type}=="[18]", GROUP="tape", MODE="660"
+-
+-# dialout devices
+-KERNEL=="ippp*|isdn*|dcbri*|capi*|rfcomm*|ttyACM[0-9]*", GROUP="uucp"
+-KERNEL=="pilot",	GROUP="uucp"
+-
+-# sound devices (sound=alsa, snd=oss)
+-SUBSYSTEM=="sound|snd",	GROUP="audio"
+-
+-# Sony Vaio Jogdial sonypi device
+-KERNEL=="sonypi",	MODE="0666"
+-
+diff --git a/rules/packages/64-md-raid.rules b/rules/packages/64-md-raid.rules
+index 6fe4d46..def184f 100644
+--- a/rules/packages/64-md-raid.rules
++++ b/rules/packages/64-md-raid.rules
+@@ -11,6 +11,7 @@ KERNEL!="md*", GOTO="md_end"
+ # container devices have a metadata version of e.g. 'external:ddf' and
+ # never leave state 'inactive'
+ ATTR{md/metadata_version}=="external:[A-Za-z]*", ATTR{md/array_state}=="inactive", GOTO="md_ignore_state"
++TEST!="md/array_state", GOTO="md_end"
+ ATTR{md/array_state}=="|clear|inactive", GOTO="md_end"
+ LABEL="md_ignore_state"
+ 
+diff --git a/rules/suse/64-device-mapper.rules b/rules/suse/64-device-mapper.rules
+index e0a63ee..bc5d7ea 100644
+--- a/rules/suse/64-device-mapper.rules
++++ b/rules/suse/64-device-mapper.rules
+@@ -9,7 +9,7 @@ IMPORT{program}="/sbin/dmsetup export -j%M -m%m"
+ ENV{DM_NAME}!="?*", GOTO="device_mapper_end"
+ 
+ SYMLINK+="disk/by-id/dm-name-$env{DM_NAME}", OPTIONS+="string_escape=replace"
+-ENV{DM_UUID}=="?*", SYMLINK+="disk/by-id/dm-uuid-$env{DM_UUID}"
++ENV{DM_UUID}=="?*", SYMLINK+="disk/by-id/dm-uuid-$env{DM_UUID}", OPTIONS+="string_escape=replace"
+ 
+ ENV{DM_STATE}=="SUSPENDED", GOTO="device_mapper_end"
+ ENV{DM_TARGET_TYPES}=="|*error*", GOTO="device_mapper_end"
+diff --git a/test/sys/devices/pci0000:00/0000:00:1f.2/host0/target0:0:0/0:0:0:0/block/sda/test_empty_file b/test/sys/devices/pci0000:00/0000:00:1f.2/host0/target0:0:0/0:0:0:0/block/sda/test_empty_file
+new file mode 100644
+index 0000000..e69de29
+diff --git a/udev/udev-rules.c b/udev/udev-rules.c
+index ccf1eaa..f0b11aa 100644
+--- a/udev/udev-rules.c
++++ b/udev/udev-rules.c
+@@ -1131,7 +1131,6 @@ static int sort_token(struct udev_rules *rules, struct rule_tmp *rule_tmp)
+ static int add_rule(struct udev_rules *rules, char *line,
+ 		    const char *filename, unsigned int filename_off, unsigned int lineno)
+ {
+-	int valid = 0;
+ 	char *linepos;
+ 	char *attr;
+ 	int physdev = 0;
+@@ -1159,7 +1158,6 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 				goto invalid;
+ 			}
+ 			rule_add_key(&rule_tmp, TK_M_ACTION, op, value, NULL);
+-			valid = 1;
+ 			continue;
+ 		}
+ 
+@@ -1169,7 +1167,6 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 				goto invalid;
+ 			}
+ 			rule_add_key(&rule_tmp, TK_M_DEVPATH, op, value, NULL);
+-			valid = 1;
+ 			continue;
+ 		}
+ 
+@@ -1179,7 +1176,6 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 				goto invalid;
+ 			}
+ 			rule_add_key(&rule_tmp, TK_M_KERNEL, op, value, NULL);
+-			valid = 1;
+ 			continue;
+ 		}
+ 
+@@ -1198,7 +1194,6 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 				rule_add_key(&rule_tmp, TK_M_SUBSYSTEM, op, "subsystem|class|bus", NULL);
+ 			} else
+ 				rule_add_key(&rule_tmp, TK_M_SUBSYSTEM, op, value, NULL);
+-			valid = 1;
+ 			continue;
+ 		}
+ 
+@@ -1208,7 +1203,6 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 				goto invalid;
+ 			}
+ 			rule_add_key(&rule_tmp, TK_M_DRIVER, op, value, NULL);
+-			valid = 1;
+ 			continue;
+ 		}
+ 
+@@ -1223,7 +1217,6 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 			} else {
+ 				rule_add_key(&rule_tmp, TK_A_ATTR, op, value, attr);
+ 			}
+-			valid = 1;
+ 			continue;
+ 		}
+ 
+@@ -1234,7 +1227,6 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 				goto invalid;
+ 			}
+ 			rule_add_key(&rule_tmp, TK_M_KERNELS, op, value, NULL);
+-			valid = 1;
+ 			continue;
+ 		}
+ 
+@@ -1245,7 +1237,6 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 				goto invalid;
+ 			}
+ 			rule_add_key(&rule_tmp, TK_M_SUBSYSTEMS, op, value, NULL);
+-			valid = 1;
+ 			continue;
+ 		}
+ 
+@@ -1255,7 +1246,6 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 				goto invalid;
+ 			}
+ 			rule_add_key(&rule_tmp, TK_M_DRIVERS, op, value, NULL);
+-			valid = 1;
+ 			continue;
+ 		}
+ 
+@@ -1277,7 +1267,6 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 				err(rules->udev, "do not reference parent sysfs directories directly, "
+ 				    "it may break with a future kernel, please fix it in %s:%u", filename, lineno);
+ 			rule_add_key(&rule_tmp, TK_M_ATTRS, op, value, attr);
+-			valid = 1;
+ 			continue;
+ 		}
+ 
+@@ -1296,13 +1285,11 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 				if (rule_add_key(&rule_tmp, TK_A_ENV, op, value, attr) != 0)
+ 					goto invalid;
+ 			}
+-			valid = 1;
+ 			continue;
+ 		}
+ 
+ 		if (strcasecmp(key, "PROGRAM") == 0) {
+ 			rule_add_key(&rule_tmp, TK_M_PROGRAM, op, value, NULL);
+-			valid = 1;
+ 			continue;
+ 		}
+ 
+@@ -1312,7 +1299,6 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 				goto invalid;
+ 			}
+ 			rule_add_key(&rule_tmp, TK_M_RESULT, op, value, NULL);
+-			valid = 1;
+ 			continue;
+ 		}
+ 
+@@ -1321,15 +1307,12 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 			if (attr != NULL && strstr(attr, "program")) {
+ 				dbg(rules->udev, "IMPORT will be executed\n");
+ 				rule_add_key(&rule_tmp, TK_M_IMPORT_PROG, op, value, NULL);
+-				valid = 1;
+ 			} else if (attr != NULL && strstr(attr, "file")) {
+ 				dbg(rules->udev, "IMPORT will be included as file\n");
+ 				rule_add_key(&rule_tmp, TK_M_IMPORT_FILE, op, value, NULL);
+-				valid = 1;
+ 			} else if (attr != NULL && strstr(attr, "parent")) {
+ 				dbg(rules->udev, "IMPORT will include the parent values\n");
+ 				rule_add_key(&rule_tmp, TK_M_IMPORT_PARENT, op, value, NULL);
+-				valid = 1;
+ 			} else {
+ 				/* figure it out if it is executable */
+ 				char file[UTIL_PATH_SIZE];
+@@ -1354,11 +1337,9 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 				if (!lstat(file, &statbuf) && (statbuf.st_mode & S_IXUSR)) {
+ 					dbg(rules->udev, "IMPORT will be executed (autotype)\n");
+ 					rule_add_key(&rule_tmp, TK_M_IMPORT_PROG, op, value, NULL);
+-					valid = 1;
+ 				} else {
+ 					dbg(rules->udev, "IMPORT will be included as file (autotype)\n");
+ 					rule_add_key(&rule_tmp, TK_M_IMPORT_FILE, op, value, NULL);
+-					valid = 1;
+ 				}
+ 			}
+ 			continue;
+@@ -1378,7 +1359,6 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 			} else {
+ 				rule_add_key(&rule_tmp, TK_M_TEST, op, value, NULL);
+ 			}
+-			valid = 1;
+ 			continue;
+ 		}
+ 
+@@ -1389,26 +1369,22 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 			if (attr != NULL && strstr(attr, "ignore_error"))
+ 				flag = 1;
+ 			rule_add_key(&rule_tmp, TK_A_RUN, op, value, &flag);
+-			valid = 1;
+ 			continue;
+ 		}
+ 
+ 		if (strcasecmp(key, "WAIT_FOR") == 0 || strcasecmp(key, "WAIT_FOR_SYSFS") == 0) {
+ 			rule_add_key(&rule_tmp, TK_M_WAITFOR, 0, value, NULL);
+-			valid = 1;
+ 			waitfor = 1;
+ 			continue;
+ 		}
+ 
+ 		if (strcasecmp(key, "LABEL") == 0) {
+ 			rule_tmp.rule.rule.label_off = add_string(rules, value);
+-			valid = 1;
+ 			continue;
+ 		}
+ 
+ 		if (strcasecmp(key, "GOTO") == 0) {
+ 			rule_add_key(&rule_tmp, TK_A_GOTO, 0, value, NULL);
+-			valid = 1;
+ 			continue;
+ 		}
+ 
+@@ -1417,7 +1393,7 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 				rule_add_key(&rule_tmp, TK_M_NAME, op, value, NULL);
+ 			} else {
+ 				if (value[0] == '\0')
+-					dbg(rules->udev, "name empty, node creation suppressed\n");
++					info(rules->udev, "name empty, node creation suppressed\n");
+ 				rule_add_key(&rule_tmp, TK_A_NAME, op, value, NULL);
+ 				attr = get_key_attribute(rules->udev, key + sizeof("NAME")-1);
+ 				if (attr != NULL) {
+@@ -1443,7 +1419,6 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 			else
+ 				rule_add_key(&rule_tmp, TK_A_DEVLINK, op, value, NULL);
+ 			rule_tmp.rule.rule.flags = 1;
+-			valid = 1;
+ 			continue;
+ 		}
+ 
+@@ -1461,7 +1436,6 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 				rule_add_key(&rule_tmp, TK_A_OWNER, op, value, NULL);
+ 			}
+ 			rule_tmp.rule.rule.flags = 1;
+-			valid = 1;
+ 			continue;
+ 		}
+ 
+@@ -1479,7 +1453,6 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 				rule_add_key(&rule_tmp, TK_A_GROUP, op, value, NULL);
+ 			}
+ 			rule_tmp.rule.rule.flags = 1;
+-			valid = 1;
+ 			continue;
+ 		}
+ 
+@@ -1493,7 +1466,6 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 			else
+ 				rule_add_key(&rule_tmp, TK_A_MODE, op, value, NULL);
+ 			rule_tmp.rule.rule.flags = 1;
+-			valid = 1;
+ 			continue;
+ 		}
+ 
+@@ -1540,7 +1512,6 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 				rule_add_key(&rule_tmp, TK_A_NUM_FAKE_PART, 0, NULL, &num);
+ 				dbg(rules->udev, "creation of partition nodes requested\n");
+ 			}
+-			valid = 1;
+ 			continue;
+ 		}
+ 		err(rules->udev, "unknown key '%s' in %s:%u\n", key, filename, lineno);
+@@ -1550,10 +1521,6 @@ static int add_rule(struct udev_rules *rules, char *line,
+ 		err(rules->udev, "PHYSDEV* values are deprecated and not available on recent kernels, "
+ 		    "please fix it in %s:%u\n", filename, lineno);
+ 
+-	/* skip line if no valid key was found */
+-	if (!valid)
+-		goto invalid;
+-
+ 	/* add rule token */
+ 	rule_tmp.rule.rule.token_count = 1 + rule_tmp.token_cur;
+ 	if (add_token(rules, &rule_tmp.rule) != 0)
+@@ -2398,24 +2365,19 @@ int udev_rules_apply_to_event(struct udev_rules *rules, struct udev_event *event
+ 					break;
+ 				if (cur->key.op == OP_ASSIGN_FINAL)
+ 					event->name_final = 1;
+-				if (name[0] == '\0') {
+-					free(event->name);
+-					event->name = NULL;
+-					break;
+-				}
+ 				util_strlcpy(name_str, name, sizeof(name_str));
+ 				udev_event_apply_format(event, name_str, sizeof(name_str));
+ 				if (esc == ESCAPE_UNSET || esc == ESCAPE_REPLACE) {
+ 					count = udev_util_replace_chars(name_str, "/");
+ 					if (count > 0)
+ 						info(event->udev, "%i character(s) replaced\n", count);
+-					free(event->name);
+-					event->name = strdup(name_str);
+-					info(event->udev, "NAME '%s' %s:%u\n",
+-					     event->name,
+-					     &rules->buf[rule->rule.filename_off],
+-					     rule->rule.filename_line);
+ 				}
++				free(event->name);
++				event->name = strdup(name_str);
++				info(event->udev, "NAME '%s' %s:%u\n",
++				     event->name,
++				     &rules->buf[rule->rule.filename_off],
++				     rule->rule.filename_line);
+ 				break;
+ 			}
+ 		case TK_A_DEVLINK:
+diff --git a/udev/udev.xml b/udev/udev.xml
+index 4c35e19..6a92154 100644
+--- a/udev/udev.xml
++++ b/udev/udev.xml
+@@ -90,7 +90,7 @@
+           pointing to the node, or run a specified program as part of the event handling.
+           If no matching rule is found, the default device node name is used.</para>
+ 
+-          <para>A rule may consist of a list of one or more key value pairs separated by
++          <para>A rule consists of a list of one or more key value pairs separated by
+           a comma. Each key has a distinct operation, depending on the used operator. Valid
+           operators are:</para>
+           <variablelist>
+@@ -104,7 +104,7 @@
+             <varlistentry>
+               <term><option>!=</option></term>
+               <listitem>
+-                <para>Compare for non-equality.</para>
++                <para>Compare for inequality.</para>
+               </listitem>
+             </varlistentry>
+ 
+diff --git a/udev/udevadm-settle.c b/udev/udevadm-settle.c
+index 8a765f6..867bbed 100644
+--- a/udev/udevadm-settle.c
++++ b/udev/udevadm-settle.c
+@@ -84,6 +84,8 @@ int udevadm_settle(struct udev *udev, int argc, char *argv[])
+ 			break;
+ 		usleep(1000 * 1000 / LOOP_PER_SECOND);
+ 	}
++
++	/* if we reached the timeout, print the list of remaining events */
+ 	if (loop <= 0) {
+ 		struct udev_list_entry *list_entry;
+ 
