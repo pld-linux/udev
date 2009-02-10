@@ -32,7 +32,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	124
-Release:	2
+Release:	2.1
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -55,7 +55,6 @@ Source22:	start_udev
 Source30:	%{name}-usb.distmap
 Source31:	%{name}-usb.handmap
 Source32:	%{name}.blacklist
-Patch0:		%{name}-lib64.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 BuildRequires:	device-mapper-devel
 %{?with_selinux:BuildRequires:	libselinux-devel >= 1.17.13}
@@ -168,10 +167,8 @@ Narzędzia udev - programy nie wymagane do startu systemu.
 
 %prep
 %setup -q
-%patch0 -p1
 
 sed -i -e 's/$(CC) -shared/$(LD) -shared/' extras/volume_id/lib/Makefile
-sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' *.c extras/rule_generator/write_*
 
 %build
 %if %{with initrd}
@@ -200,18 +197,6 @@ sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' *.c extras/rule_generator/write_*
 cp -a udevd initrd-udevd
 cp -a udevadm initrd-udevadm
 
-# What is this FIXME business and why is initrd
-# broken, if it's fine?
-# FIXME, cause I'm broken - your initrd
-%if 0
-cp -a extras/ata_id/ata_id initrd-ata_id
-cp -a extras/cdrom_id/cdrom_id initrd-cdrom_id
-cp -a extras/edd_id/edd_id initrd-edd_id
-cp -a extras/scsi_id/scsi_id initrd-scsi_id
-cp -a extras/usb_id/usb_id initrd-usb_id
-cp -a extras/volume_id/vol_id initrd-vol_id
-%endif
-
 %if %{with main}
 %{__make} clean \
 	EXTRAS="%{static_extras}" \
@@ -221,7 +206,7 @@ cp -a extras/volume_id/vol_id initrd-vol_id
 
 %if %{with main}
 %{__make} \
-	libudevdir=/%{_lib}/udev \
+	libudevdir=/lib/udev \
 	libdir=/%{_lib} \
 	usrlibdir=%{_libdir} \
 	udevdir=/dev \
@@ -240,12 +225,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{with main}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/{modprobe.d,udev/rules.d} \
-	$RPM_BUILD_ROOT/%{_lib}/udev/devices
+	$RPM_BUILD_ROOT/lib/udev/devices
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
 	initdir=/etc/rc.d/init.d \
-        libudevdir=/%{_lib}/udev \
+        libudevdir=/lib/udev \
         libdir=/%{_lib} \
         usrlibdir=%{_libdir} \
         udevdir=/dev \
@@ -260,7 +245,7 @@ install etc/udev/rules.d/*.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
 install etc/udev/suse/64-device-mapper.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/40-alsa.rules
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/55-hotplug_map.rules
-sed -e 's#/lib/udev/#/%{_lib}/udev/#g' %{SOURCE3} > $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/51-modprobe.rules
+install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/51-modprobe.rules
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/50-udev-default.rules
 install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/10-udev-example.rules
 
@@ -275,10 +260,10 @@ install %{SOURCE11} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
 
 # install executables (scripts, helpers, etc.)
 install -D %{SOURCE20} $RPM_BUILD_ROOT%{_prefix}/sbin/udev_import_usermap
-install %{SOURCE21} $RPM_BUILD_ROOT/%{_lib}/udev/net_helper
+install %{SOURCE21} $RPM_BUILD_ROOT/lib/udev/net_helper
 install %{SOURCE22} $RPM_BUILD_ROOT%{_sbindir}/start_udev
 
-install extras/path_id/path_id $RPM_BUILD_ROOT/%{_lib}/udev
+install extras/path_id/path_id $RPM_BUILD_ROOT/lib/udev
 
 install extras/volume_id/lib/*.a $RPM_BUILD_ROOT%{_libdir}
 %endif
@@ -307,7 +292,7 @@ fi
 
 %triggerpostun core -- udev < 108
 sed -i -e 's#IMPORT{program}="/sbin/#IMPORT{program}="#g' /etc/udev/rules.d/*.rules
-sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' /etc/udev/rules.d/*.rules
+sed -i -e 's#/lib/udev/#/lib/udev/#g' /etc/udev/rules.d/*.rules
 
 %post	-n libvolume_id -p /sbin/ldconfig
 %postun	-n libvolume_id -p /sbin/ldconfig
@@ -324,26 +309,26 @@ sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' /etc/udev/rules.d/*.rules
 %doc ChangeLog FAQ README RELEASE-NOTES TODO
 %doc docs/{overview,udev_vs_devfs,writing_udev_rules}
 
-%dir /%{_lib}/udev
+%dir /lib/udev
 
-# /%{_lib}/udev/devices is recommended as a directory where packages or
+# /lib/udev/devices is recommended as a directory where packages or
 # the user can place real device nodes, which get copied over to /dev at
 # every boot. This should replace the various solutions with custom config
 # files.
-%dir /%{_lib}/udev/devices
+%dir /lib/udev/devices
 
-%attr(755,root,root) /%{_lib}/udev/create_floppy_devices
-%attr(755,root,root) /%{_lib}/udev/firmware.sh
+%attr(755,root,root) /lib/udev/create_floppy_devices
+%attr(755,root,root) /lib/udev/firmware.sh
 
-%attr(755,root,root) /%{_lib}/udev/*_helper
+%attr(755,root,root) /lib/udev/*_helper
 
-%attr(755,root,root) /%{_lib}/udev/ata_id
-%attr(755,root,root) /%{_lib}/udev/cdrom_id
-%attr(755,root,root) /%{_lib}/udev/edd_id
-%attr(755,root,root) /%{_lib}/udev/path_id
-%attr(755,root,root) /%{_lib}/udev/scsi_id
-%attr(755,root,root) /%{_lib}/udev/usb_id
-%attr(755,root,root) /%{_lib}/udev/vol_id
+%attr(755,root,root) /lib/udev/ata_id
+%attr(755,root,root) /lib/udev/cdrom_id
+%attr(755,root,root) /lib/udev/edd_id
+%attr(755,root,root) /lib/udev/path_id
+%attr(755,root,root) /lib/udev/scsi_id
+%attr(755,root,root) /lib/udev/usb_id
+%attr(755,root,root) /lib/udev/vol_id
 
 %attr(755,root,root) %{_sbindir}/start_udev
 %attr(755,root,root) %{_sbindir}/udevd
