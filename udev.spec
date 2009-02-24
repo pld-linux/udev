@@ -429,9 +429,9 @@ fi
 
 %files initramfs
 %defattr(644,root,root,755)
-%{_datadir}/initramfs-tools/scripts/init-bottom/udev
-%{_datadir}/initramfs-tools/hooks/udev
-%{_datadir}/initramfs-tools/scripts/init-premount/udev
+%attr(755,root,root) %{_datadir}/initramfs-tools/scripts/init-bottom/udev
+%attr(755,root,root) %{_datadir}/initramfs-tools/hooks/udev
+%attr(755,root,root) %{_datadir}/initramfs-tools/scripts/init-premount/udev
 
 %files -n libvolume_id
 %defattr(644,root,root,755)
