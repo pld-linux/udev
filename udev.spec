@@ -1,8 +1,6 @@
 # TODO
 # - initrd needs love (is probably completly unusable in current form)
 # - initrd build with uclibc on amd64 produces non-working binary (illegal instruction from open("/dev/null"))
-# - rename groups: cdwrite -> cdrom, ttyS -> dialout, and add tape group
-#	to match other distros
 #
 # Conditional build:
 %bcond_without	initrd		# build without udev-initrd
@@ -34,7 +32,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	138
-Release:	4
+Release:	5
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -97,6 +95,7 @@ Group:		Base
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	coreutils
 Requires:	libvolume_id = %{epoch}:%{version}-%{release}
+Requires:	setup >= 2.6.1-1
 Requires:	uname(release) >= 2.6.25
 Conflicts:	udev < 1:118-1
 
@@ -296,13 +295,6 @@ install udev-initrd/sbin/udevadm $RPM_BUILD_ROOT%{_sbindir}/initrd-udevadm
 install udev-initrd/sbin/udevd $RPM_BUILD_ROOT%{_sbindir}/initrd-udevd
 ln -s initrd-udevd $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
 %endif
-
-# PLDize
-sed -i  -e 's#GROUP="dialout"#GROUP="ttyS"#g' \
-	-e 's#GROUP="cdrom"#GROUP="cdwrite"#g' \
-	-e 's#GROUP="tape"#GROUP="disk"#g' \
-	$RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/*.rules \
-	$RPM_BUILD_ROOT/lib/udev/rules.d/*.rules
 
 %clean
 rm -rf $RPM_BUILD_ROOT
