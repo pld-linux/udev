@@ -32,7 +32,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	138
-Release:	7
+Release:	8
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -294,6 +294,16 @@ install -d $RPM_BUILD_ROOT%{_sbindir}
 install udev-initrd/sbin/udevadm $RPM_BUILD_ROOT%{_sbindir}/initrd-udevadm
 install udev-initrd/sbin/udevd $RPM_BUILD_ROOT%{_sbindir}/initrd-udevd
 ln -s initrd-udevd $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
+install udev-initrd/lib/udev/ata_id $RPM_BUILD_ROOT/lib/udev/initrd-ata_id
+install udev-initrd/lib/udev/cdrom_id $RPM_BUILD_ROOT/lib/udev/initrd-cdrom_id
+install udev-initrd/lib/udev/edd_id $RPM_BUILD_ROOT/lib/udev/initrd-edd_id
+install udev-initrd/lib/udev/path_id $RPM_BUILD_ROOT/lib/udev/initrd-path_id
+install udev-initrd/lib/udev/scsi_id $RPM_BUILD_ROOT/lib/udev/initrd-scsi_id
+install udev-initrd/lib/udev/usb_id $RPM_BUILD_ROOT/lib/udev/initrd-usb_id
+install udev-initrd/lib/udev/vol_id $RPM_BUILD_ROOT/lib/udev/initrd-vol_id
+install udev-initrd/lib/udev/collect $RPM_BUILD_ROOT/lib/udev/initrd-collect
+install udev-initrd/lib/udev/create_floppy_devices $RPM_BUILD_ROOT/lib/udev/initrd-create_floppy_devices
+install udev-initrd/lib/udev/fstab_import $RPM_BUILD_ROOT/lib/udev/initrd-fstab_import
 %endif
 
 %clean
@@ -417,6 +427,7 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/initrd-*
 %attr(755,root,root) %{_sbindir}/udevstart.initrd
+%attr(755,root,root) /lib/udev/initrd-*
 %endif
 
 %files initramfs
