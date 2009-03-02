@@ -32,7 +32,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	138
-Release:	5
+Release:	6
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -64,7 +64,7 @@ BuildRequires:	sed >= 4.0
 %endif
 BuildRequires:	libxslt-progs
 Requires:	%{name}-core = %{epoch}:%{version}-%{release}
-Provides:	dev = 3.0.0
+Provides:	dev = 3.5.0
 Obsoletes:	dev
 Obsoletes:	hotplug
 Obsoletes:	hotplug-input
