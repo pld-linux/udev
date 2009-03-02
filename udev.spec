@@ -32,7 +32,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	138
-Release:	6
+Release:	7
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -172,6 +172,7 @@ Biblioteka statyczna libudev.
 Summary:	libvolume_id library
 Summary(pl.UTF-8):	Biblioteka libvolume_id
 Group:		Libraries
+Requires:	%{name}-core = %{epoch}:%{version}-%{release}
 
 %description -n libvolume_id
 libvolume_id library.
