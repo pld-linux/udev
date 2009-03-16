@@ -32,7 +32,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	124
-Release:	4
+Release:	4.1
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -55,6 +55,10 @@ Source22:	start_udev
 Source30:	%{name}-usb.distmap
 Source31:	%{name}-usb.handmap
 Source32:	%{name}.blacklist
+# initramfs
+Source40:	%{name}-initramfs-bottom
+Source41:	%{name}-initramfs-hook
+Source42:	%{name}-initramfs-premount
 Patch0:		%{name}-vol_id-cdrom.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 BuildRequires:	device-mapper-devel
@@ -65,7 +69,7 @@ BuildRequires:	sed >= 4.0
 %{?with_glibc:BuildRequires:	glibc-static}
 %{?with_klibc:BuildRequires:	klibc-static}
 %{?with_klibc:BuildRequires:	linux-libc-headers}
-%{?with_uClibc:BuildRequires:	uClibc-static >= 0.9.28}
+%{?with_uClibc:BuildRequires:	uClibc-static >= 3:0.9.29-23}
 %endif
 Requires:	%{name}-core = %{epoch}:%{version}-%{release}
 Provides:	dev = 3.0.0
@@ -104,6 +108,19 @@ A userspace implementation of devfs - core part of udev.
 
 %description core -l pl.UTF-8
 Implementacja devfs w przestrzeni użytkownika - główna część udev.
+
+%package initramfs
+Summary:	A userspace implementation of devfs - support scripts for initramfs-tools
+Summary(pl.UTF-8):	Implementacja devfs w przestrzeni użytkownika - skrypty dla initramfs-tools
+Group:		Base
+Requires:	%{name}-core = %{epoch}:%{version}-%{release}
+Requires:	initramfs-tools
+
+%description initramfs
+A userspace implementation of devfs - support scripts for initramfs-tools.
+
+%description initramfs -l pl.UTF-8
+Implementacja devfs w przestrzeni użytkownika - skrypty dla initramfs-tools.
 
 %package initrd
 Summary:	A userspace implementation of devfs - static binary for initrd
@@ -227,7 +244,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{with main}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/{modprobe.d,udev/rules.d} \
-	$RPM_BUILD_ROOT/lib/udev/devices
+	$RPM_BUILD_ROOT/lib/udev/devices \
+	$RPM_BUILD_ROOT%{_datadir}/initramfs-tools/{hooks,scripts/init-{bottom,premount}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -273,6 +291,11 @@ install extras/volume_id/lib/*.a $RPM_BUILD_ROOT%{_libdir}
 
 # install misc
 install %{SOURCE32} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev_blacklist.conf
+
+# install support for initramfs-tools
+install %{SOURCE40} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/scripts/init-bottom/udev
+install %{SOURCE41} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/hooks/udev
+install %{SOURCE42} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/scripts/init-premount/udev
 
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_sbindir}
@@ -375,6 +398,12 @@ sed -i -e 's#/lib/udev/#/lib/udev/#g' /etc/udev/rules.d/*.rules
 %files tools
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_prefix}/sbin/udev_import_usermap
+
+%files initramfs
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_datadir}/initramfs-tools/scripts/init-bottom/udev
+%attr(755,root,root) %{_datadir}/initramfs-tools/hooks/udev
+%attr(755,root,root) %{_datadir}/initramfs-tools/scripts/init-premount/udev
 
 %files -n libvolume_id
 %defattr(644,root,root,755)
