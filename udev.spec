@@ -290,20 +290,14 @@ install %{SOURCE31} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/hooks/udev
 install %{SOURCE32} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/scripts/init-premount/udev
 
 %if %{with initrd}
-install -d $RPM_BUILD_ROOT%{_sbindir}
-install udev-initrd/sbin/udevadm $RPM_BUILD_ROOT%{_sbindir}/initrd-udevadm
-install udev-initrd/sbin/udevd $RPM_BUILD_ROOT%{_sbindir}/initrd-udevd
-ln -s initrd-udevd $RPM_BUILD_ROOT%{_sbindir}/udevstart.initrd
-install udev-initrd/lib/udev/ata_id $RPM_BUILD_ROOT/lib/udev/initrd-ata_id
-install udev-initrd/lib/udev/cdrom_id $RPM_BUILD_ROOT/lib/udev/initrd-cdrom_id
-install udev-initrd/lib/udev/edd_id $RPM_BUILD_ROOT/lib/udev/initrd-edd_id
-install udev-initrd/lib/udev/path_id $RPM_BUILD_ROOT/lib/udev/initrd-path_id
-install udev-initrd/lib/udev/scsi_id $RPM_BUILD_ROOT/lib/udev/initrd-scsi_id
-install udev-initrd/lib/udev/usb_id $RPM_BUILD_ROOT/lib/udev/initrd-usb_id
-install udev-initrd/lib/udev/vol_id $RPM_BUILD_ROOT/lib/udev/initrd-vol_id
-install udev-initrd/lib/udev/collect $RPM_BUILD_ROOT/lib/udev/initrd-collect
-install udev-initrd/lib/udev/create_floppy_devices $RPM_BUILD_ROOT/lib/udev/initrd-create_floppy_devices
-install udev-initrd/lib/udev/fstab_import $RPM_BUILD_ROOT/lib/udev/initrd-fstab_import
+install -d $RPM_BUILD_ROOT%{_libdir}/initrd/udev
+install udev-initrd/sbin/udevadm $RPM_BUILD_ROOT%{_libdir}/initrd/udevadm
+install udev-initrd/sbin/udevd $RPM_BUILD_ROOT%{_libdir}/initrd/udevd
+ln -s udevd $RPM_BUILD_ROOT%{_libdir}/initrd/udevstart
+install udev-initrd/lib/udev/*_id $RPM_BUILD_ROOT%{_libdir}/initrd/udev/
+install udev-initrd/lib/udev/collect $RPM_BUILD_ROOT%{_libdir}/initrd/udev/collect
+install udev-initrd/lib/udev/create_floppy_devices $RPM_BUILD_ROOT%{_libdir}/initrd/udev/create_floppy_devices
+install udev-initrd/lib/udev/fstab_import $RPM_BUILD_ROOT%{_libdir}/initrd/udev/fstab_import
 %endif
 
 %clean
@@ -425,9 +419,13 @@ fi
 %if %{with initrd}
 %files initrd
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_sbindir}/initrd-*
-%attr(755,root,root) %{_sbindir}/udevstart.initrd
-%attr(755,root,root) /lib/udev/initrd-*
+%attr(755,root,root) %{_libdir}/initrd/udevd
+%attr(755,root,root) %{_libdir}/initrd/udevadm
+%attr(755,root,root) %{_libdir}/initrd/udevstart
+%attr(755,root,root) %{_libdir}/initrd/udev/*_id
+%attr(755,root,root) %{_libdir}/initrd/udev/collect
+%attr(755,root,root) %{_libdir}/initrd/udev/create_floppy_devices
+%attr(755,root,root) %{_libdir}/initrd/udev/fstab_import
 %endif
 
 %files initramfs
