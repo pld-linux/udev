@@ -110,6 +110,7 @@ Summary:	A userspace implementation of devfs - static binary for initrd
 Summary(pl.UTF-8):	Implementacja devfs w przestrzeni użytkownika - statyczna binarka dla initrd
 Group:		Base
 Requires:	%{name}-core = %{epoch}:%{version}-%{release}
+Conflicts:	geninitrd <= 10000.3
 
 %description initrd
 A userspace implementation of devfs - static binary for initrd.
