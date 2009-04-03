@@ -420,6 +420,7 @@ fi
 %if %{with initrd}
 %files initrd
 %defattr(644,root,root,755)
+%dir %{_libdir}/initrd/udev
 %attr(755,root,root) %{_libdir}/initrd/udevd
 %attr(755,root,root) %{_libdir}/initrd/udevadm
 %attr(755,root,root) %{_libdir}/initrd/udevstart
