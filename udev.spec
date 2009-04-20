@@ -52,6 +52,10 @@ Source30:	%{name}-initramfs-bottom
 Source31:	%{name}-initramfs-hook
 Source32:	%{name}-initramfs-premount
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
+# Fix: http://git.kernel.org/?p=linux/hotplug/udev.git;a=commitdiff;h=e86a923d508c2aed371cdd958ce82489cf2ab615
+BuildRequires:	security(CVE-2009-1185)
+# Fix: http://git.kernel.org/?p=linux/hotplug/udev.git;a=commitdiff;h=662c3110803bd8c1aedacc36788e6fd028944314;hp=4b09a2fc4383f191d96a8d6134b95a4b84aef931
+BuildRequires:	security(CVE-2009-1186)
 BuildRequires:	device-mapper-devel
 %{?with_selinux:BuildRequires:	libselinux-devel >= 1.17.13}
 BuildRequires:	sed >= 4.0
