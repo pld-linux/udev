@@ -31,13 +31,13 @@
 Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
-Version:	140
-Release:	2
+Version:	141
+Release:	1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	7d1e5737a3557849eecd701a7fb068b4
+# Source0-md5:	1670fe81cabf5161319c52084cf81134
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}.rules
@@ -52,10 +52,6 @@ Source30:	%{name}-initramfs-bottom
 Source31:	%{name}-initramfs-hook
 Source32:	%{name}-initramfs-premount
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
-# Fix: http://git.kernel.org/?p=linux/hotplug/udev.git;a=commitdiff;h=e86a923d508c2aed371cdd958ce82489cf2ab615
-BuildRequires:	security(CVE-2009-1185)
-# Fix: http://git.kernel.org/?p=linux/hotplug/udev.git;a=commitdiff;h=662c3110803bd8c1aedacc36788e6fd028944314;hp=4b09a2fc4383f191d96a8d6134b95a4b84aef931
-BuildRequires:	security(CVE-2009-1186)
 BuildRequires:	device-mapper-devel
 %{?with_selinux:BuildRequires:	libselinux-devel >= 1.17.13}
 BuildRequires:	sed >= 4.0
