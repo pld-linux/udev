@@ -1,0 +1,34 @@
+#
+# persistent net rules example:
+#
+# ACTION!="add", GOTO="local_end"
+# SUBSYSTEM!="net", GOTO="local_end"
+#
+# rename network interfaces using mac address
+#
+# KERNEL=="eth?", SYSFS{address}=="00:01:02:03:04:05", NAME="wireless"
+# KERNEL=="eth?", SYSFS{address}=="00:11:12:13:14:15", NAME="lan"
+# KERNEL=="eth?", SYSFS{address}=="00:aa:bb:cc:dd:ee:ff:11", NAME="firewire"
+#
+# LABEL="local_end"
+#
+# persistent CD-ROM rules example:
+#
+# ACTION!="add", GOTO="local_end"
+#
+# BUS=="ide", ID=="0.1", SYMLINK+="cdrom" 
+# BUS=="ide", ID=="0.1", SYMLINK+="dvd" 
+#
+# BUS=="ide", ID=="1.1", SYMLINK+="cdrom1"
+# BUS=="ide", ID=="1.1", SYMLINK+="dvd1"
+# BUS=="ide", ID=="1.1", SYMLINK+="cdrw"
+# BUS=="ide", ID=="1.1", SYMLINK+="dvdrw"
+#
+# dynamic symlinks for cdroms:
+#
+# ENV{ID_CDROM}=="?*",		SYMLINK+="cdrom",	GROUP="cdwrite"
+# ENV{ID_CDROM_CD_RW}=="?*",	SYMLINK+="cdrw",	GROUP="cdwrite"
+# ENV{ID_CDROM_DVD}=="?*",	SYMLINK+="dvd",		GROUP="cdwrite"
+# ENV{ID_CDROM_DVD_R}=="?*",	SYMLINK+="dvdrw",	GROUP="cdwrite"
+#
+# LABEL="local_end"

@@ -1,0 +1,46 @@
+ACTION!="add", GOTO="hotplug_not_add_event"
+
+# check a driver is already loaded
+# PHYSDEVDRIVER is obsolete, replace it!
+ENV{PHYSDEVDRIVER}=="?*", GOTO="hotplug_driver_loaded"
+
+# load the drivers
+ENV{MODALIAS}=="?*", RUN+="/sbin/modprobe $env{MODALIAS}"
+
+# pcmcia
+SUBSYSTEM=="pcmcia_socket", RUN+="/sbin/modprobe pcmcia"
+
+# pnp
+SUBSYSTEM=="pnp", ENV{MODALIAS}!="?*", \
+	RUN+="/bin/sh -c 'while read id; do /sbin/modprobe pnp:d$$id; done < /sys$devpath/id'"
+
+# disks & magneto-optical disk:
+SUBSYSTEM=="scsi_device", ATTRS{type}=="0|7|14", \
+	RUN+="/sbin/modprobe sd_mod"
+
+# WORM & ROM:
+SUBSYSTEM=="scsi_device", ATTRS{type}=="[45]", \
+	RUN+="/sbin/modprobe sr_mod"
+
+# Tape:
+SUBSYSTEM=="scsi_device", ATTRS{type}=="1", SYSFS{vendor}=="Onstream", \
+        ATTRS{model}!="ADR*", RUN+="/sbin/modprobe osst"
+
+SUBSYSTEM=="scsi_device", ATTRS{type}=="1", SYSFS{vendor}=="Onstream", \
+	ATTRS{model}=="ADR*", RUN+="/sbin/modprobe st"
+
+SUBSYSTEM=="scsi_device", ATTRS{type}=="1", SYSFS{vendor}!="Onstream", \
+        RUN+="/sbin/modprobe st"
+
+# printer, scanner (hp & all), changer & comm :
+SUBSYSTEM=="scsi_device", ATTRS{type}=="[23689]", \
+        RUN+="/sbin/modprobe sg"
+
+LABEL="hotplug_driver_loaded"
+
+SUBSYSTEM=="firmware", RUN+="/lib/udev/firmware.sh"
+SUBSYSTEM=="net", RUN+="/lib/udev/net_helper"
+
+LABEL="hotplug_not_add_event"
+
+ACTION=="remove", SUBSYSTEM=="net", RUN+="/lib/udev/net_helper"
