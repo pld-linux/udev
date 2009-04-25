@@ -60,6 +60,8 @@ Source40:	%{name}-initramfs-bottom
 Source41:	%{name}-initramfs-hook
 Source42:	%{name}-initramfs-premount
 Patch0:		%{name}-vol_id-cdrom.patch
+Patch1:		%{name}-netlink-owner-check.patch
+Patch2:		%{name}-encoding-overflow.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 BuildRequires:	device-mapper-devel
 %{?with_selinux:BuildRequires:	libselinux-devel >= 1.17.13}
@@ -186,6 +188,8 @@ Narzędzia udev - programy nie wymagane do startu systemu.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 sed -i -e 's/$(CC) -shared/$(LD) -shared/' extras/volume_id/lib/Makefile
 
