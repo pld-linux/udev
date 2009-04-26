@@ -32,7 +32,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	124
-Release:	2
+Release:	3
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -56,6 +56,8 @@ Source30:	%{name}-usb.distmap
 Source31:	%{name}-usb.handmap
 Source32:	%{name}.blacklist
 Patch0:		%{name}-lib64.patch
+Patch1:		%{name}-netlink-owner-check.patch
+Patch2:		%{name}-encoding-overflow.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 BuildRequires:	device-mapper-devel
 %{?with_selinux:BuildRequires:	libselinux-devel >= 1.17.13}
@@ -169,6 +171,8 @@ Narzędzia udev - programy nie wymagane do startu systemu.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 sed -i -e 's/$(CC) -shared/$(LD) -shared/' extras/volume_id/lib/Makefile
 sed -i -e 's#/lib/udev/#/%{_lib}/udev/#g' *.c extras/rule_generator/write_*
