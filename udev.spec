@@ -3,7 +3,7 @@
 # - initrd build with uclibc on amd64 produces non-working binary (illegal instruction from open("/dev/null"))
 #
 # Conditional build:
-%bcond_without	initrd		# build without udev-initrd
+%bcond_with	initrd		# build without udev-initrd
 %bcond_without	uClibc		# link initrd version with static uClibc
 %bcond_with	klibc		# link initrd version with static klibc
 %bcond_with	dietlibc	# link initrd version with static dietlibc (currently broken and unsupported)
@@ -31,13 +31,13 @@
 Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
-Version:	141
+Version:	143
 Release:	1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	1670fe81cabf5161319c52084cf81134
+# Source0-md5:	d15d1886c0bfa756969f25ddaecf34da
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}.rules
@@ -52,8 +52,13 @@ Source30:	%{name}-initramfs-bottom
 Source31:	%{name}-initramfs-hook
 Source32:	%{name}-initramfs-premount
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
+BuildRequires:	ConsoleKit-devel
+BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	device-mapper-devel
+BuildRequires:	gtk-doc
 %{?with_selinux:BuildRequires:	libselinux-devel >= 1.17.13}
+BuildRequires:	libtool
 BuildRequires:	sed >= 4.0
 %if %{with initrd}
 %{?with_dietlibc:BuildRequires:	dietlibc-static}
@@ -94,7 +99,6 @@ Summary(pl.UTF-8):	Implementacja devfs w przestrzeni użytkownika - główna cz�
 Group:		Base
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	coreutils
-Requires:	libvolume_id = %{epoch}:%{version}-%{release}
 Requires:	setup >= 2.6.1-1
 Requires:	uname(release) >= 2.6.25
 Conflicts:	udev < 1:118-1
@@ -169,46 +173,68 @@ Static libudev library.
 %description static -l pl.UTF-8
 Biblioteka statyczna libudev.
 
-%package -n libvolume_id
-Summary:	libvolume_id library
-Summary(pl.UTF-8):	Biblioteka libvolume_id
+%package apidocs
+Summary:	libudev API documentation
+Group:		Documentation
+Requires:	gtk-doc-common
+
+%description apidocs
+libudev API documentation.
+
+%package glib
+Summary:	Shared libgudev library
+Summary(pl.UTF-8):	Biblioteka współdzielona libgudev
 Group:		Libraries
+Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 
-%description -n libvolume_id
-libvolume_id library.
+%description glib
+Shared libgudev library.
 
-%description -n libvolume_id -l pl.UTF-8
-Biblioteka libvolume_id.
+%description glib -l pl.UTF-8
+Biblioteka współdzielona libgudev.
 
-%package -n libvolume_id-devel
-Summary:	Header files for libvolume_id library
-Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki libvolume_id
+%package glib-devel
+Summary:	Header file for libgudev library
+Summary(pl.UTF-8):	Plik nagłówkowy biblioteki libgudev
 Group:		Development/Libraries
-Requires:	libvolume_id = %{epoch}:%{version}-%{release}
+Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
+Requires:	%{name}-glib = %{epoch}:%{version}-%{release}
 
-%description -n libvolume_id-devel
-This is the package containing the header files for libvolume_id
-library.
+%description glib-devel
+Header file for libgudev library.
 
-%description -n libvolume_id-devel -l pl.UTF-8
-Ten pakiet zawiera pliki nagBówkowe biblioteki libvolume_id.
+%description glib-devel -l pl.UTF-8
+Plik nagłówkowy biblioteki libgudev.
 
-%package -n libvolume_id-static
-Summary:	Static libvolume_id library
-Summary(pl.UTF-8):	Statyczna biblioteka libvolume_id
+%package glib-static
+Summary:	Static libgudev library
+Summary(pl.UTF-8):	Biblioteka statyczna libgudev
 Group:		Development/Libraries
-Requires:	libvolume_id-devel = %{epoch}:%{version}-%{release}
+Requires:	%{name}-glib-devel = %{epoch}:%{version}-%{release}
 
-%description -n libvolume_id-static
-Static libvolume_id library.
+%description glib-static
+Static libgudev library.
 
-%description -n libvolume_id-static -l pl.UTF-8
-Statyczna biblioteka libvolume_id.
+%description glib-static -l pl.UTF-8
+Biblioteka statyczna libgudev.
+
+%package glib-apidocs
+Summary:	libgudev API documentation
+Group:		Documentation
+Requires:	gtk-doc-common
+
+%description glib-apidocs
+libgudev API documentation.
 
 %prep
 %setup -q
 
 %build
+%{__libtoolize}
+%{__autoheader}
+%{__aclocal} -I m4
+%{__autoconf}
+%{__automake}
 %if %{with initrd}
 %configure \
 %if "%{?configure_cache}" == "1"
@@ -220,6 +246,7 @@ Statyczna biblioteka libvolume_id.
 	%{?debug:--enable-debug} \
 	--exec-prefix="" \
 	--libdir=/%{_lib} \
+	--disable-extras \
 	--disable-logging \
 	--disable-shared \
 	--enable-static \
@@ -240,14 +267,16 @@ Statyczna biblioteka libvolume_id.
 %if %{with main}
 %configure \
 	%{?debug:--enable-debug} \
-	--exec-prefix="" \
-	--libdir=/%{_lib} \
+	--libexecdir=/lib/udev \
+	--with-html-dir=%{_gtkdocdir} \
+	--with-rootlibdir=/%{_lib} \
+	--enable-extras \
 	--enable-logging \
 	--enable-shared \
 	--enable-static \
-	--with-libdir-name=%{_lib} \
+	--with-pci-ids-path=%{_sysconfdir} \
 	--with-selinux \
-	--with-udev-prefix=""
+	--with-udev-prefix=/
 %{__make}
 %endif
 
@@ -259,7 +288,7 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/{modprobe.d,udev/rules.d} \
 	$RPM_BUILD_ROOT/lib/udev/devices \
 	$RPM_BUILD_ROOT%{_datadir}/initramfs-tools/{hooks,scripts/init-{bottom,premount}}
 
-%{__make} install \
+%{__make} -j 1 install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.rules
@@ -322,9 +351,6 @@ fi
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
 
-%post	-n libvolume_id -p /sbin/ldconfig
-%postun	-n libvolume_id -p /sbin/ldconfig
-
 %if %{with main}
 %files
 %defattr(644,root,root,755)
@@ -358,7 +384,21 @@ fi
 %attr(755,root,root) /lib/udev/path_id
 %attr(755,root,root) /lib/udev/scsi_id
 %attr(755,root,root) /lib/udev/usb_id
-%attr(755,root,root) /lib/udev/vol_id
+%attr(755,root,root) /lib/udev/v4l_id
+
+%attr(755,root,root) /lib/udev/keymap
+%dir /lib/udev/keymaps
+/lib/udev/keymaps/*
+
+%attr(755,root,root) /lib/udev/pci-db
+%attr(755,root,root) /lib/udev/usb-db
+
+%attr(755,root,root) /lib/udev/findkeyboards
+%attr(755,root,root) /lib/udev/hid2hci
+%attr(755,root,root) /lib/udev/modem-modeswitch
+
+%attr(755,root,root) /lib/udev/udev-acl
+%attr(755,root,root) /usr/lib/ConsoleKit/run-session.d/udev-acl.ck
 
 %attr(755,root,root) %{_sbindir}/start_udev
 %attr(755,root,root) %{_sbindir}/udevd
@@ -385,17 +425,26 @@ fi
 /lib/udev/rules.d/50-firmware.rules
 /lib/udev/rules.d/50-udev-default.rules
 /lib/udev/rules.d/60-cdrom_id.rules
+/lib/udev/rules.d/60-persistent-alsa.rules
 /lib/udev/rules.d/60-persistent-input.rules
 /lib/udev/rules.d/60-persistent-serial.rules
 /lib/udev/rules.d/60-persistent-storage-tape.rules
 /lib/udev/rules.d/60-persistent-storage.rules
 /lib/udev/rules.d/60-persistent-v4l.rules
+/lib/udev/rules.d/61-mobile-action.rules
+/lib/udev/rules.d/61-option-modem-modeswitch.rules
 /lib/udev/rules.d/61-persistent-storage-edd.rules
+/lib/udev/rules.d/70-acl.rules
+/lib/udev/rules.d/70-hid2hci.rules
 /lib/udev/rules.d/75-cd-aliases-generator.rules
+/lib/udev/rules.d/75-net-description.rules
+/lib/udev/rules.d/75-tty-description.rules
 # It autogenerates network rules
 # /lib/udev/rules.d/75-persistent-net-generator.rules
+/lib/udev/rules.d/78-sound-card.rules
 /lib/udev/rules.d/79-fstab_import.rules
 /lib/udev/rules.d/80-drivers.rules
+/lib/udev/rules.d/95-keymap.rules
 /lib/udev/rules.d/95-udev-late.rules
 
 %{_mandir}/man7/udev.7*
@@ -411,10 +460,34 @@ fi
 %attr(755,root,root) %{_libdir}/libudev.so
 %{_includedir}/libudev.h
 %{_pkgconfigdir}/libudev.pc
+%{_datadir}/pkgconfig/udev.pc
 
 %files static
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libudev.a
+
+%files apidocs
+%defattr(644,root,root,755)
+%{_gtkdocdir}/libudev
+
+%files glib
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libgudev-1.0.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgudev-1.0.so.0
+
+%files glib-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libgudev-1.0.so
+%{_includedir}/gudev-1.0
+%{_pkgconfigdir}/gudev-1.0.pc
+
+%files glib-static
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libgudev-1.0.a
+
+%files glib-apidocs
+%defattr(644,root,root,755)
+%{_gtkdocdir}/gudev
 %endif
 
 %if %{with initrd}
@@ -435,18 +508,3 @@ fi
 %attr(755,root,root) %{_datadir}/initramfs-tools/scripts/init-bottom/udev
 %attr(755,root,root) %{_datadir}/initramfs-tools/hooks/udev
 %attr(755,root,root) %{_datadir}/initramfs-tools/scripts/init-premount/udev
-
-%files -n libvolume_id
-%defattr(644,root,root,755)
-%attr(755,root,root) /%{_lib}/libvolume_id.so.*.*.*
-%attr(755,root,root) %ghost /%{_lib}/libvolume_id.so.1
-
-%files -n libvolume_id-devel
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libvolume_id.so
-%{_includedir}/libvolume_id.h
-%{_pkgconfigdir}/libvolume_id.pc
-
-%files -n libvolume_id-static
-%defattr(644,root,root,755)
-%{_libdir}/libvolume_id.a
