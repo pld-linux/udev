@@ -56,9 +56,12 @@ BuildRequires:	ConsoleKit-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	device-mapper-devel
+BuildRequires:	glib2-devel
 BuildRequires:	gtk-doc
 %{?with_selinux:BuildRequires:	libselinux-devel >= 1.17.13}
 BuildRequires:	libtool
+BuildRequires:	libusb-devel
+BuildRequires:	pciutils
 BuildRequires:	sed >= 4.0
 %if %{with initrd}
 %{?with_dietlibc:BuildRequires:	dietlibc-static}
