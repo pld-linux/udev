@@ -84,6 +84,7 @@ Obsoletes:	hotplug-input
 Obsoletes:	hotplug-net
 Obsoletes:	hotplug-pci
 Obsoletes:	udev-dev
+Obsoletes:	udev-extras < 20090628
 Obsoletes:	udev-tools
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
