@@ -3,11 +3,11 @@
 # - initrd build with uclibc on amd64 produces non-working binary (illegal instruction from open("/dev/null"))
 #
 # Conditional build:
-%bcond_with	initrd		# build without udev-initrd
-%bcond_without	uClibc		# link initrd version with static uClibc
+%bcond_without	initrd		# build without udev-initrd
+%bcond_with	uClibc		# link initrd version with static uClibc
 %bcond_with	klibc		# link initrd version with static klibc
 %bcond_with	dietlibc	# link initrd version with static dietlibc (currently broken and unsupported)
-%bcond_with	glibc		# link initrd version with static glibc
+%bcond_without	glibc		# link initrd version with static glibc
 %bcond_without	main		# don't compile main package, use for debugging initrd build
 %bcond_without	selinux		# build without SELinux support
 
@@ -63,9 +63,14 @@ BuildRequires:	libtool
 BuildRequires:	libusb-devel
 BuildRequires:	pciutils
 BuildRequires:	sed >= 4.0
+BuildRequires:	usbutils >= 0.82
 %if %{with initrd}
 %{?with_dietlibc:BuildRequires:	dietlibc-static}
-%{?with_glibc:BuildRequires:	glibc-static}
+%if %{with glibc}
+BuildRequires:	glibc-static
+BuildRequires:	libselinux-static
+BuildRequires:	libsepol-static
+%endif
 %{?with_klibc:BuildRequires:	klibc-static}
 %{?with_klibc:BuildRequires:	linux-libc-headers}
 %{?with_uClibc:BuildRequires:	uClibc-static >= 3:0.9.29-23}
@@ -247,20 +252,26 @@ libgudev API documentation.
 	%{?with_dietlibc:CC="diet %{__cc} %{rpmcflags} %{rpmldflags} -Os"} \
 	%{?with_klibc:CC="%{_bindir}/klcc"} \
 	%{?debug:--enable-debug} \
-	--exec-prefix="" \
-	--libdir=/%{_lib} \
+	--libexecdir=/lib/udev \
+	--with-rootlibdir=/%{_lib} \
 	--disable-extras \
+	--disable-gtk-doc \
 	--disable-logging \
 	--disable-shared \
 	--enable-static \
-	--with-libdir-name=%{_lib} \
-	--with-udev-prefix="" \
-	--without-selinux
+	--with-pci-ids-path=%{_sysconfdir} \
+	--with-selinux \
+	--with-udev-prefix=/
 %{__make} \
 	LDFLAGS="-all-static"
 
-%{__make} install \
-	DESTDIR=$(pwd)/udev-initrd
+DEST=$(pwd)/udev-initrd
+for dir in extras udev; do
+	cd $dir
+	%{__make} -j 1 install \
+		DESTDIR=$DEST
+	cd ..
+done
 
 %if %{with main}
 %{__make} clean
@@ -274,6 +285,7 @@ libgudev API documentation.
 	--with-html-dir=%{_gtkdocdir} \
 	--with-rootlibdir=/%{_lib} \
 	--enable-extras \
+	--enable-gtk-doc \
 	--enable-logging \
 	--enable-shared \
 	--enable-static \
@@ -288,8 +300,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{with main}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/{modprobe.d,udev/rules.d} \
-	$RPM_BUILD_ROOT/lib/udev/devices \
-	$RPM_BUILD_ROOT%{_datadir}/initramfs-tools/{hooks,scripts/init-{bottom,premount}}
+	$RPM_BUILD_ROOT/lib/udev/devices
 
 %{__make} -j 1 install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -312,17 +323,18 @@ install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
 # install executables (scripts, helpers, etc.)
 install %{SOURCE10} $RPM_BUILD_ROOT/lib/udev/net_helper
 install %{SOURCE11} $RPM_BUILD_ROOT%{_sbindir}/start_udev
-%endif
 
 # install misc
 install %{SOURCE20} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev_blacklist.conf
+%endif
 
+%if %{with initrd}
+install -d $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/{hooks,scripts/init-{bottom,premount}}
 # install support for initramfs-tools
 install %{SOURCE30} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/scripts/init-bottom/udev
 install %{SOURCE31} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/hooks/udev
 install %{SOURCE32} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/scripts/init-premount/udev
 
-%if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_libdir}/initrd/udev
 install udev-initrd/sbin/udevadm $RPM_BUILD_ROOT%{_libdir}/initrd/udevadm
 install udev-initrd/sbin/udevd $RPM_BUILD_ROOT%{_libdir}/initrd/udevd
