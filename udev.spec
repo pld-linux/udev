@@ -32,7 +32,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	144
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -56,7 +56,9 @@ BuildRequires:	ConsoleKit-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	device-mapper-devel
+BuildRequires:	gir-repository-devel
 BuildRequires:	glib2-devel
+BuildRequires:	gobject-introspection-devel
 BuildRequires:	gtk-doc
 %{?with_selinux:BuildRequires:	libselinux-devel >= 1.17.13}
 BuildRequires:	libtool
@@ -287,6 +289,7 @@ done
 	--with-rootlibdir=/%{_lib} \
 	--enable-extras \
 	--enable-gtk-doc \
+	--enable-introspection \
 	--enable-logging \
 	--enable-shared \
 	--enable-static \
@@ -489,12 +492,14 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgudev-1.0.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgudev-1.0.so.0
+%{_libdir}/girepository-1.0/*.typelib
 
 %files glib-devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgudev-1.0.so
 %{_includedir}/gudev-1.0
 %{_pkgconfigdir}/gudev-1.0.pc
+%{_datadir}/gir-1.0/*.gir
 
 %files glib-static
 %defattr(644,root,root,755)
