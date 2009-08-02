@@ -59,6 +59,7 @@ BuildRequires:	device-mapper-devel
 BuildRequires:	gir-repository-devel
 BuildRequires:	glib2-devel
 BuildRequires:	gobject-introspection-devel
+BuildRequires:	gperf
 BuildRequires:	gtk-doc
 %{?with_selinux:BuildRequires:	libselinux-devel >= 1.17.13}
 BuildRequires:	libtool
