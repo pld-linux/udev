@@ -31,13 +31,13 @@
 Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
-Version:	145
+Version:	146
 Release:	1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	b3d3b5f88c7b81e7615700a04db685e1
+# Source0-md5:	b2a8acefda4fa8a70d45642035abd718
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}.rules
@@ -51,6 +51,8 @@ Source20:	%{name}.blacklist
 Source30:	%{name}-initramfs-bottom
 Source31:	%{name}-initramfs-hook
 Source32:	%{name}-initramfs-premount
+Patch0:		%{name}-so.patch
+Patch1:		%{name}-libpath.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 BuildRequires:	ConsoleKit-devel
 BuildRequires:	autoconf
@@ -240,6 +242,8 @@ libgudev API documentation.
 
 %prep
 %setup -q
+%patch0 -p1
+%patch1 -p0
 
 %build
 %{__libtoolize}
@@ -258,28 +262,33 @@ libgudev API documentation.
 	%{?debug:--enable-debug} \
 	--libexecdir=/lib/udev \
 	--with-rootlibdir=/%{_lib} \
-	--disable-extras \
 	--disable-gtk-doc \
 	--disable-logging \
 	--disable-shared \
 	--enable-static \
 	--with-pci-ids-path=%{_sysconfdir} \
-	--with-selinux \
-	--with-udev-prefix=/
-%{__make} \
+	--with-selinux
+
+# don't build few things for initrd
+cp -a Makefile Makefile.org
+sed -i -e 's#extras/usb_id/usb_id$(EXEEXT)##g' \
+	-e 's#extras/usb-db/usb-db$(EXEEXT)##g' \
+	-e 's#extras/hid2hci/hid2hci$(EXEEXT)##g' \
+	-e 's#extras/modem-modeswitch/modem-modeswitch$(EXEEXT)##g' \
+	Makefile
+
+%{__make} -f Makefile \
 	LDFLAGS="-all-static"
 
 DEST=$(pwd)/udev-initrd
-for dir in extras udev; do
-	cd $dir
-	%{__make} -j 1 install \
-		DESTDIR=$DEST
-	cd ..
-done
+%{__make} -f Makefile -j 1 install \
+	DESTDIR=${DEST}
 
 %if %{with main}
 %{__make} clean
 %endif
+
+cp -a Makefile.org Makefile
 %endif
 
 %if %{with main}
@@ -295,8 +304,7 @@ done
 	--enable-shared \
 	--enable-static \
 	--with-pci-ids-path=%{_sysconfdir} \
-	--with-selinux \
-	--with-udev-prefix=/
+	--with-selinux
 %{__make}
 %endif
 
