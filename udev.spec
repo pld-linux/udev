@@ -341,13 +341,13 @@ install %{SOURCE11} $RPM_BUILD_ROOT%{_sbindir}/start_udev
 install %{SOURCE20} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev_blacklist.conf
 %endif
 
-%if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/{hooks,scripts/init-{bottom,premount}}
 # install support for initramfs-tools
 install %{SOURCE30} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/scripts/init-bottom/udev
 install %{SOURCE31} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/hooks/udev
 install %{SOURCE32} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/scripts/init-premount/udev
 
+%if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_libdir}/initrd/udev
 install udev-initrd/sbin/udevadm $RPM_BUILD_ROOT%{_libdir}/initrd/udevadm
 install udev-initrd/sbin/udevd $RPM_BUILD_ROOT%{_libdir}/initrd/udevd
