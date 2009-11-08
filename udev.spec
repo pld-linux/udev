@@ -65,7 +65,8 @@ BuildRequires:	gperf
 BuildRequires:	gtk-doc
 %{?with_selinux:BuildRequires:	libselinux-devel >= 1.17.13}
 BuildRequires:	libtool
-BuildRequires:	libusb-devel
+BuildRequires:	libusb-compat-devel
+BuildRequires:	libxslt-progs
 BuildRequires:	pciutils
 BuildRequires:	sed >= 4.0
 BuildRequires:	usbutils >= 0.82
@@ -74,7 +75,7 @@ BuildRequires:	usbutils >= 0.82
 BuildRequires:	acl-static
 BuildRequires:	attr-static
 BuildRequires:	pcre-static
-BuildRequires:	libusb-static
+BuildRequires:	libusb-compat-static
 BuildRequires:	glib2-static
 %if %{with glibc}
 BuildRequires:	glibc-static
@@ -85,7 +86,6 @@ BuildRequires:	libsepol-static
 %{?with_klibc:BuildRequires:	linux-libc-headers}
 %{?with_uClibc:BuildRequires:	uClibc-static >= 3:0.9.29-23}
 %endif
-BuildRequires:	libxslt-progs
 Requires:	%{name}-core = %{epoch}:%{version}-%{release}
 Provides:	dev = 3.5.0
 Obsoletes:	dev
