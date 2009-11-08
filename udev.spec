@@ -479,6 +479,7 @@ fi
 
 %files devel
 %defattr(644,root,root,755)
+%{_libdir}/libudev.la
 %attr(755,root,root) %{_libdir}/libudev.so
 %{_includedir}/libudev.h
 %{_pkgconfigdir}/libudev.pc
@@ -500,6 +501,7 @@ fi
 
 %files glib-devel
 %defattr(644,root,root,755)
+%{_libdir}/libgudev-1.0.la
 %attr(755,root,root) %{_libdir}/libgudev-1.0.so
 %{_includedir}/gudev-1.0
 %{_pkgconfigdir}/gudev-1.0.pc
