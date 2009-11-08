@@ -60,7 +60,7 @@ BuildRequires:	automake
 BuildRequires:	device-mapper-devel
 BuildRequires:	gir-repository-devel
 BuildRequires:	glib2-devel
-BuildRequires:	gobject-introspection-devel
+%{?debug:BuildRequires:	gobject-introspection-devel}
 BuildRequires:	gperf
 BuildRequires:	gtk-doc
 %{?with_selinux:BuildRequires:	libselinux-devel >= 1.17.13}
@@ -71,6 +71,11 @@ BuildRequires:	sed >= 4.0
 BuildRequires:	usbutils >= 0.82
 %if %{with initrd}
 %{?with_dietlibc:BuildRequires:	dietlibc-static}
+BuildRequires:	acl-static
+BuildRequires:	attr-static
+BuildRequires:	pcre-static
+BuildRequires:	libusb-static
+BuildRequires:	glib2-static
 %if %{with glibc}
 BuildRequires:	glibc-static
 BuildRequires:	libselinux-static
@@ -267,15 +272,7 @@ libgudev API documentation.
 	--disable-shared \
 	--enable-static \
 	--with-pci-ids-path=%{_sysconfdir} \
-	--with-selinux
-
-# don't build few things for initrd
-cp -a Makefile Makefile.org
-sed -i -e 's#extras/usb_id/usb_id$(EXEEXT)##g' \
-	-e 's#extras/usb-db/usb-db$(EXEEXT)##g' \
-	-e 's#extras/hid2hci/hid2hci$(EXEEXT)##g' \
-	-e 's#extras/modem-modeswitch/modem-modeswitch$(EXEEXT)##g' \
-	Makefile
+	--without-selinux
 
 %{__make} -f Makefile \
 	LDFLAGS="-all-static"
@@ -287,8 +284,6 @@ DEST=$(pwd)/udev-initrd
 %if %{with main}
 %{__make} clean
 %endif
-
-cp -a Makefile.org Makefile
 %endif
 
 %if %{with main}
@@ -299,7 +294,7 @@ cp -a Makefile.org Makefile
 	--with-rootlibdir=/%{_lib} \
 	--enable-extras \
 	--enable-gtk-doc \
-	--enable-introspection \
+	%{?debug:--enable-introspection} \
 	--enable-logging \
 	--enable-shared \
 	--enable-static \
