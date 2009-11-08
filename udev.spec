@@ -58,7 +58,7 @@ BuildRequires:	ConsoleKit-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	device-mapper-devel
-BuildRequires:	gir-repository-devel
+%{?debug:BuildRequires:	gir-repository-devel}
 BuildRequires:	glib2-devel
 %{?debug:BuildRequires:	gobject-introspection-devel}
 BuildRequires:	gperf
@@ -496,14 +496,14 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgudev-1.0.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgudev-1.0.so.0
-%{_libdir}/girepository-1.0/*.typelib
+%{?debug:%{_libdir}/girepository-1.0/*.typelib}
 
 %files glib-devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgudev-1.0.so
 %{_includedir}/gudev-1.0
 %{_pkgconfigdir}/gudev-1.0.pc
-%{_datadir}/gir-1.0/*.gir
+%{?debug:%{_datadir}/gir-1.0/*.gir}
 
 %files glib-static
 %defattr(644,root,root,755)
