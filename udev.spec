@@ -32,7 +32,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	146
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -262,7 +262,7 @@ libgudev API documentation.
 	--cache-file=%{?configure_cache_file}%{!?configure_cache_file:configure}-initrd.cache \
 %endif
 	%{?with_uClibc:CC="%{_target_cpu}-uclibc-gcc"} \
-	%{?with_dietlibc:CC="diet %{__cc} %{rpmcflags} %{rpmldflags} -Os"} \
+	%{?with_dietlibc:CC="diet %{__cc} %{rpmcflags} %{rpmldflags} -Os -D_BSD_SOURCE"} \
 	%{?with_klibc:CC="%{_bindir}/klcc"} \
 	%{?debug:--enable-debug} \
 	--libexecdir=/lib/udev \
