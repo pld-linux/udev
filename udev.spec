@@ -31,13 +31,13 @@
 Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
-Version:	146
-Release:	2
+Version:	147
+Release:	1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	b2a8acefda4fa8a70d45642035abd718
+# Source0-md5:	aed0129c5a00e01d1be75ffda7d2e0f1
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}.rules
@@ -52,9 +52,8 @@ Source30:	%{name}-initramfs-bottom
 Source31:	%{name}-initramfs-hook
 Source32:	%{name}-initramfs-premount
 Patch0:		%{name}-so.patch
-Patch1:		%{name}-libpath.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
-BuildRequires:	ConsoleKit-devel
+BuildRequires:	ConsoleKit-devel >= 0.4.1
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	device-mapper-devel
@@ -248,7 +247,6 @@ libgudev API documentation.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p0
 
 %build
 %{__libtoolize}
@@ -318,7 +316,7 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.permissions
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 
 # install additional rules from udev package
-install rules/packages/{40-alsa,40-pilot-links,40-zaptel}.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
+install rules/packages/{40-pilot-links,40-zaptel}.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
 install rules/suse/64-device-mapper.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
 
 # install custom rules from pld package
@@ -421,7 +419,7 @@ fi
 %attr(755,root,root) /lib/udev/modem-modeswitch
 
 %attr(755,root,root) /lib/udev/udev-acl
-%attr(755,root,root) /usr/lib/ConsoleKit/run-session.d/udev-acl.ck
+%attr(755,root,root) /usr/lib/ConsoleKit/run-seat.d/udev-acl.ck
 
 %attr(755,root,root) %{_sbindir}/start_udev
 %attr(755,root,root) %{_sbindir}/udevd
@@ -432,7 +430,6 @@ fi
 
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modprobe.d/udev_blacklist.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/links.conf
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-alsa.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-alsa-restore.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-pilot-links.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-zaptel.rules
