@@ -1,6 +1,7 @@
 # TODO
 # - initrd needs love (is probably completly unusable in current form)
 # - initrd build with uclibc on amd64 produces non-working binary (illegal instruction from open("/dev/null"))
+# - add compat rules for kernels < 2.6.31 as udev-compat subpackage and then lower uname requirement
 #
 # Conditional build:
 %bcond_without	initrd		# build without udev-initrd
@@ -32,7 +33,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	147
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -118,7 +119,7 @@ Group:		Base
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	coreutils
 Requires:	setup >= 2.6.1-1
-Requires:	uname(release) >= 2.6.25
+Requires:	uname(release) >= 2.6.31
 Conflicts:	udev < 1:118-1
 
 %description core
