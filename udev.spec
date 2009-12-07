@@ -55,12 +55,14 @@ Source32:	%{name}-initramfs-premount
 Patch0:		%{name}-so.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 BuildRequires:	ConsoleKit-devel >= 0.4.1
+BuildRequires:	acl-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	device-mapper-devel
 %{?debug:BuildRequires:	gir-repository-devel}
 BuildRequires:	glib2-devel
-%{?debug:BuildRequires:	gobject-introspection-devel}
+BuildRequires:	glibc-misc
+BuildRequires:	gobject-introspection-devel
 BuildRequires:	gperf
 BuildRequires:	gtk-doc
 %{?with_selinux:BuildRequires:	libselinux-devel >= 1.17.13}
@@ -68,22 +70,23 @@ BuildRequires:	libtool
 BuildRequires:	libusb-compat-devel
 BuildRequires:	libxslt-progs
 BuildRequires:	pciutils
+BuildRequires:	pkgconfig
+BuildRequires:	python-modules
 BuildRequires:	sed >= 4.0
 BuildRequires:	usbutils >= 0.82
 %if %{with initrd}
-%{?with_dietlibc:BuildRequires:	dietlibc-static}
 BuildRequires:	acl-static
 BuildRequires:	attr-static
-BuildRequires:	pcre-static
-BuildRequires:	libusb-compat-static
+%{?with_dietlibc:BuildRequires:	dietlibc-static}
 BuildRequires:	glib2-static
-%if %{with glibc}
-BuildRequires:	glibc-static
-BuildRequires:	libselinux-static
-BuildRequires:	libsepol-static
-%endif
+%{?with_glibc:BuildRequires:	glibc-static}
 %{?with_klibc:BuildRequires:	klibc-static}
+%{?with_glibc:BuildRequires:	libselinux-static}
+%{?with_glibc:BuildRequires:	libsepol-static}
+BuildRequires:	libusb-compat-static
+BuildRequires:	libusb-static
 %{?with_klibc:BuildRequires:	linux-libc-headers}
+BuildRequires:	pcre-static
 %{?with_uClibc:BuildRequires:	uClibc-static >= 3:0.9.29-23}
 %endif
 Requires:	%{name}-core = %{epoch}:%{version}-%{release}
@@ -277,7 +280,7 @@ libgudev API documentation.
 	LDFLAGS="-all-static"
 
 DEST=$(pwd)/udev-initrd
-%{__make} -f Makefile -j 1 install \
+%{__make} -j1 -f Makefile install \
 	DESTDIR=${DEST}
 
 %if %{with main}
@@ -309,7 +312,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/{modprobe.d,udev/rules.d} \
 	$RPM_BUILD_ROOT/lib/udev/devices
 
-%{__make} -j 1 install \
+%{__make} -j1 install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.rules
