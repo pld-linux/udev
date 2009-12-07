@@ -102,8 +102,8 @@ Obsoletes:	udev-tools
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
-%define		extras		extras/ata_id extras/cdrom_id extras/edd_id extras/floppy extras/firmware extras/path_id extras/scsi_id extras/usb_id extras/volume_id
-%define		static_extras	extras/ata_id extras/cdrom_id extras/edd_id extras/floppy extras/scsi_id extras/usb_id extras/volume_id
+%define		static_extras	extras/ata_id extras/cdrom_id extras/edd_id extras/floppy extras/usb_id extras/volume_id extras/scsi_id
+%define		extras		%{static_extras} extras/firmware extras/path_id
 
 %description
 udev is the device manager for the Linux 2.6 kernel series. Its
@@ -274,7 +274,8 @@ libgudev API documentation.
 	--disable-shared \
 	--enable-static \
 	--with-pci-ids-path=%{_sysconfdir} \
-	--without-selinux
+	--without-selinux \
+	--disable-introspection
 
 %{__make} -f Makefile \
 	LDFLAGS="-all-static"
