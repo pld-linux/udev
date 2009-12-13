@@ -1,6 +1,6 @@
 # TODO
 # - initrd needs love (is probably completly unusable in current form)
-# - initrd build with uclibc on amd64 produces non-working binary (illegal instruction from open("/dev/null"))
+# - initrd build with uClibc on amd64 produces non-working binary (illegal instruction from open("/dev/null"))
 # - add compat rules for kernels < 2.6.31 as udev-compat subpackage and then lower uname requirement
 #
 # Conditional build:
@@ -9,7 +9,6 @@
 %bcond_with	klibc		# link initrd version with static klibc
 %bcond_with	dietlibc	# link initrd version with static dietlibc (currently broken and unsupported)
 %bcond_without	glibc		# link initrd version with static glibc
-%bcond_without	main		# don't compile main package, use for debugging initrd build
 %bcond_without	selinux		# build without SELinux support
 
 %ifarch sparc sparc64
@@ -33,7 +32,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	149
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -115,6 +114,14 @@ udev jest zarządcą urządzeń dla Linuksa 2.6. Jego główną funkcją jest
 zarządzanie węzłami urządzeń w katalogu /dev. Jest następcą devfs i
 hotpluga.
 
+%package acl
+Summary:	Control device ACL via ConsoleKit
+Group:		Base
+Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
+
+%description acl
+ConsoleKit hook to control permissions of system devices.
+
 %package core
 Summary:	A userspace implementation of devfs - core part of udev
 Summary(pl.UTF-8):	Implementacja devfs w przestrzeni użytkownika - główna część udev
@@ -123,6 +130,7 @@ Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	coreutils
 Requires:	setup >= 2.6.1-1
 Requires:	uname(release) >= 2.6.31
+Suggests:	%{name}-acl
 Conflicts:	udev < 1:118-1
 
 %description core
@@ -153,10 +161,12 @@ Requires:	%{name}-core = %{epoch}:%{version}-%{release}
 Requires:	initramfs-tools
 
 %description initramfs
-A userspace implementation of devfs - support scripts for initramfs-tools.
+A userspace implementation of devfs - support scripts for
+initramfs-tools.
 
 %description initramfs -l pl.UTF-8
-Implementacja devfs w przestrzeni użytkownika - skrypty dla initramfs-tools.
+Implementacja devfs w przestrzeni użytkownika - skrypty dla
+initramfs-tools.
 
 %package libs
 Summary:	Shared libudev library
@@ -254,8 +264,8 @@ libgudev API documentation.
 
 %build
 %{__libtoolize}
-%{__autoheader}
 %{__aclocal} -I m4
+%{__autoheader}
 %{__autoconf}
 %{__automake}
 %if %{with initrd}
@@ -277,19 +287,16 @@ libgudev API documentation.
 	--without-selinux \
 	--disable-introspection
 
-%{__make} -f Makefile \
+%{__make} \
 	LDFLAGS="-all-static"
 
 DEST=$(pwd)/udev-initrd
-%{__make} -j1 -f Makefile install \
+%{__make} -j1 install \
 	DESTDIR=${DEST}
 
-%if %{with main}
 %{__make} clean
 %endif
-%endif
 
-%if %{with main}
 %configure \
 	%{?debug:--enable-debug} \
 	--libexecdir=/lib/udev \
@@ -304,12 +311,9 @@ DEST=$(pwd)/udev-initrd
 	--with-pci-ids-path=%{_sysconfdir} \
 	--with-selinux
 %{__make}
-%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
-%if %{with main}
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/{modprobe.d,udev/rules.d} \
 	$RPM_BUILD_ROOT/lib/udev/devices
 
@@ -321,39 +325,38 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.permissions
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 
 # install additional rules from udev package
-install rules/packages/{40-pilot-links,40-zaptel}.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
-install rules/suse/64-device-mapper.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
+cp -a rules/packages/{40-pilot-links,40-zaptel}.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
+cp -a rules/suse/64-device-mapper.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
 
 # install custom rules from pld package
-install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/40-alsa-restore.rules
-install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/70-udev-pld.rules
+cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/40-alsa-restore.rules
+cp -a %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/70-udev-pld.rules
 
 # install configs
-install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
+cp -a %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
 
 # install executables (scripts, helpers, etc.)
-install %{SOURCE10} $RPM_BUILD_ROOT/lib/udev/net_helper
-install %{SOURCE11} $RPM_BUILD_ROOT%{_sbindir}/start_udev
+install -p %{SOURCE10} $RPM_BUILD_ROOT/lib/udev/net_helper
+install -p %{SOURCE11} $RPM_BUILD_ROOT%{_sbindir}/start_udev
 
 # install misc
-install %{SOURCE20} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev_blacklist.conf
-%endif
+cp -a %{SOURCE20} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev_blacklist.conf
 
 install -d $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/{hooks,scripts/init-{bottom,premount}}
 # install support for initramfs-tools
-install %{SOURCE30} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/scripts/init-bottom/udev
-install %{SOURCE31} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/hooks/udev
-install %{SOURCE32} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/scripts/init-premount/udev
+install -p %{SOURCE30} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/scripts/init-bottom/udev
+install -p %{SOURCE31} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/hooks/udev
+install -p %{SOURCE32} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/scripts/init-premount/udev
 
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_libdir}/initrd/udev
-install udev-initrd/sbin/udevadm $RPM_BUILD_ROOT%{_libdir}/initrd/udevadm
-install udev-initrd/sbin/udevd $RPM_BUILD_ROOT%{_libdir}/initrd/udevd
+install -p udev-initrd/sbin/udevadm $RPM_BUILD_ROOT%{_libdir}/initrd
+install -p udev-initrd/sbin/udevd $RPM_BUILD_ROOT%{_libdir}/initrd
 ln -s udevd $RPM_BUILD_ROOT%{_libdir}/initrd/udevstart
-install udev-initrd/lib/udev/*_id $RPM_BUILD_ROOT%{_libdir}/initrd/udev/
-install udev-initrd/lib/udev/collect $RPM_BUILD_ROOT%{_libdir}/initrd/udev/collect
-install udev-initrd/lib/udev/create_floppy_devices $RPM_BUILD_ROOT%{_libdir}/initrd/udev/create_floppy_devices
-install udev-initrd/lib/udev/fstab_import $RPM_BUILD_ROOT%{_libdir}/initrd/udev/fstab_import
+install -p udev-initrd/lib/udev/*_id $RPM_BUILD_ROOT%{_libdir}/initrd/udev
+install -p udev-initrd/lib/udev/collect $RPM_BUILD_ROOT%{_libdir}/initrd/udev
+install -p udev-initrd/lib/udev/create_floppy_devices $RPM_BUILD_ROOT%{_libdir}/initrd/udev
+install -p udev-initrd/lib/udev/fstab_import $RPM_BUILD_ROOT%{_libdir}/initrd/udev
 %endif
 
 %clean
@@ -377,12 +380,17 @@ fi
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
 
-%if %{with main}
 %files
 %defattr(644,root,root,755)
 %dev(c,1,3) %attr(666,root,root) /dev/null
 %dev(c,5,1) %attr(660,root,console) /dev/console
 %dev(c,1,5) %attr(666,root,root) /dev/zero
+
+%files acl
+%defattr(644,root,root,755)
+%attr(755,root,root) /lib/udev/udev-acl
+%attr(755,root,root) /usr/lib/ConsoleKit/run-seat.d/udev-acl.ck
+/lib/udev/rules.d/70-acl.rules
 
 %files core
 %defattr(644,root,root,755)
@@ -424,9 +432,6 @@ fi
 %attr(755,root,root) /lib/udev/hid2hci
 %attr(755,root,root) /lib/udev/modem-modeswitch
 
-%attr(755,root,root) /lib/udev/udev-acl
-%attr(755,root,root) /usr/lib/ConsoleKit/run-seat.d/udev-acl.ck
-
 %attr(755,root,root) %{_sbindir}/start_udev
 %attr(755,root,root) %{_sbindir}/udevd
 %attr(755,root,root) %{_sbindir}/udevadm
@@ -459,7 +464,6 @@ fi
 /lib/udev/rules.d/61-mobile-action.rules
 /lib/udev/rules.d/61-option-modem-modeswitch.rules
 /lib/udev/rules.d/61-persistent-storage-edd.rules
-/lib/udev/rules.d/70-acl.rules
 /lib/udev/rules.d/70-hid2hci.rules
 /lib/udev/rules.d/75-cd-aliases-generator.rules
 /lib/udev/rules.d/75-net-description.rules
@@ -517,7 +521,6 @@ fi
 %files glib-apidocs
 %defattr(644,root,root,755)
 %{_gtkdocdir}/gudev
-%endif
 
 %if %{with initrd}
 %files initrd
