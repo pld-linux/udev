@@ -263,6 +263,7 @@ libgudev API documentation.
 %patch0 -p1
 
 %build
+%{__gtkdocize}
 %{__libtoolize}
 %{__aclocal} -I m4
 %{__autoheader}
