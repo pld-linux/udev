@@ -31,13 +31,13 @@
 Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
-Version:	149
-Release:	2
+Version:	150
+Release:	1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	b218bd15939e8afc6368e1907a48bb26
+# Source0-md5:	4ad5ada5f5cefb2517996825c1d2a7d6
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}.rules
@@ -407,8 +407,10 @@ fi
 
 %attr(755,root,root) /lib/udev/create_floppy_devices
 %attr(755,root,root) /lib/udev/collect
-%attr(755,root,root) /lib/udev/firmware.sh
+%attr(755,root,root) /lib/udev/firmware
 %attr(755,root,root) /lib/udev/fstab_import
+
+%attr(755,root,root) /lib/udev/keyboard-force-release.sh
 
 %attr(755,root,root) /lib/udev/*_helper
 %attr(755,root,root) /lib/udev/*_rules
@@ -456,6 +458,7 @@ fi
 /lib/udev/rules.d/50-firmware.rules
 /lib/udev/rules.d/50-udev-default.rules
 /lib/udev/rules.d/60-cdrom_id.rules
+/lib/udev/rules.d/60-floppy.rules
 /lib/udev/rules.d/60-persistent-alsa.rules
 /lib/udev/rules.d/60-persistent-input.rules
 /lib/udev/rules.d/60-persistent-serial.rules
@@ -474,6 +477,7 @@ fi
 /lib/udev/rules.d/78-sound-card.rules
 /lib/udev/rules.d/79-fstab_import.rules
 /lib/udev/rules.d/80-drivers.rules
+/lib/udev/rules.d/95-keyboard-force-release.rules
 /lib/udev/rules.d/95-keymap.rules
 /lib/udev/rules.d/95-udev-late.rules
 
