@@ -1,14 +1,13 @@
 # TODO
 # - initrd needs love (is probably completly unusable in current form)
-# - initrd build with uClibc on amd64 produces non-working binary (illegal instruction from open("/dev/null"))
 # - add compat rules for kernels < 2.6.31 as udev-compat subpackage and then lower uname requirement
 #
 # Conditional build:
 %bcond_without	initrd		# build without udev-initrd
-%bcond_with	uClibc		# link initrd version with static uClibc
+%bcond_without	uClibc		# link initrd version with static uClibc
 %bcond_with	klibc		# link initrd version with static klibc
 %bcond_with	dietlibc	# link initrd version with static dietlibc (currently broken and unsupported)
-%bcond_without	glibc		# link initrd version with static glibc
+%bcond_with	glibc		# link initrd version with static glibc
 %bcond_without	selinux		# build without SELinux support
 
 %ifarch sparc sparc64
@@ -32,7 +31,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	150
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -52,6 +51,7 @@ Source30:	%{name}-initramfs-bottom
 Source31:	%{name}-initramfs-hook
 Source32:	%{name}-initramfs-premount
 Patch0:		%{name}-so.patch
+Patch1:		%{name}-uClibc.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 BuildRequires:	ConsoleKit-devel >= 0.4.1
 BuildRequires:	acl-devel
@@ -86,7 +86,7 @@ BuildRequires:	libusb-compat-static
 BuildRequires:	libusb-static
 %{?with_klibc:BuildRequires:	linux-libc-headers}
 BuildRequires:	pcre-static
-%{?with_uClibc:BuildRequires:	uClibc-static >= 3:0.9.29-23}
+%{?with_uClibc:BuildRequires:	uClibc-static >= 3:0.9.30.2-2}
 %endif
 Requires:	%{name}-core = %{epoch}:%{version}-%{release}
 Provides:	dev = 3.5.0
@@ -261,6 +261,7 @@ libgudev API documentation.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__gtkdocize}
@@ -358,6 +359,7 @@ ln -s udevd $RPM_BUILD_ROOT%{_libdir}/initrd/udevstart
 install -p udev-initrd/lib/udev/*_id $RPM_BUILD_ROOT%{_libdir}/initrd/udev
 install -p udev-initrd/lib/udev/collect $RPM_BUILD_ROOT%{_libdir}/initrd/udev
 install -p udev-initrd/lib/udev/create_floppy_devices $RPM_BUILD_ROOT%{_libdir}/initrd/udev
+install -p udev-initrd/lib/udev/firmware $RPM_BUILD_ROOT%{_libdir}/initrd/udev
 install -p udev-initrd/lib/udev/fstab_import $RPM_BUILD_ROOT%{_libdir}/initrd/udev
 %endif
 
@@ -510,7 +512,7 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgudev-1.0.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgudev-1.0.so.0
-%{?debug:%{_libdir}/girepository-1.0/*.typelib}
+%{_libdir}/girepository-1.0/*.typelib
 
 %files glib-devel
 %defattr(644,root,root,755)
@@ -518,7 +520,7 @@ fi
 %attr(755,root,root) %{_libdir}/libgudev-1.0.so
 %{_includedir}/gudev-1.0
 %{_pkgconfigdir}/gudev-1.0.pc
-%{?debug:%{_datadir}/gir-1.0/*.gir}
+%{_datadir}/gir-1.0/*.gir
 
 %files glib-static
 %defattr(644,root,root,755)
@@ -538,6 +540,7 @@ fi
 %attr(755,root,root) %{_libdir}/initrd/udev/*_id
 %attr(755,root,root) %{_libdir}/initrd/udev/collect
 %attr(755,root,root) %{_libdir}/initrd/udev/create_floppy_devices
+%attr(755,root,root) %{_libdir}/initrd/udev/firmware
 %attr(755,root,root) %{_libdir}/initrd/udev/fstab_import
 %endif
 
