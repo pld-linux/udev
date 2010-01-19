@@ -32,7 +32,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	124
-Release:	6
+Release:	7
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -332,6 +332,13 @@ sed -i -e 's#/lib/udev/#/lib/udev/#g' /etc/udev/rules.d/*.rules
 %dev(c,1,3) %attr(666,root,root) /dev/null
 %dev(c,5,1) %attr(660,root,console) /dev/console
 %dev(c,1,5) %attr(666,root,root) /dev/zero
+
+# package these for fallback
+# usually udev upgrade skips the install of /dev as it is already tmpfs mounted
+# (not permanently stored)
+%dev(c,1,3) %attr(666,root,root) /lib/udev/devices/null
+%dev(c,5,1) %attr(660,root,console) /lib/udev/devices/console
+%dev(c,1,5) %attr(666,root,root) /lib/udev/devices/zero
 
 %files core
 %defattr(644,root,root,755)
