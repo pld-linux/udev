@@ -286,7 +286,8 @@ libgudev API documentation.
 	--enable-static \
 	--with-pci-ids-path=%{_sysconfdir} \
 	--without-selinux \
-	--disable-introspection
+	--disable-introspection \
+	--disable-extras
 
 %{__make} \
 	LDFLAGS="-all-static"
@@ -305,7 +306,7 @@ DEST=$(pwd)/udev-initrd
 	--with-rootlibdir=/%{_lib} \
 	--enable-extras \
 	--enable-gtk-doc \
-	%{?debug:--enable-introspection} \
+	--enable-introspection \
 	--enable-logging \
 	--enable-shared \
 	--enable-static \
