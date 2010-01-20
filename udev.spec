@@ -41,6 +41,7 @@ Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.
 Source1:	%{name}-alsa.rules
 Source2:	%{name}.rules
 Source3:	%{name}-links.conf
+Source4:	%{name}-compat.rules
 # scripts / helpers
 Source10:	%{name}-net.helper
 Source11:	start_udev
@@ -121,6 +122,14 @@ Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 
 %description acl
 ConsoleKit hook to control permissions of system devices.
+
+%package compat
+Summary:	Compatibility rules for kernels < 2.6.31
+Group:		Base
+Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
+
+%description compat
+Compatibility rules for kernels < 2.6.31.
 
 %package core
 Summary:	A userspace implementation of devfs - core part of udev
@@ -334,6 +343,7 @@ cp -a rules/suse/64-device-mapper.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules
 # install custom rules from pld package
 cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/40-alsa-restore.rules
 cp -a %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/70-udev-pld.rules
+cp -a %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/30-kernel-compat.rules
 
 # install configs
 cp -a %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
@@ -395,6 +405,10 @@ fi
 %attr(755,root,root) /lib/udev/udev-acl
 %attr(755,root,root) /usr/lib/ConsoleKit/run-seat.d/udev-acl.ck
 /lib/udev/rules.d/70-acl.rules
+
+%files compat
+%defattr(644,root,root,755)
+/lib/udev/rules.d/30-kernel-compat.rules
 
 %files core
 %defattr(644,root,root,755)
