@@ -122,6 +122,14 @@ Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 %description acl
 ConsoleKit hook to control permissions of system devices.
 
+%package compat
+Summary:	Compatibility rules for kernels < 2.6.31
+Group:		Base
+Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
+
+%description compat
+Compatibility rules for kernels < 2.6.31.
+
 %package core
 Summary:	A userspace implementation of devfs - core part of udev
 Summary(pl.UTF-8):	Implementacja devfs w przestrzeni użytkownika - główna część udev
@@ -131,6 +139,7 @@ Requires:	coreutils
 Requires:	setup >= 2.6.1-1
 Requires:	uname(release) >= 2.6.25
 Suggests:	%{name}-acl
+Suggests:	%{name}-compat
 Conflicts:	udev < 1:118-1
 
 %description core
@@ -399,6 +408,10 @@ fi
 %attr(755,root,root) /usr/lib/ConsoleKit/run-seat.d/udev-acl.ck
 /lib/udev/rules.d/70-acl.rules
 
+%files compat
+%defattr(644,root,root,755)
+/lib/udev/rules.d/30-kernel-compat.rules
+
 %files core
 %defattr(644,root,root,755)
 %doc ChangeLog TODO docs/writing_udev_rules
@@ -461,7 +474,6 @@ fi
 # rules below are NOT supposed to be changed by users
 /lib/udev/rule_generator.functions
 %dir /lib/udev/rules.d
-/lib/udev/rules.d/30-kernel-compat.rules
 /lib/udev/rules.d/50-firmware.rules
 /lib/udev/rules.d/50-udev-default.rules
 /lib/udev/rules.d/60-cdrom_id.rules
