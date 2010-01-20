@@ -343,7 +343,9 @@ cp -a rules/suse/64-device-mapper.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules
 # install custom rules from pld package
 cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/40-alsa-restore.rules
 cp -a %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/70-udev-pld.rules
-cp -a %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/30-kernel-compat.rules
+
+# compatibility rules for older kernels
+cp -a %{SOURCE4} $RPM_BUILD_ROOT/lib/udev/rules.d/30-kernel-compat.rules
 
 # install configs
 cp -a %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
