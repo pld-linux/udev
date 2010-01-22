@@ -1,0 +1,8 @@
+- rel 4
+- added initrd-udevd, initrd-udevtrigger,initrd-udevsettle
+- udevtrigger and udevsettle needed in initrd to make nodes for
+  staticly linked devices
+- udevd is an alternative for running udev and echoing /sbin/udev > /proc/sys/kernel/hotplug
+- now either one runns udevd --daemon in initrd or echoes the above and uses udev
+- echo version supported in new geninitrd
+- udev works now fully in initrd!
