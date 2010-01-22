@@ -3,13 +3,19 @@
 # - initrd build with uclibc on amd64 produces non-working binary (illegal instruction from open("/dev/null"))
 #
 # Conditional build:
-%bcond_without	initrd	# build without udev-initrd
-%bcond_without	uClibc	# link initrd version with static uClibc
-%bcond_with	klibc	# link initrd version with static klibc
-%bcond_with	dietlibc	# link initrd version with static dietlibc (currently broken and unsupported)
-%bcond_with	glibc	# link initrd version with static glibc
-%bcond_without	main	# don't compile main package, use for debugging initrd build
-%bcond_without	selinux	# build without SELinux support
+%if "%{pld_release}" == "ac"
+%bcond_with		initrd		# build without udev-initrd
+%bcond_with		initramfs	# build with initramfs-tools
+%else
+%bcond_without	initrd		# build without udev-initrd
+%bcond_without	initramfs	# build without initramfs-tools
+%endif
+%bcond_without	uClibc		# link initrd version with static uClibc
+%bcond_with		klibc		# link initrd version with static klibc
+%bcond_with		dietlibc	# link initrd version with static dietlibc (currently broken and unsupported)
+%bcond_with		glibc		# link initrd version with static glibc
+%bcond_without	main		# don't compile main package, use for debugging initrd build
+%bcond_without	selinux		# build without SELinux support
 
 %ifarch sparc sparc64
 %define		with_glibc 1
@@ -32,7 +38,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	124
-Release:	7
+Release:	8
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -65,6 +71,7 @@ Patch2:		%{name}-encoding-overflow.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 BuildRequires:	device-mapper-devel
 %{?with_selinux:BuildRequires:	libselinux-devel >= 1.17.13}
+BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	sed >= 4.0
 %if %{with initrd}
 %{?with_dietlibc:BuildRequires:	dietlibc-static}
@@ -119,10 +126,12 @@ Requires:	%{name}-core = %{epoch}:%{version}-%{release}
 Requires:	initramfs-tools
 
 %description initramfs
-A userspace implementation of devfs - support scripts for initramfs-tools.
+A userspace implementation of devfs - support scripts for
+initramfs-tools.
 
 %description initramfs -l pl.UTF-8
-Implementacja devfs w przestrzeni użytkownika - skrypty dla initramfs-tools.
+Implementacja devfs w przestrzeni użytkownika - skrypty dla
+initramfs-tools.
 
 %package initrd
 Summary:	A userspace implementation of devfs - static binary for initrd
@@ -254,10 +263,10 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/{modprobe.d,udev/rules.d} \
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
 	initdir=/etc/rc.d/init.d \
-        libudevdir=/lib/udev \
-        libdir=/%{_lib} \
-        usrlibdir=%{_libdir} \
-        udevdir=/dev \
+	libudevdir=/lib/udev \
+	libdir=/%{_lib} \
+	usrlibdir=%{_libdir} \
+	udevdir=/dev \
 	EXTRAS="%{extras}"
 
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.rules
@@ -292,14 +301,15 @@ install extras/path_id/path_id $RPM_BUILD_ROOT/lib/udev
 install extras/volume_id/lib/*.a $RPM_BUILD_ROOT%{_libdir}
 %endif
 
-
 # install misc
 install %{SOURCE32} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev_blacklist.conf
 
+%if %{with initramfs}
 # install support for initramfs-tools
 install %{SOURCE40} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/scripts/init-bottom/udev
 install %{SOURCE41} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/hooks/udev
 install %{SOURCE42} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/scripts/init-premount/udev
+%endif
 
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_sbindir}
@@ -410,11 +420,13 @@ sed -i -e 's#/lib/udev/#/lib/udev/#g' /etc/udev/rules.d/*.rules
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_prefix}/sbin/udev_import_usermap
 
+%if %{with initramfs}
 %files initramfs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_datadir}/initramfs-tools/scripts/init-bottom/udev
 %attr(755,root,root) %{_datadir}/initramfs-tools/hooks/udev
 %attr(755,root,root) %{_datadir}/initramfs-tools/scripts/init-premount/udev
+%endif
 
 %files -n libvolume_id
 %defattr(644,root,root,755)
