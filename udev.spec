@@ -29,13 +29,13 @@
 Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
-Version:	150
-Release:	2
+Version:	151
+Release:	1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	4ad5ada5f5cefb2517996825c1d2a7d6
+# Source0-md5:	aeae0e6273dcbec246c3c1b9868ebed1
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}.rules
@@ -414,7 +414,7 @@ fi
 
 %files core
 %defattr(644,root,root,755)
-%doc ChangeLog TODO docs/writing_udev_rules
+%doc ChangeLog TODO
 
 %dir /lib/udev
 
