@@ -322,7 +322,7 @@ DEST=$(pwd)/udev-initrd
 	--enable-shared \
 	--enable-static \
 	--with-pci-ids-path=%{_sysconfdir} \
-	--with-selinux
+	--with%{!?with_selinux:out}-selinux
 %{__make}
 
 %install
