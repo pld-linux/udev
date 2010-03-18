@@ -8,6 +8,7 @@
 %bcond_with	dietlibc	# link initrd version with static dietlibc (currently broken and unsupported)
 %bcond_with	glibc		# link initrd version with static glibc
 %bcond_without	selinux		# build without SELinux support
+%bcond_without	ConsoleKit	# build without ConsoleKit support
 
 %ifarch sparc sparc64
 %define		with_glibc 1
@@ -53,7 +54,7 @@ Source32:	%{name}-initramfs-premount
 Patch0:		%{name}-so.patch
 Patch1:		%{name}-uClibc.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
-BuildRequires:	ConsoleKit-devel >= 0.4.1
+%{?with_ConsoleKit:BuildRequires:	ConsoleKit-devel >= 0.4.1}
 BuildRequires:	acl-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -402,11 +403,13 @@ fi
 %dev(c,5,1) %attr(660,root,console) /dev/console
 %dev(c,1,5) %attr(666,root,root) /dev/zero
 
+%if %{with ConsoleKit}
 %files acl
 %defattr(644,root,root,755)
 %attr(755,root,root) /lib/udev/udev-acl
 %attr(755,root,root) /usr/lib/ConsoleKit/run-seat.d/udev-acl.ck
 /lib/udev/rules.d/70-acl.rules
+%endif
 
 %files compat
 %defattr(644,root,root,755)
