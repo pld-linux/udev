@@ -30,13 +30,13 @@
 Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
-Version:	151
+Version:	152
 Release:	1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	aeae0e6273dcbec246c3c1b9868ebed1
+# Source0-md5:	14944d0ff630f639cf3a9fc9d9ae40b5
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}.rules
@@ -338,7 +338,7 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.permissions
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 
 # install additional rules from udev package
-cp -a rules/packages/{40-pilot-links,40-zaptel}.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
+cp -a rules/packages/40-pilot-links.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
 cp -a rules/suse/64-device-mapper.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
 
 # install custom rules from pld package
@@ -455,7 +455,7 @@ fi
 
 %attr(755,root,root) /lib/udev/findkeyboards
 %attr(755,root,root) /lib/udev/hid2hci
-%attr(755,root,root) /lib/udev/modem-modeswitch
+%attr(755,root,root) /lib/udev/mobile-action-modeswitch
 
 %attr(755,root,root) %{_sbindir}/start_udev
 %attr(755,root,root) %{_sbindir}/udevd
@@ -468,7 +468,6 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/links.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-alsa-restore.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-pilot-links.rules
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-zaptel.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/64-device-mapper.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/70-udev-pld.rules
 
@@ -488,7 +487,6 @@ fi
 /lib/udev/rules.d/60-persistent-storage.rules
 /lib/udev/rules.d/60-persistent-v4l.rules
 /lib/udev/rules.d/61-mobile-action.rules
-/lib/udev/rules.d/61-option-modem-modeswitch.rules
 /lib/udev/rules.d/61-persistent-storage-edd.rules
 /lib/udev/rules.d/70-hid2hci.rules
 /lib/udev/rules.d/75-cd-aliases-generator.rules
