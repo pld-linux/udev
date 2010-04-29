@@ -31,7 +31,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	153
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL
 Group:		Base
@@ -139,7 +139,6 @@ Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	coreutils
 Requires:	setup >= 2.6.1-1
 Requires:	uname(release) >= 2.6.25
-Suggests:	%{name}-acl
 Suggests:	%{name}-compat
 Conflicts:	udev < 1:118-1
 
