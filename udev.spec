@@ -30,13 +30,13 @@
 Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
-Version:	154
+Version:	155
 Release:	1
 Epoch:		1
 License:	GPL
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	28064e0325050a1eedec4c142da65ea7
+# Source0-md5:	2c45951e4b6ad460475cd63804d89f54
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}.rules
@@ -338,7 +338,6 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 
 # install additional rules from udev package
 cp -a rules/packages/40-pilot-links.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
-cp -a rules/suse/64-device-mapper.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
 
 # install custom rules from pld package
 cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/40-alsa-restore.rules
@@ -467,7 +466,6 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/links.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-alsa-restore.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-pilot-links.rules
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/64-device-mapper.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/70-udev-pld.rules
 
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/udev.conf
