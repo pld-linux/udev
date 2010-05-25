@@ -33,7 +33,7 @@ Name:		udev
 Version:	155
 Release:	1
 Epoch:		1
-License:	GPL
+License:	GPL v2+
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
 # Source0-md5:	2c45951e4b6ad460475cd63804d89f54
@@ -56,29 +56,30 @@ Patch1:		%{name}-uClibc.patch
 URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 %{?with_ConsoleKit:BuildRequires:	ConsoleKit-devel >= 0.4.1}
 BuildRequires:	acl-devel
-BuildRequires:	autoconf
-BuildRequires:	automake
+BuildRequires:	autoconf >= 2.60
+BuildRequires:	automake >= 1:1.10
 BuildRequires:	device-mapper-devel
 %{?debug:BuildRequires:	gir-repository-devel}
-BuildRequires:	glib2-devel
+BuildRequires:	glib2-devel >= 1:2.7.0
 BuildRequires:	glibc-misc
-BuildRequires:	gobject-introspection-devel
+BuildRequires:	gobject-introspection-devel >= 0.6.2
 BuildRequires:	gperf
-BuildRequires:	gtk-doc
+BuildRequires:	gtk-doc >= 1.10
 %{?with_selinux:BuildRequires:	libselinux-devel >= 1.17.13}
 BuildRequires:	libtool
-BuildRequires:	libusb-compat-devel
+BuildRequires:	libusb-compat-devel >= 0.1
 BuildRequires:	libxslt-progs
 BuildRequires:	pciutils
 BuildRequires:	pkgconfig
 BuildRequires:	python-modules
+BuildRequires:	rpmbuild(macros) >= 1.446
 BuildRequires:	sed >= 4.0
 BuildRequires:	usbutils >= 0.82
 %if %{with initrd}
 BuildRequires:	acl-static
 BuildRequires:	attr-static
 %{?with_dietlibc:BuildRequires:	dietlibc-static}
-BuildRequires:	glib2-static
+BuildRequires:	glib2-static >= 1:2.7.0
 %{?with_glibc:BuildRequires:	glibc-static}
 %{?with_klibc:BuildRequires:	klibc-static}
 %{?with_glibc:BuildRequires:	libselinux-static}
@@ -117,19 +118,27 @@ hotpluga.
 
 %package acl
 Summary:	Control device ACL via ConsoleKit
+Summary(pl.UTF-8):	Zarządzanie uprawnieniami do urządzeń poprzez ConsoleKit
 Group:		Base
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 
 %description acl
 ConsoleKit hook to control permissions of system devices.
 
+%description acl -l pl.UTF-8
+Uchwyty ConsoleKit do zarządzania uprawnieniami urządzeń systemowych.
+
 %package compat
-Summary:	Compatibility rules for kernels < 2.6.31
+Summary:	Compatibility rules for Linux kernels < 2.6.31
+Summary(pl.UTF-8):	Reguły dla kompatybilości z jądrami Linuksa < 2.6.31
 Group:		Base
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 
 %description compat
-Compatibility rules for kernels < 2.6.31.
+Compatibility rules for Linux kernels < 2.6.31.
+
+%description compat -l pl.UTF-8
+Reguły dla kompatybilości z jądrami Linuksa < 2.6.31.
 
 %package core
 Summary:	A userspace implementation of devfs - core part of udev
@@ -147,6 +156,105 @@ A userspace implementation of devfs - core part of udev.
 
 %description core -l pl.UTF-8
 Implementacja devfs w przestrzeni użytkownika - główna część udev.
+
+%package libs
+Summary:	Shared library to access udev device information
+Summary(pl.UTF-8):	Biblioteka współdzielona do dostępu do informacji o urządzeniach udev
+Group:		Libraries
+
+%description libs
+Shared libudev library to access udev device information.
+
+%description libs -l pl.UTF-8
+Biblioteka współdzielona libudev służąca do dostępu do informacji o
+urządzeniach udev.
+
+%package devel
+Summary:	Header file for libudev library
+Summary(pl.UTF-8):	Plik nagłówkowy biblioteki libudev
+Group:		Development/Libraries
+Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
+
+%description devel
+Header file for libudev library.
+
+%description devel -l pl.UTF-8
+Plik nagłówkowy biblioteki libudev.
+
+%package static
+Summary:	Static libudev library
+Summary(pl.UTF-8):	Biblioteka statyczna libudev
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
+
+%description static
+Static libudev library.
+
+%description static -l pl.UTF-8
+Biblioteka statyczna libudev.
+
+%package apidocs
+Summary:	libudev API documentation
+Summary(pl.UTF-8):	Dokumentacja API libudev
+Group:		Documentation
+Requires:	gtk-doc-common
+
+%description apidocs
+libudev API documentation.
+
+%description apidocs -l pl.UTF-8
+Dokumentacja API libudev.
+
+%package glib
+Summary:	Shared libgudev library - GObject bindings for libudev
+Summary(pl.UTF-8):	Biblioteka współdzielona libgudev - wiązania GObject do libudev
+Group:		Libraries
+Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
+Requires:	glib2 >= 1:2.7.0
+
+%description glib
+Shared libgudev library - GObject bindings for libudev.
+
+%description glib -l pl.UTF-8
+Biblioteka współdzielona libgudev - wiązania GObject do libudev.
+
+%package glib-devel
+Summary:	Header file for libgudev library
+Summary(pl.UTF-8):	Plik nagłówkowy biblioteki libgudev
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
+Requires:	%{name}-glib = %{epoch}:%{version}-%{release}
+Requires:	glib2-devel >= 1:2.7.0
+
+%description glib-devel
+Header file for libgudev library.
+
+%description glib-devel -l pl.UTF-8
+Plik nagłówkowy biblioteki libgudev.
+
+%package glib-static
+Summary:	Static libgudev library
+Summary(pl.UTF-8):	Biblioteka statyczna libgudev
+Group:		Development/Libraries
+Requires:	%{name}-glib-devel = %{epoch}:%{version}-%{release}
+
+%description glib-static
+Static libgudev library.
+
+%description glib-static -l pl.UTF-8
+Biblioteka statyczna libgudev.
+
+%package glib-apidocs
+Summary:	libgudev API documentation
+Summary(pl.UTF-8):	Dokumentacja API libgudev
+Group:		Documentation
+Requires:	gtk-doc-common
+
+%description glib-apidocs
+libgudev API documentation.
+
+%description glib-apidocs -l pl.UTF-8
+Dokumentacja API libgudev.
 
 %package initrd
 Summary:	A userspace implementation of devfs - static binary for initrd
@@ -177,96 +285,6 @@ initramfs-tools.
 Implementacja devfs w przestrzeni użytkownika - skrypty dla
 initramfs-tools.
 
-%package libs
-Summary:	Shared libudev library
-Summary(pl.UTF-8):	Biblioteka współdzielona libudev
-Group:		Libraries
-Requires:	libselinux >= 1.17.13
-
-%description libs
-Shared libudev library.
-
-%description libs -l pl.UTF-8
-Biblioteka współdzielona libudev.
-
-%package devel
-Summary:	Header file for libudev library
-Summary(pl.UTF-8):	Plik nagłówkowy biblioteki libudev
-Group:		Development/Libraries
-Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
-Requires:	libselinux-devel >= 1.17.13
-
-%description devel
-Header file for libudev library.
-
-%description devel -l pl.UTF-8
-Plik nagłówkowy biblioteki libudev.
-
-%package static
-Summary:	Static libudev library
-Summary(pl.UTF-8):	Biblioteka statyczna libudev
-Group:		Development/Libraries
-Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
-
-%description static
-Static libudev library.
-
-%description static -l pl.UTF-8
-Biblioteka statyczna libudev.
-
-%package apidocs
-Summary:	libudev API documentation
-Group:		Documentation
-Requires:	gtk-doc-common
-
-%description apidocs
-libudev API documentation.
-
-%package glib
-Summary:	Shared libgudev library
-Summary(pl.UTF-8):	Biblioteka współdzielona libgudev
-Group:		Libraries
-Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
-
-%description glib
-Shared libgudev library.
-
-%description glib -l pl.UTF-8
-Biblioteka współdzielona libgudev.
-
-%package glib-devel
-Summary:	Header file for libgudev library
-Summary(pl.UTF-8):	Plik nagłówkowy biblioteki libgudev
-Group:		Development/Libraries
-Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
-Requires:	%{name}-glib = %{epoch}:%{version}-%{release}
-
-%description glib-devel
-Header file for libgudev library.
-
-%description glib-devel -l pl.UTF-8
-Plik nagłówkowy biblioteki libgudev.
-
-%package glib-static
-Summary:	Static libgudev library
-Summary(pl.UTF-8):	Biblioteka statyczna libgudev
-Group:		Development/Libraries
-Requires:	%{name}-glib-devel = %{epoch}:%{version}-%{release}
-
-%description glib-static
-Static libgudev library.
-
-%description glib-static -l pl.UTF-8
-Biblioteka statyczna libgudev.
-
-%package glib-apidocs
-Summary:	libgudev API documentation
-Group:		Documentation
-Requires:	gtk-doc-common
-
-%description glib-apidocs
-libgudev API documentation.
-
 %prep
 %setup -q
 %patch0 -p1
@@ -290,14 +308,15 @@ libgudev API documentation.
 	%{?debug:--enable-debug} \
 	--libexecdir=/lib/udev \
 	--with-rootlibdir=/%{_lib} \
+	--disable-extras \
 	--disable-gtk-doc \
+	--disable-introspection \
 	--disable-logging \
 	--disable-shared \
+	--disable-silent-rules \
 	--enable-static \
 	--with-pci-ids-path=%{_sysconfdir} \
-	--without-selinux \
-	--disable-introspection \
-	--disable-extras
+	--without-selinux
 
 %{__make} \
 	LDFLAGS="-all-static"
@@ -314,6 +333,7 @@ DEST=$(pwd)/udev-initrd
 	--libexecdir=/lib/udev \
 	--with-html-dir=%{_gtkdocdir} \
 	--with-rootlibdir=/%{_lib} \
+	--disable-silent-rules \
 	--enable-extras \
 	--enable-gtk-doc \
 	--enable-introspection \
@@ -394,6 +414,9 @@ fi
 
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
+
+%post	glib -p /sbin/ldconfig
+%postun	glib -p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
@@ -508,11 +531,11 @@ fi
 
 %files devel
 %defattr(644,root,root,755)
-%{_libdir}/libudev.la
 %attr(755,root,root) %{_libdir}/libudev.so
+%{_libdir}/libudev.la
 %{_includedir}/libudev.h
 %{_pkgconfigdir}/libudev.pc
-%{_datadir}/pkgconfig/udev.pc
+%{_npkgconfigdir}/udev.pc
 
 %files static
 %defattr(644,root,root,755)
@@ -526,15 +549,15 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgudev-1.0.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgudev-1.0.so.0
-%{_libdir}/girepository-1.0/*.typelib
+%{_libdir}/girepository-1.0/GUdev-1.0.typelib
 
 %files glib-devel
 %defattr(644,root,root,755)
-%{_libdir}/libgudev-1.0.la
 %attr(755,root,root) %{_libdir}/libgudev-1.0.so
+%{_libdir}/libgudev-1.0.la
 %{_includedir}/gudev-1.0
 %{_pkgconfigdir}/gudev-1.0.pc
-%{_datadir}/gir-1.0/*.gir
+%{_datadir}/gir-1.0/GUdev-1.0.gir
 
 %files glib-static
 %defattr(644,root,root,755)
