@@ -30,13 +30,13 @@
 Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
-Version:	156
+Version:	157
 Release:	1
 Epoch:		1
 License:	GPL v2+
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	5efef35990dd20d8bb459eaff36d1f88
+# Source0-md5:	0ea39cc875116982abf200eb16c1b53e
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}.rules
@@ -356,9 +356,6 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.rules
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.permissions
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
 
-# install additional rules from udev package
-cp -a rules/packages/40-pilot-links.rules $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d
-
 # install custom rules from pld package
 cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/40-alsa-restore.rules
 cp -a %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/70-udev-pld.rules
@@ -488,7 +485,6 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modprobe.d/udev_blacklist.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/links.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-alsa-restore.rules
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-pilot-links.rules
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/70-udev-pld.rules
 
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/udev.conf
