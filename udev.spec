@@ -30,13 +30,13 @@
 Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
-Version:	157
+Version:	160
 Release:	1
 Epoch:		1
 License:	GPL v2+
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	0ea39cc875116982abf200eb16c1b53e
+# Source0-md5:	65459a1f090082c0471bf4e5112208d7
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}.rules
@@ -459,6 +459,7 @@ fi
 %attr(755,root,root) /lib/udev/cdrom_id
 %attr(755,root,root) /lib/udev/edd_id
 %attr(755,root,root) /lib/udev/input_id
+%attr(755,root,root) /lib/udev/mtd_probe
 %attr(755,root,root) /lib/udev/path_id
 %attr(755,root,root) /lib/udev/scsi_id
 %attr(755,root,root) /lib/udev/usb_id
@@ -507,6 +508,7 @@ fi
 /lib/udev/rules.d/70-hid2hci.rules
 /lib/udev/rules.d/75-cd-aliases-generator.rules
 /lib/udev/rules.d/75-net-description.rules
+/lib/udev/rules.d/75-probe_mtd.rules
 /lib/udev/rules.d/75-tty-description.rules
 # It autogenerates network rules
 # /lib/udev/rules.d/75-persistent-net-generator.rules
