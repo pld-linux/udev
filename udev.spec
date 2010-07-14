@@ -41,7 +41,6 @@ Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.
 Source1:	%{name}-alsa.rules
 Source2:	%{name}.rules
 Source3:	%{name}-links.conf
-Source4:	%{name}-compat.rules
 # scripts / helpers
 Source10:	%{name}-net.helper
 Source11:	start_udev
@@ -361,7 +360,7 @@ cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/40-alsa-restore.rule
 cp -a %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/70-udev-pld.rules
 
 # compatibility rules for older kernels
-cp -a %{SOURCE4} $RPM_BUILD_ROOT/lib/udev/rules.d/30-kernel-compat.rules
+cp -a rules/misc/30-kernel-compat.rules $RPM_BUILD_ROOT/lib/udev/rules.d/30-kernel-compat.rules
 
 # install configs
 cp -a %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
