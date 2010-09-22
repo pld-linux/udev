@@ -31,7 +31,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	162
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL v2+
 Group:		Base
@@ -87,7 +87,7 @@ BuildRequires:	libusb-compat-static
 BuildRequires:	libusb-static
 %{?with_klibc:BuildRequires:	linux-libc-headers}
 BuildRequires:	pcre-static
-%{?with_uClibc:BuildRequires:	uClibc-static >= 3:0.9.30.2-2}
+%{?with_uClibc:BuildRequires:	uClibc-static >= 4:0.9.30.3}
 %endif
 Requires:	%{name}-core = %{epoch}:%{version}-%{release}
 Provides:	dev = 3.5.0
