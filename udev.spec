@@ -58,7 +58,6 @@ BuildRequires:	acl-devel
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake >= 1:1.10
 BuildRequires:	device-mapper-devel
-%{?debug:BuildRequires:	gir-repository-devel}
 BuildRequires:	glib2-devel >= 1:2.7.0
 BuildRequires:	glibc-misc
 BuildRequires:	gobject-introspection-devel >= 0.6.2
