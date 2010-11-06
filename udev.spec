@@ -31,7 +31,7 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 Version:	162
-Release:	2
+Release:	3
 Epoch:		1
 License:	GPL v2+
 Group:		Base
