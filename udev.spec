@@ -30,13 +30,13 @@
 Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
-Version:	162
-Release:	3
+Version:	164
+Release:	1
 Epoch:		1
 License:	GPL v2+
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	dd7099242e92084605e07db0c7299a02
+# Source0-md5:	cd285a85f969518a671834de2f4d6614
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}.rules
@@ -543,8 +543,8 @@ fi
 
 %files glib
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libgudev-1.0.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgudev-1.0.so.0
+%attr(755,root,root) /%{_lib}/libgudev-1.0.so.*.*.*
+%attr(755,root,root) %ghost /%{_lib}/libgudev-1.0.so.0
 %{_libdir}/girepository-1.0/GUdev-1.0.typelib
 
 %files glib-devel
