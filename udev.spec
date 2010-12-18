@@ -313,7 +313,7 @@ initramfs-tools.
 	--disable-shared \
 	--disable-silent-rules \
 	--enable-static \
-	--with-pci-ids-path=%{_sysconfdir} \
+	--with-pci-ids-path=%{_sysconfdir}/pci.ids \
 	--without-selinux
 
 %{__make} \
@@ -338,7 +338,7 @@ DEST=$(pwd)/udev-initrd
 	--enable-logging \
 	--enable-shared \
 	--enable-static \
-	--with-pci-ids-path=%{_sysconfdir} \
+	--with-pci-ids-path=%{_sysconfdir}/pci.ids \
 	--with%{!?with_selinux:out}-selinux
 %{__make}
 
