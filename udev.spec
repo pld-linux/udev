@@ -30,13 +30,13 @@
 Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
-Version:	164
+Version:	165
 Release:	1
 Epoch:		1
 License:	GPL v2+
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	cd285a85f969518a671834de2f4d6614
+# Source0-md5:	74c62aa82969278960b7ee81e94b6d8f
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}.rules
@@ -406,6 +406,9 @@ fi
 %if "%{_lib}" != "lib"
 %{__sed} -i -e 's#/%{_lib}/udev/#/lib/udev/#g' /etc/udev/rules.d/*.rules
 %endif
+
+%triggerpostun core -- udev < 165
+/sbin/udevadm info --convert-db
 
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
