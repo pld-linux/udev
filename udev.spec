@@ -88,6 +88,9 @@ BuildRequires:	libusb-static
 BuildRequires:	pcre-static
 %{?with_uClibc:BuildRequires:	uClibc-static >= 4:0.9.30.3}
 %endif
+# Build process broken - tries to links with system libs
+# instead of just built libs. BC for now.
+BuildConflicts:	udev-devel
 Requires:	%{name}-core = %{epoch}:%{version}-%{release}
 Provides:	dev = 3.5.0
 Obsoletes:	dev
