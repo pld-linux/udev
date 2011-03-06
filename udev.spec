@@ -30,6 +30,7 @@
 Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
+# Verify ChangeLog and NEWS when updating (since there are incompatible/breaking changes very often)
 Version:	166
 Release:	1
 Epoch:		1
