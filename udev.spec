@@ -148,6 +148,7 @@ Summary(pl.UTF-8):	Implementacja devfs w przestrzeni użytkownika - główna cz�
 Group:		Base
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	coreutils
+Requires:	filesystem >= 3.0-43
 Requires:	setup >= 2.6.1-1
 Requires:	uname(release) >= 2.6.25
 Suggests:	%{name}-compat
