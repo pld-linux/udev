@@ -391,7 +391,6 @@ install -p udev-initrd/lib/udev/*_id $RPM_BUILD_ROOT%{_libdir}/initrd/udev
 install -p udev-initrd/lib/udev/collect $RPM_BUILD_ROOT%{_libdir}/initrd/udev
 install -p udev-initrd/lib/udev/create_floppy_devices $RPM_BUILD_ROOT%{_libdir}/initrd/udev
 install -p udev-initrd/lib/udev/firmware $RPM_BUILD_ROOT%{_libdir}/initrd/udev
-install -p udev-initrd/lib/udev/fstab_import $RPM_BUILD_ROOT%{_libdir}/initrd/udev
 %endif
 
 %clean
@@ -454,7 +453,6 @@ fi
 %attr(755,root,root) /lib/udev/create_floppy_devices
 %attr(755,root,root) /lib/udev/collect
 %attr(755,root,root) /lib/udev/firmware
-%attr(755,root,root) /lib/udev/fstab_import
 
 %attr(755,root,root) /lib/udev/keyboard-force-release.sh
 
@@ -520,7 +518,6 @@ fi
 # It autogenerates network rules
 # /lib/udev/rules.d/75-persistent-net-generator.rules
 /lib/udev/rules.d/78-sound-card.rules
-/lib/udev/rules.d/79-fstab_import.rules
 /lib/udev/rules.d/80-drivers.rules
 /lib/udev/rules.d/95-keyboard-force-release.rules
 /lib/udev/rules.d/95-keymap.rules
@@ -583,7 +580,6 @@ fi
 %attr(755,root,root) %{_libdir}/initrd/udev/collect
 %attr(755,root,root) %{_libdir}/initrd/udev/create_floppy_devices
 %attr(755,root,root) %{_libdir}/initrd/udev/firmware
-%attr(755,root,root) %{_libdir}/initrd/udev/fstab_import
 %endif
 
 %files initramfs
