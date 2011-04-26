@@ -59,7 +59,7 @@ BuildRequires:	acl-devel
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake >= 1:1.10
 BuildRequires:	device-mapper-devel
-BuildRequires:	glib2-devel >= 1:2.7.0
+BuildRequires:	glib2-devel >= 1:2.22.0
 BuildRequires:	glibc-misc
 BuildRequires:	gobject-introspection-devel >= 0.6.2
 BuildRequires:	gperf
@@ -78,12 +78,12 @@ BuildRequires:	usbutils >= 0.82
 BuildRequires:	acl-static
 BuildRequires:	attr-static
 %{?with_dietlibc:BuildRequires:	dietlibc-static}
-BuildRequires:	glib2-static >= 1:2.7.0
+BuildRequires:	glib2-static >= 1:2.22.0
 %{?with_glibc:BuildRequires:	glibc-static}
 %{?with_klibc:BuildRequires:	klibc-static}
 %{?with_glibc:BuildRequires:	libselinux-static}
 %{?with_glibc:BuildRequires:	libsepol-static}
-BuildRequires:	libusb-compat-static
+BuildRequires:	libusb-compat-static >= 0.1
 BuildRequires:	libusb-static
 %{?with_klibc:BuildRequires:	linux-libc-headers}
 BuildRequires:	pcre-static
@@ -213,7 +213,7 @@ Summary:	Shared libgudev library - GObject bindings for libudev
 Summary(pl.UTF-8):	Biblioteka współdzielona libgudev - wiązania GObject do libudev
 Group:		Libraries
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
-Requires:	glib2 >= 1:2.7.0
+Requires:	glib2 >= 1:2.22.0
 
 %description glib
 Shared libgudev library - GObject bindings for libudev.
@@ -227,7 +227,7 @@ Summary(pl.UTF-8):	Plik nagłówkowy biblioteki libgudev
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
 Requires:	%{name}-glib = %{epoch}:%{version}-%{release}
-Requires:	glib2-devel >= 1:2.7.0
+Requires:	glib2-devel >= 1:2.22.0
 
 %description glib-devel
 Header file for libgudev library.
