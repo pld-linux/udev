@@ -32,7 +32,7 @@ Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 # Verify ChangeLog and NEWS when updating (since there are incompatible/breaking changes very often)
 Version:	168
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL v2+
 Group:		Base
@@ -74,6 +74,7 @@ BuildRequires:	python-modules
 BuildRequires:	rpmbuild(macros) >= 1.446
 BuildRequires:	sed >= 4.0
 BuildRequires:	usbutils >= 0.82
+BuildRequires:	zlib-devel
 %if %{with initrd}
 BuildRequires:	acl-static
 BuildRequires:	attr-static
@@ -477,7 +478,6 @@ fi
 %attr(755,root,root) /lib/udev/usb-db
 
 %attr(755,root,root) /lib/udev/findkeyboards
-%attr(755,root,root) /lib/udev/hid2hci
 %attr(755,root,root) /lib/udev/mobile-action-modeswitch
 
 %attr(755,root,root) %{_sbindir}/start_udev
