@@ -31,13 +31,13 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 # Verify ChangeLog and NEWS when updating (since there are incompatible/breaking changes very often)
-Version:	168
-Release:	2
+Version:	169
+Release:	0.1
 Epoch:		1
 License:	GPL v2+
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	4a466078532ab5dd5c35acc3ea2ec9a1
+# Source0-md5:	967c66e6b8e29d7cfc98326c5b00454d
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}.rules
@@ -151,7 +151,7 @@ Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	coreutils
 Requires:	filesystem >= 3.0-43
 Requires:	setup >= 2.6.1-1
-Requires:	uname(release) >= 2.6.25
+Requires:	uname(release) >= 2.6.32
 Suggests:	%{name}-compat
 Conflicts:	udev < 1:118-1
 
@@ -312,7 +312,11 @@ initramfs-tools.
 	%{?debug:--enable-debug} \
 	--libexecdir=/lib/udev \
 	--with-rootlibdir=/%{_lib} \
-	--disable-extras \
+	--disable-rule_generator \
+	--disable-hwdb \
+	--disable-udev_acl \
+	--disable-gudev \
+	--disable-keymap \
 	--disable-gtk-doc \
 	--disable-introspection \
 	--disable-logging \
@@ -338,9 +342,12 @@ DEST=$(pwd)/udev-initrd
 	--with-html-dir=%{_gtkdocdir} \
 	--with-rootlibdir=/%{_lib} \
 	--disable-silent-rules \
-	--enable-extras \
+	--enable-edd \
+	--enable-hid2hci \
+	--enable-action_modeswitch \
 	--enable-gtk-doc \
 	--enable-introspection \
+	--enable-floppy \
 	--enable-logging \
 	--enable-shared \
 	--enable-static \
@@ -390,7 +397,6 @@ install -p udev-initrd/sbin/udevd $RPM_BUILD_ROOT%{_libdir}/initrd
 ln -s udevd $RPM_BUILD_ROOT%{_libdir}/initrd/udevstart
 install -p udev-initrd/lib/udev/*_id $RPM_BUILD_ROOT%{_libdir}/initrd/udev
 install -p udev-initrd/lib/udev/collect $RPM_BUILD_ROOT%{_libdir}/initrd/udev
-install -p udev-initrd/lib/udev/create_floppy_devices $RPM_BUILD_ROOT%{_libdir}/initrd/udev
 install -p udev-initrd/lib/udev/firmware $RPM_BUILD_ROOT%{_libdir}/initrd/udev
 %endif
 
@@ -458,7 +464,7 @@ fi
 %attr(755,root,root) /lib/udev/keyboard-force-release.sh
 
 %attr(755,root,root) /lib/udev/*_helper
-%attr(755,root,root) /lib/udev/*_rules
+#%attr(755,root,root) /lib/udev/*_rules
 
 %attr(755,root,root) /lib/udev/ata_id
 %attr(755,root,root) /lib/udev/cdrom_id
@@ -478,7 +484,7 @@ fi
 %attr(755,root,root) /lib/udev/usb-db
 
 %attr(755,root,root) /lib/udev/findkeyboards
-%attr(755,root,root) /lib/udev/mobile-action-modeswitch
+#%attr(755,root,root) /lib/udev/mobile-action-modeswitch
 
 %attr(755,root,root) %{_sbindir}/start_udev
 %attr(755,root,root) %{_sbindir}/udevd
@@ -495,7 +501,7 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/udev.conf
 
 # rules below are NOT supposed to be changed by users
-/lib/udev/rule_generator.functions
+#/lib/udev/rule_generator.functions
 %dir /lib/udev/rules.d
 /lib/udev/rules.d/42-qemu-usb.rules
 /lib/udev/rules.d/50-firmware.rules
@@ -508,10 +514,10 @@ fi
 /lib/udev/rules.d/60-persistent-storage-tape.rules
 /lib/udev/rules.d/60-persistent-storage.rules
 /lib/udev/rules.d/60-persistent-v4l.rules
-/lib/udev/rules.d/61-mobile-action.rules
+#/lib/udev/rules.d/61-mobile-action.rules
 /lib/udev/rules.d/61-persistent-storage-edd.rules
-/lib/udev/rules.d/70-hid2hci.rules
-/lib/udev/rules.d/75-cd-aliases-generator.rules
+#/lib/udev/rules.d/70-hid2hci.rules
+#/lib/udev/rules.d/75-cd-aliases-generator.rules
 /lib/udev/rules.d/75-net-description.rules
 /lib/udev/rules.d/75-probe_mtd.rules
 /lib/udev/rules.d/75-tty-description.rules
@@ -578,7 +584,6 @@ fi
 %attr(755,root,root) %{_libdir}/initrd/udevstart
 %attr(755,root,root) %{_libdir}/initrd/udev/*_id
 %attr(755,root,root) %{_libdir}/initrd/udev/collect
-%attr(755,root,root) %{_libdir}/initrd/udev/create_floppy_devices
 %attr(755,root,root) %{_libdir}/initrd/udev/firmware
 %endif
 
