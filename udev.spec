@@ -31,13 +31,13 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 # Verify ChangeLog and NEWS when updating (since there are incompatible/breaking changes very often)
-Version:	171
-Release:	2
+Version:	172
+Release:	1
 Epoch:		1
 License:	GPL v2+
 Group:		Base
 Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	bdf4617284be2ecac11767437417e209
+# Source0-md5:	bd122d04cf758441f498aad0169a454f
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}.rules
@@ -482,8 +482,8 @@ fi
 %attr(755,root,root) /lib/udev/pci-db
 %attr(755,root,root) /lib/udev/usb-db
 
+%attr(755,root,root) /lib/udev/accelerometer
 %attr(755,root,root) /lib/udev/findkeyboards
-%attr(755,root,root) /lib/udev/mobile-action-modeswitch
 
 %attr(755,root,root) %{_sbindir}/start_udev
 %attr(755,root,root) %{_sbindir}/udevd
@@ -513,7 +513,7 @@ fi
 /lib/udev/rules.d/60-persistent-storage-tape.rules
 /lib/udev/rules.d/60-persistent-storage.rules
 /lib/udev/rules.d/60-persistent-v4l.rules
-/lib/udev/rules.d/61-mobile-action.rules
+/lib/udev/rules.d/61-accelerometer.rules
 /lib/udev/rules.d/61-persistent-storage-edd.rules
 /lib/udev/rules.d/75-cd-aliases-generator.rules
 /lib/udev/rules.d/75-net-description.rules
