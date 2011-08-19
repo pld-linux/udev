@@ -1,5 +1,6 @@
 # TODO
 # - initrd needs love (is probably completly unusable in current form)
+# - udev stores it's data now to /run/udev, but that dir is not owned and not even on tmpfs
 #
 # Conditional build:
 %bcond_without	initrd		# build without udev-initrd
