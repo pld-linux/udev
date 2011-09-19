@@ -32,7 +32,7 @@ Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 # Verify ChangeLog and NEWS when updating (since there are incompatible/breaking changes very often)
 Version:	172
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL v2+
 Group:		Base
@@ -148,7 +148,7 @@ Summary(pl.UTF-8):	Implementacja devfs w przestrzeni użytkownika - główna cz�
 Group:		Base
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	coreutils
-Requires:	filesystem >= 3.0-43
+Requires:	filesystem >= 3.0-45
 Requires:	setup >= 2.6.1-1
 Requires:	uname(release) >= 2.6.32
 Suggests:	%{name}-compat
@@ -498,7 +498,6 @@ fi
 
 # rules below are NOT supposed to be changed by users
 /lib/udev/rule_generator.functions
-%dir /lib/udev/rules.d
 /lib/udev/rules.d/42-qemu-usb.rules
 /lib/udev/rules.d/50-firmware.rules
 /lib/udev/rules.d/50-udev-default.rules
