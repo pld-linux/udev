@@ -32,7 +32,7 @@ Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 # Verify ChangeLog and NEWS when updating (since there are incompatible/breaking changes very often)
 Version:	172
-Release:	3
+Release:	4
 Epoch:		1
 License:	GPL v2+
 Group:		Base
@@ -159,6 +159,14 @@ A userspace implementation of devfs - core part of udev.
 
 %description core -l pl.UTF-8
 Implementacja devfs w przestrzeni użytkownika - główna część udev.
+
+%package systemd
+Summary:	systemd units for udev
+Group:		Base
+Requires:	%{name}-core = %{epoch}:%{version}-%{release}
+
+%description systemd
+systemd units for udev.
 
 %package libs
 Summary:	Shared library to access udev device information
@@ -350,6 +358,7 @@ DEST=$(pwd)/udev-initrd
 	--enable-shared \
 	--enable-static \
 	--with-pci-ids-path=%{_sysconfdir}/pci.ids \
+	--with-systemdsystemunitdir=/lib/systemd/system \
 	--with%{!?with_selinux:out}-selinux
 %{__make}
 
@@ -525,6 +534,18 @@ fi
 
 %{_mandir}/man7/udev.7*
 %{_mandir}/man8/*
+
+%files systemd
+%defattr(644,root,root,755)
+/lib/systemd/system/basic.target.wants/udev-trigger.service
+/lib/systemd/system/basic.target.wants/udev.service
+/lib/systemd/system/sockets.target.wants/udev-control.socket
+/lib/systemd/system/sockets.target.wants/udev-kernel.socket
+/lib/systemd/system/udev-control.socket
+/lib/systemd/system/udev-kernel.socket
+/lib/systemd/system/udev-settle.service
+/lib/systemd/system/udev-trigger.service
+/lib/systemd/system/udev.service
 
 %files libs
 %defattr(644,root,root,755)
