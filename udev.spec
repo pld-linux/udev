@@ -473,7 +473,6 @@ fi
 %attr(755,root,root) /lib/udev/keyboard-force-release.sh
 
 %attr(755,root,root) /lib/udev/net_helper
-#%attr(755,root,root) /lib/udev/*_rules
 
 %attr(755,root,root) /lib/udev/ata_id
 %attr(755,root,root) /lib/udev/cdrom_id
@@ -509,7 +508,6 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/udev.conf
 
 # rules below are NOT supposed to be changed by users
-#/lib/udev/rule_generator.functions
 /lib/udev/rules.d/42-qemu-usb.rules
 /lib/udev/rules.d/50-firmware.rules
 /lib/udev/rules.d/50-udev-default.rules
@@ -523,12 +521,9 @@ fi
 /lib/udev/rules.d/60-persistent-v4l.rules
 /lib/udev/rules.d/61-accelerometer.rules
 /lib/udev/rules.d/61-persistent-storage-edd.rules
-#/lib/udev/rules.d/75-cd-aliases-generator.rules
 /lib/udev/rules.d/75-net-description.rules
 /lib/udev/rules.d/75-probe_mtd.rules
 /lib/udev/rules.d/75-tty-description.rules
-# It autogenerates network rules
-# /lib/udev/rules.d/75-persistent-net-generator.rules
 /lib/udev/rules.d/78-sound-card.rules
 /lib/udev/rules.d/80-drivers.rules
 /lib/udev/rules.d/95-keyboard-force-release.rules
