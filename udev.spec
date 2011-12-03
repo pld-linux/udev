@@ -31,13 +31,13 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 # Verify ChangeLog and NEWS when updating (since there are incompatible/breaking changes very often)
-Version:	172
-Release:	4
+Version:	175
+Release:	1
 Epoch:		1
 License:	GPL v2+
 Group:		Base
-Source0:	ftp://ftp.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	bd122d04cf758441f498aad0169a454f
+Source0:	http://people.freedesktop.org/~kay/udev/%{name}-%{version}.tar.bz2
+# Source0-md5:	2fc9c1efcbde98e3d73ffee7a77aea47
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}.rules
@@ -105,8 +105,6 @@ Obsoletes:	udev-tools
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
-%define		static_extras	extras/ata_id extras/cdrom_id extras/edd_id extras/floppy extras/usb_id extras/volume_id extras/scsi_id
-%define		extras		%{static_extras} extras/firmware extras/path_id
 
 %description
 udev is the device manager for the Linux 2.6 kernel series. Its
@@ -354,6 +352,7 @@ DEST=$(pwd)/udev-initrd
 	--enable-gtk-doc \
 	--enable-introspection \
 	--enable-floppy \
+	--enable-udev_acl \
 	--enable-logging \
 	--enable-shared \
 	--enable-static \
@@ -370,9 +369,7 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/{modprobe.d,udev/rules.d} \
 %{__make} -j1 install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.rules
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/udev/udev.permissions
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/init.d/udev
+ln -s /lib/udev/udevd $RPM_BUILD_ROOT%{_sbindir}/udevd
 
 # install custom rules from pld package
 cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/40-alsa-restore.rules
@@ -400,7 +397,7 @@ install -p %{SOURCE32} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/scripts/init-p
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_libdir}/initrd/udev
 install -p udev-initrd/sbin/udevadm $RPM_BUILD_ROOT%{_libdir}/initrd
-install -p udev-initrd/sbin/udevd $RPM_BUILD_ROOT%{_libdir}/initrd
+install -p udev-initrd/lib/udev/udevd $RPM_BUILD_ROOT%{_libdir}/initrd
 ln -s udevd $RPM_BUILD_ROOT%{_libdir}/initrd/udevstart
 install -p udev-initrd/lib/udev/*_id $RPM_BUILD_ROOT%{_libdir}/initrd/udev
 install -p udev-initrd/lib/udev/collect $RPM_BUILD_ROOT%{_libdir}/initrd/udev
@@ -434,6 +431,13 @@ fi
 %post	glib -p /sbin/ldconfig
 %postun	glib -p /sbin/ldconfig
 
+%post systemd
+/bin/systemctl daemon-reload >/dev/null 2>&1 || :
+/bin/systemctl start udev.service >/dev/null 2>&1 || :
+
+%postun systemd
+/bin/systemctl daemon-reload >/dev/null 2>&1 || :
+
 %files
 %defattr(644,root,root,755)
 %dev(c,1,3) %attr(666,root,root) /dev/null
@@ -444,7 +448,7 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) /lib/udev/udev-acl
 %attr(755,root,root) /usr/lib/ConsoleKit/run-seat.d/udev-acl.ck
-/lib/udev/rules.d/70-acl.rules
+/lib/udev/rules.d/70-udev-acl.rules
 
 %files compat
 %defattr(644,root,root,755)
@@ -468,18 +472,17 @@ fi
 
 %attr(755,root,root) /lib/udev/keyboard-force-release.sh
 
-%attr(755,root,root) /lib/udev/*_helper
-%attr(755,root,root) /lib/udev/*_rules
+%attr(755,root,root) /lib/udev/net_helper
+#%attr(755,root,root) /lib/udev/*_rules
 
 %attr(755,root,root) /lib/udev/ata_id
 %attr(755,root,root) /lib/udev/cdrom_id
 %attr(755,root,root) /lib/udev/edd_id
-%attr(755,root,root) /lib/udev/input_id
 %attr(755,root,root) /lib/udev/mtd_probe
-%attr(755,root,root) /lib/udev/path_id
 %attr(755,root,root) /lib/udev/scsi_id
-%attr(755,root,root) /lib/udev/usb_id
 %attr(755,root,root) /lib/udev/v4l_id
+
+%attr(755,root,root) /lib/udev/udevd
 
 %attr(755,root,root) /lib/udev/keymap
 %dir /lib/udev/keymaps
@@ -506,7 +509,7 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/udev.conf
 
 # rules below are NOT supposed to be changed by users
-/lib/udev/rule_generator.functions
+#/lib/udev/rule_generator.functions
 /lib/udev/rules.d/42-qemu-usb.rules
 /lib/udev/rules.d/50-firmware.rules
 /lib/udev/rules.d/50-udev-default.rules
@@ -520,7 +523,7 @@ fi
 /lib/udev/rules.d/60-persistent-v4l.rules
 /lib/udev/rules.d/61-accelerometer.rules
 /lib/udev/rules.d/61-persistent-storage-edd.rules
-/lib/udev/rules.d/75-cd-aliases-generator.rules
+#/lib/udev/rules.d/75-cd-aliases-generator.rules
 /lib/udev/rules.d/75-net-description.rules
 /lib/udev/rules.d/75-probe_mtd.rules
 /lib/udev/rules.d/75-tty-description.rules
