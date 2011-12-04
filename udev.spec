@@ -32,7 +32,7 @@ Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 # Verify ChangeLog and NEWS when updating (since there are incompatible/breaking changes very often)
 Version:	175
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL v2+
 Group:		Base
@@ -70,7 +70,7 @@ BuildRequires:	libxslt-progs
 BuildRequires:	pciutils
 BuildRequires:	pkgconfig
 BuildRequires:	python-modules
-BuildRequires:	rpmbuild(macros) >= 1.623
+BuildRequires:	rpmbuild(macros) >= 1.626
 BuildRequires:	sed >= 4.0
 BuildRequires:	usbutils >= 0.82
 BuildRequires:	zlib-devel
@@ -429,6 +429,16 @@ fi
 %triggerpostun core -- udev < 165
 /sbin/udevadm info --convert-db
 
+%post core
+if [ $1 -gt 1 ]; then
+	if [ ! -x /sbin/systemd_booted ] || ! /sbin/systemd_booted; then
+		if [ -n "$(pidof udevd)" ]; then
+			/sbin/udevadm control --exit
+			/lib/udev/udevd --daemon
+		fi
+	fi
+fi
+ 
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
 
@@ -436,11 +446,17 @@ fi
 %postun	glib -p /sbin/ldconfig
 
 %post systemd
-%systemd_post
-%systemd_enable udev.service
+%systemd_post udev-settle.service
+if [ $1 -gt 1 ] && /sbin/systemd_booted; then
+	SYSTEMD_LOG_LEVEL=warning SYSTEMD_LOG_TARGET=syslog \
+	/bin/systemctl --quiet try-restart udev.service || :
+fi
+
+%preun systemd
+%systemd_preun udev-settle.service
 
 %postun systemd
-%systemd_postun udev.service
+%systemd_reload
 
 %files
 %defattr(644,root,root,755)
