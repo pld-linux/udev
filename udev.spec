@@ -70,7 +70,7 @@ BuildRequires:	libxslt-progs
 BuildRequires:	pciutils
 BuildRequires:	pkgconfig
 BuildRequires:	python-modules
-BuildRequires:	rpmbuild(macros) >= 1.446
+BuildRequires:	rpmbuild(macros) >= 1.623
 BuildRequires:	sed >= 4.0
 BuildRequires:	usbutils >= 0.82
 BuildRequires:	zlib-devel
@@ -357,7 +357,7 @@ DEST=$(pwd)/udev-initrd
 	--enable-shared \
 	--enable-static \
 	--with-pci-ids-path=%{_sysconfdir}/pci.ids \
-	--with-systemdsystemunitdir=/lib/systemd/system \
+	--with-systemdsystemunitdir=%{systemdunitdir} \
 	--with%{!?with_selinux:out}-selinux
 %{__make}
 
@@ -432,11 +432,11 @@ fi
 %postun	glib -p /sbin/ldconfig
 
 %post systemd
-/bin/systemctl daemon-reload >/dev/null 2>&1 || :
-/bin/systemctl start udev.service >/dev/null 2>&1 || :
+%systemd_post
+%systemd_enable udev.service
 
 %postun systemd
-/bin/systemctl daemon-reload >/dev/null 2>&1 || :
+%systemd_postun udev.service
 
 %files
 %defattr(644,root,root,755)
@@ -535,15 +535,15 @@ fi
 
 %files systemd
 %defattr(644,root,root,755)
-/lib/systemd/system/basic.target.wants/udev-trigger.service
-/lib/systemd/system/basic.target.wants/udev.service
-/lib/systemd/system/sockets.target.wants/udev-control.socket
-/lib/systemd/system/sockets.target.wants/udev-kernel.socket
-/lib/systemd/system/udev-control.socket
-/lib/systemd/system/udev-kernel.socket
-/lib/systemd/system/udev-settle.service
-/lib/systemd/system/udev-trigger.service
-/lib/systemd/system/udev.service
+%{systemdunitdir}/basic.target.wants/udev-trigger.service
+%{systemdunitdir}/basic.target.wants/udev.service
+%{systemdunitdir}/sockets.target.wants/udev-control.socket
+%{systemdunitdir}/sockets.target.wants/udev-kernel.socket
+%{systemdunitdir}/udev-control.socket
+%{systemdunitdir}/udev-kernel.socket
+%{systemdunitdir}/udev-settle.service
+%{systemdunitdir}/udev-trigger.service
+%{systemdunitdir}/udev.service
 
 %files libs
 %defattr(644,root,root,755)
