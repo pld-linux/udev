@@ -160,11 +160,15 @@ Implementacja devfs w przestrzeni użytkownika - główna część udev.
 
 %package systemd
 Summary:	systemd units for udev
+Summary(pl.UTF-8):	Jednostki systemd do usługi udev
 Group:		Base
 Requires:	%{name}-core = %{epoch}:%{version}-%{release}
 
 %description systemd
 systemd units for udev.
+
+%description systemd -l pl.UTF-8
+Jednostki systemd do usługi udev.
 
 %package libs
 Summary:	Shared library to access udev device information
