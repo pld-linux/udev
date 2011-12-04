@@ -70,7 +70,7 @@ BuildRequires:	libxslt-progs
 BuildRequires:	pciutils
 BuildRequires:	pkgconfig
 BuildRequires:	python-modules
-BuildRequires:	rpmbuild(macros) >= 1.626
+BuildRequires:	rpmbuild(macros) >= 1.628
 BuildRequires:	sed >= 4.0
 BuildRequires:	usbutils >= 0.82
 BuildRequires:	zlib-devel
