@@ -32,7 +32,7 @@ Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 # Verify ChangeLog and NEWS when updating (since there are incompatible/breaking changes very often)
 Version:	175
-Release:	2
+Release:	3
 Epoch:		1
 License:	GPL v2+
 Group:		Base
@@ -431,7 +431,7 @@ fi
 
 %post core
 if [ $1 -gt 1 ]; then
-	if [ ! -x /sbin/systemd_booted ] || ! /sbin/systemd_booted; then
+	if [ ! -x /bin/systemd_booted ] || ! /bin/systemd_booted; then
 		if [ -n "$(pidof udevd)" ]; then
 			/sbin/udevadm control --exit
 			/lib/udev/udevd --daemon
@@ -447,7 +447,7 @@ fi
 
 %post systemd
 %systemd_post udev-settle.service
-if [ $1 -gt 1 ] && /sbin/systemd_booted; then
+if [ $1 -gt 1 ] && /bin/systemd_booted; then
 	SYSTEMD_LOG_LEVEL=warning SYSTEMD_LOG_TARGET=syslog \
 	/bin/systemctl --quiet try-restart udev.service || :
 fi
