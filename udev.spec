@@ -36,7 +36,7 @@ Release:	3
 Epoch:		1
 License:	GPL v2+
 Group:		Base
-Source0:	http://people.freedesktop.org/~kay/udev/%{name}-%{version}.tar.bz2
+Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
 # Source0-md5:	2fc9c1efcbde98e3d73ffee7a77aea47
 # rules
 Source1:	%{name}-alsa.rules
@@ -53,7 +53,6 @@ Source31:	%{name}-initramfs-hook
 Source32:	%{name}-initramfs-premount
 Patch0:		%{name}-so.patch
 Patch1:		%{name}-uClibc.patch
-URL:		http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html
 BuildRequires:	acl-devel
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake >= 1:1.11
