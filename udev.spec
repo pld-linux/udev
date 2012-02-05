@@ -32,7 +32,7 @@ Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 # Verify ChangeLog and NEWS when updating (since there are incompatible/breaking changes very often)
 Version:	175
-Release:	3
+Release:	4
 Epoch:		1
 License:	GPL v2+
 Group:		Base
@@ -147,6 +147,7 @@ Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	coreutils
 Requires:	filesystem >= 3.0-45
 Requires:	setup >= 2.6.1-1
+Requires:	systemd-units >= 0.38
 Requires:	uname(release) >= 2.6.32
 Suggests:	%{name}-compat
 Conflicts:	udev < 1:118-1
@@ -156,18 +157,6 @@ A userspace implementation of devfs - core part of udev.
 
 %description core -l pl.UTF-8
 Implementacja devfs w przestrzeni użytkownika - główna część udev.
-
-%package systemd
-Summary:	systemd units for udev
-Summary(pl.UTF-8):	Jednostki systemd do usługi udev
-Group:		Base
-Requires:	%{name}-core = %{epoch}:%{version}-%{release}
-
-%description systemd
-systemd units for udev.
-
-%description systemd -l pl.UTF-8
-Jednostki systemd do usługi udev.
 
 %package libs
 Summary:	Shared library to access udev device information
@@ -428,6 +417,9 @@ fi
 %triggerpostun core -- udev < 165
 /sbin/udevadm info --convert-db
 
+%triggerpostun core -- %{name}-core < 1:175-4
+%systemd_trigger udev-settle.service
+
 %post core
 if [ $1 -gt 1 ]; then
 	if [ ! -x /bin/systemd_booted ] || ! /bin/systemd_booted; then
@@ -435,27 +427,24 @@ if [ $1 -gt 1 ]; then
 			/sbin/udevadm control --exit
 			/lib/udev/udevd --daemon
 		fi
+	else
+		SYSTEMD_LOG_LEVEL=warning SYSTEMD_LOG_TARGET=syslog \
+		/bin/systemctl --quiet try-restart udev.service || :
 	fi
 fi
+%systemd_post udev-settle.service
  
+%preun core
+%systemd_preun udev-settle.service
+
+%postun core
+%systemd_reload
+
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
 
 %post	glib -p /sbin/ldconfig
 %postun	glib -p /sbin/ldconfig
-
-%post systemd
-%systemd_post udev-settle.service
-if [ $1 -gt 1 ] && /bin/systemd_booted; then
-	SYSTEMD_LOG_LEVEL=warning SYSTEMD_LOG_TARGET=syslog \
-	/bin/systemctl --quiet try-restart udev.service || :
-fi
-
-%preun systemd
-%systemd_preun udev-settle.service
-
-%postun systemd
-%systemd_reload
 
 %files
 %defattr(644,root,root,755)
@@ -552,8 +541,6 @@ fi
 %{_mandir}/man7/udev.7*
 %{_mandir}/man8/*
 
-%files systemd
-%defattr(644,root,root,755)
 %{systemdunitdir}/basic.target.wants/udev-trigger.service
 %{systemdunitdir}/basic.target.wants/udev.service
 %{systemdunitdir}/sockets.target.wants/udev-control.socket
