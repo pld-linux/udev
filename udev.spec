@@ -32,7 +32,7 @@ Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 # Verify ChangeLog and NEWS when updating (since there are incompatible/breaking changes very often)
 Version:	175
-Release:	4
+Release:	5
 Epoch:		1
 License:	GPL v2+
 Group:		Base
@@ -151,6 +151,7 @@ Requires:	systemd-units >= 0.38
 Requires:	uname(release) >= 2.6.32
 Suggests:	%{name}-compat
 Conflicts:	udev < 1:118-1
+Obsoletes:	udev-systemd
 
 %description core
 A userspace implementation of devfs - core part of udev.
