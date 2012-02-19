@@ -320,7 +320,6 @@ initramfs-tools.
 	--libexecdir=/lib \
 	--with-rootlibdir=/%{_lib} \
 	--disable-rule_generator \
-	--disable-hwdb \
 	--disable-udev_acl \
 	--disable-gudev \
 	--disable-keymap \
@@ -351,7 +350,6 @@ DEST=$(pwd)/udev-initrd
 	--with-rootlibdir=/%{_lib} \
 	--disable-silent-rules \
 	--enable-edd \
-	--enable-action_modeswitch \
 	--enable-gtk-doc \
 	--enable-introspection \
 	--enable-floppy \
