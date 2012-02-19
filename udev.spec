@@ -63,7 +63,7 @@ BuildRequires:	gobject-introspection-devel >= 0.6.2
 BuildRequires:	gperf
 BuildRequires:	gtk-doc >= 1.10
 BuildRequires:	kmod-devel >= 5
-BuildRequires:	libblkid-devel
+BuildRequires:	libblkid-devel >= 2.20
 %{?with_selinux:BuildRequires:	libselinux-devel >= 1.17.13}
 BuildRequires:	libtool >= 2:2.0
 BuildRequires:	libusb-compat-devel >= 0.1
@@ -84,7 +84,7 @@ BuildRequires:	glib2-static >= 1:2.22.0
 %{?with_glibc:BuildRequires:	glibc-static}
 %{?with_klibc:BuildRequires:	klibc-static}
 BuildRequires:	kmod-libs-static >= 5
-BuildRequires:	libblkid-static
+BuildRequires:	libblkid-static >= 2.20
 %{?with_glibc:BuildRequires:	libselinux-static}
 %{?with_glibc:BuildRequires:	libsepol-static}
 BuildRequires:	libusb-compat-static >= 0.1
