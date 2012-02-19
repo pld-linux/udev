@@ -333,7 +333,8 @@ initramfs-tools.
 	--without-selinux
 
 %{__make} \
-	LDFLAGS="-all-static"
+	LDFLAGS="-all-static" \
+	KMOD_LIBS="-lkmod -lz -llzma"
 
 DEST=$(pwd)/udev-initrd
 %{__make} -j1 install \
@@ -402,7 +403,6 @@ install -p udev-initrd/lib/udev/udevd $RPM_BUILD_ROOT%{_libdir}/initrd
 ln -s udevd $RPM_BUILD_ROOT%{_libdir}/initrd/udevstart
 install -p udev-initrd/lib/udev/*_id $RPM_BUILD_ROOT%{_libdir}/initrd/udev
 install -p udev-initrd/lib/udev/collect $RPM_BUILD_ROOT%{_libdir}/initrd/udev
-install -p udev-initrd/lib/udev/firmware $RPM_BUILD_ROOT%{_libdir}/initrd/udev
 %endif
 
 %clean
@@ -485,7 +485,6 @@ fi
 
 %attr(755,root,root) /lib/udev/create_floppy_devices
 %attr(755,root,root) /lib/udev/collect
-%attr(755,root,root) /lib/udev/firmware
 
 %attr(755,root,root) /lib/udev/keyboard-force-release.sh
 
@@ -503,9 +502,6 @@ fi
 %attr(755,root,root) /lib/udev/keymap
 %dir /lib/udev/keymaps
 /lib/udev/keymaps/*
-
-%attr(755,root,root) /lib/udev/pci-db
-%attr(755,root,root) /lib/udev/usb-db
 
 %attr(755,root,root) /lib/udev/accelerometer
 %attr(755,root,root) /lib/udev/findkeyboards
@@ -526,7 +522,6 @@ fi
 
 # rules below are NOT supposed to be changed by users
 /lib/udev/rules.d/42-qemu-usb.rules
-/lib/udev/rules.d/50-firmware.rules
 /lib/udev/rules.d/50-udev-default.rules
 /lib/udev/rules.d/60-cdrom_id.rules
 /lib/udev/rules.d/60-floppy.rules
@@ -612,7 +607,6 @@ fi
 %attr(755,root,root) %{_libdir}/initrd/udevstart
 %attr(755,root,root) %{_libdir}/initrd/udev/*_id
 %attr(755,root,root) %{_libdir}/initrd/udev/collect
-%attr(755,root,root) %{_libdir}/initrd/udev/firmware
 %endif
 
 %files initramfs
