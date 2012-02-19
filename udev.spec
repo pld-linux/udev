@@ -316,8 +316,9 @@ initramfs-tools.
 	%{?with_dietlibc:CC="diet %{__cc} %{rpmcflags} %{rpmldflags} -Os -D_BSD_SOURCE"} \
 	%{?with_klibc:CC="%{_bindir}/klcc"} \
 	%{?debug:--enable-debug} \
-	--bindir=%{_sbindir} \
 	--libexecdir=/lib \
+	--bindir=%{_sbindir} \
+	--with-rootprefix="" \
 	--with-rootlibdir=/%{_lib} \
 	--disable-rule_generator \
 	--disable-udev_acl \
@@ -345,9 +346,10 @@ DEST=$(pwd)/udev-initrd
 
 %configure \
 	%{?debug:--enable-debug} \
-	--bindir=%{_sbindir} \
 	--libexecdir=/lib \
 	--with-html-dir=%{_gtkdocdir} \
+	--bindir=%{_sbindir} \
+	--with-rootprefix="" \
 	--with-rootlibdir=/%{_lib} \
 	--disable-silent-rules \
 	--enable-edd \
@@ -366,12 +368,15 @@ DEST=$(pwd)/udev-initrd
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/{modprobe.d,udev/rules.d} \
-	$RPM_BUILD_ROOT/lib/udev/devices
+	$RPM_BUILD_ROOT{/lib/udev/devices,/usr/lib,%{_bindir}}
 
 %{__make} -j1 install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 ln -s /lib/udev/udevd $RPM_BUILD_ROOT%{_sbindir}/udevd
+
+# compat symlinks for "/ merged into /usr" programs
+ln -s %{_sbindir}/udevadm $RPM_BUILD_ROOT%{_bindir}
 
 # install custom rules from pld package
 cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/40-alsa-restore.rules
@@ -509,6 +514,7 @@ fi
 %attr(755,root,root) %{_sbindir}/start_udev
 %attr(755,root,root) %{_sbindir}/udevd
 %attr(755,root,root) %{_sbindir}/udevadm
+%attr(755,root,root) %{_bindir}/udevadm
 
 %dir %{_sysconfdir}/udev
 %dir %{_sysconfdir}/udev/rules.d
