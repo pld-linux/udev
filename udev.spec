@@ -32,7 +32,7 @@ Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 # Verify ChangeLog and NEWS when updating (since there are incompatible/breaking changes very often)
 Version:	175
-Release:	5
+Release:	6
 Epoch:		1
 License:	GPL v2+
 Group:		Base
