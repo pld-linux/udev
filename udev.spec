@@ -4,10 +4,10 @@
 #
 # Conditional build:
 %bcond_without	initrd		# build without udev-initrd
-%bcond_without	uClibc		# link initrd version with static uClibc
+%bcond_with	uClibc		# link initrd version with static uClibc
 %bcond_with	klibc		# link initrd version with static klibc
 %bcond_with	dietlibc	# link initrd version with static dietlibc (currently broken and unsupported)
-%bcond_with	glibc		# link initrd version with static glibc
+%bcond_without	glibc		# link initrd version with static glibc
 %bcond_without	selinux		# build without SELinux support
 
 %ifarch sparc sparc64
@@ -31,13 +31,13 @@ Summary:	Device manager for the Linux 2.6 kernel series
 Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 # Verify ChangeLog and NEWS when updating (since there are incompatible/breaking changes very often)
-Version:	175
-Release:	6
+Version:	181
+Release:	0.1
 Epoch:		1
 License:	GPL v2+
 Group:		Base
 Source0:	http://www.kernel.org/pub/linux/utils/kernel/hotplug/%{name}-%{version}.tar.bz2
-# Source0-md5:	2fc9c1efcbde98e3d73ffee7a77aea47
+# Source0-md5:	135c5acfd371febc5ed8326d48028922
 # rules
 Source1:	%{name}-alsa.rules
 Source2:	%{name}.rules
@@ -62,6 +62,8 @@ BuildRequires:	glibc-misc
 BuildRequires:	gobject-introspection-devel >= 0.6.2
 BuildRequires:	gperf
 BuildRequires:	gtk-doc >= 1.10
+BuildRequires:	kmod-devel >= 5
+BuildRequires:	libblkid-devel
 %{?with_selinux:BuildRequires:	libselinux-devel >= 1.17.13}
 BuildRequires:	libtool >= 2:2.0
 BuildRequires:	libusb-compat-devel >= 0.1
@@ -73,6 +75,7 @@ BuildRequires:	rpmbuild(macros) >= 1.628
 BuildRequires:	sed >= 4.0
 BuildRequires:	usbutils >= 0.82
 BuildRequires:	zlib-devel
+BuildRequires:	xz-devel
 %if %{with initrd}
 BuildRequires:	acl-static
 BuildRequires:	attr-static
@@ -80,6 +83,8 @@ BuildRequires:	attr-static
 BuildRequires:	glib2-static >= 1:2.22.0
 %{?with_glibc:BuildRequires:	glibc-static}
 %{?with_klibc:BuildRequires:	klibc-static}
+BuildRequires:	kmod-libs-static >= 5
+BuildRequires:	libblkid-static
 %{?with_glibc:BuildRequires:	libselinux-static}
 %{?with_glibc:BuildRequires:	libsepol-static}
 BuildRequires:	libusb-compat-static >= 0.1
@@ -87,6 +92,8 @@ BuildRequires:	libusb-static
 %{?with_klibc:BuildRequires:	linux-libc-headers}
 BuildRequires:	pcre-static
 %{?with_uClibc:BuildRequires:	uClibc-static >= 4:0.9.30.3}
+BuildRequires:	xz-static
+BuildRequires:	zlib-static
 %endif
 # Build process broken - tries to links with system libs
 # instead of just built libs. BC for now.
@@ -150,6 +157,7 @@ Requires:	setup >= 2.6.1-1
 Requires:	systemd-units >= 0.38
 Requires:	uname(release) >= 2.6.32
 Suggests:	%{name}-compat
+Conflicts:	rc-scripts < 0.4.5.3-1
 Conflicts:	udev < 1:118-1
 Obsoletes:	udev-systemd
 
@@ -308,7 +316,8 @@ initramfs-tools.
 	%{?with_dietlibc:CC="diet %{__cc} %{rpmcflags} %{rpmldflags} -Os -D_BSD_SOURCE"} \
 	%{?with_klibc:CC="%{_bindir}/klcc"} \
 	%{?debug:--enable-debug} \
-	--libexecdir=/lib/udev \
+	--bindir=%{_sbindir} \
+	--libexecdir=/lib \
 	--with-rootlibdir=/%{_lib} \
 	--disable-rule_generator \
 	--disable-hwdb \
@@ -336,7 +345,8 @@ DEST=$(pwd)/udev-initrd
 
 %configure \
 	%{?debug:--enable-debug} \
-	--libexecdir=/lib/udev \
+	--bindir=%{_sbindir} \
+	--libexecdir=/lib \
 	--with-html-dir=%{_gtkdocdir} \
 	--with-rootlibdir=/%{_lib} \
 	--disable-silent-rules \
@@ -424,7 +434,7 @@ fi
 %post core
 if [ $1 -gt 1 ]; then
 	if [ ! -x /bin/systemd_booted ] || ! /bin/systemd_booted; then
-		if [ -n "$(pidof udevd)" ]; then
+		if grep -qs devtmpfs /proc/mounts && [ -n "$(pidof udevd)" ]; then
 			/sbin/udevadm control --exit
 			/lib/udev/udevd --daemon
 		fi
