@@ -74,8 +74,8 @@ BuildRequires:	python-modules
 BuildRequires:	rpmbuild(macros) >= 1.628
 BuildRequires:	sed >= 4.0
 BuildRequires:	usbutils >= 0.82
-BuildRequires:	zlib-devel
 BuildRequires:	xz-devel
+BuildRequires:	zlib-devel
 %if %{with initrd}
 BuildRequires:	acl-static
 BuildRequires:	attr-static
@@ -157,9 +157,9 @@ Requires:	setup >= 2.6.1-1
 Requires:	systemd-units >= 0.38
 Requires:	uname(release) >= 2.6.32
 Suggests:	%{name}-compat
+Obsoletes:	udev-systemd
 Conflicts:	rc-scripts < 0.4.5.3-1
 Conflicts:	udev < 1:118-1
-Obsoletes:	udev-systemd
 
 %description core
 A userspace implementation of devfs - core part of udev.
@@ -447,7 +447,7 @@ if [ $1 -gt 1 ]; then
 	fi
 fi
 %systemd_post udev-settle.service
- 
+
 %preun core
 %systemd_preun udev-settle.service
 
