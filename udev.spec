@@ -47,6 +47,7 @@ Source10:	%{name}-net.helper
 Source11:	start_udev
 # misc
 Source20:	%{name}.blacklist
+Source21:	fbdev.blacklist
 # initramfs
 Source30:	%{name}-initramfs-bottom
 Source31:	%{name}-initramfs-hook
@@ -394,6 +395,7 @@ install -p %{SOURCE11} $RPM_BUILD_ROOT%{_sbindir}/start_udev
 
 # install misc
 cp -a %{SOURCE20} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev_blacklist.conf
+cp -a %{SOURCE21} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/fbdev-blacklist.conf
 
 install -d $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/{hooks,scripts/init-{bottom,premount}}
 # install support for initramfs-tools
@@ -519,6 +521,7 @@ fi
 %dir %{_sysconfdir}/udev
 %dir %{_sysconfdir}/udev/rules.d
 
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modprobe.d/fbdev-blacklist.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/modprobe.d/udev_blacklist.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/links.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/rules.d/40-alsa-restore.rules
