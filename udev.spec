@@ -57,7 +57,6 @@ Patch1:		%{name}-uClibc.patch
 BuildRequires:	acl-devel
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake >= 1:1.11
-BuildRequires:	device-mapper-devel
 BuildRequires:	glib2-devel >= 1:2.22.0
 BuildRequires:	glibc-misc
 BuildRequires:	gobject-introspection-devel >= 0.6.2
@@ -67,7 +66,6 @@ BuildRequires:	kmod-devel >= 5
 BuildRequires:	libblkid-devel >= 2.20
 %{?with_selinux:BuildRequires:	libselinux-devel >= 1.17.13}
 BuildRequires:	libtool >= 2:2.0
-BuildRequires:	libusb-compat-devel >= 0.1
 BuildRequires:	libxslt-progs
 BuildRequires:	pciutils
 BuildRequires:	pkgconfig
@@ -88,8 +86,6 @@ BuildRequires:	kmod-libs-static >= 5
 BuildRequires:	libblkid-static >= 2.20
 %{?with_glibc:BuildRequires:	libselinux-static}
 %{?with_glibc:BuildRequires:	libsepol-static}
-BuildRequires:	libusb-compat-static >= 0.1
-BuildRequires:	libusb-static
 %{?with_klibc:BuildRequires:	linux-libc-headers}
 BuildRequires:	pcre-static
 %{?with_uClibc:BuildRequires:	uClibc-static >= 4:0.9.30.3}
