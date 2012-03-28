@@ -299,7 +299,9 @@ initramfs-tools.
 %prep
 %setup -q
 %patch0 -p1
+%if %{with uClibc}
 %patch1 -p1
+%endif
 
 %build
 %{__gtkdocize}
