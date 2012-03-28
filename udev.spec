@@ -32,7 +32,7 @@ Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 # Verify ChangeLog and NEWS when updating (since there are incompatible/breaking changes very often)
 Version:	182
-Release:	0.1
+Release:	1
 Epoch:		1
 License:	GPL v2+
 Group:		Base
@@ -106,6 +106,7 @@ Obsoletes:	hotplug
 Obsoletes:	hotplug-input
 Obsoletes:	hotplug-net
 Obsoletes:	hotplug-pci
+Obsoletes:	udev-compat
 Obsoletes:	udev-dev
 Obsoletes:	udev-extras < 20090628
 Obsoletes:	udev-tools
