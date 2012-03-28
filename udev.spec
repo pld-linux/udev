@@ -123,30 +123,6 @@ udev jest zarządcą urządzeń dla Linuksa 2.6. Jego główną funkcją jest
 zarządzanie węzłami urządzeń w katalogu /dev. Jest następcą devfs i
 hotpluga.
 
-%package acl
-Summary:	Control device ACL via ConsoleKit
-Summary(pl.UTF-8):	Zarządzanie uprawnieniami do urządzeń poprzez ConsoleKit
-Group:		Base
-Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
-
-%description acl
-ConsoleKit hook to control permissions of system devices.
-
-%description acl -l pl.UTF-8
-Uchwyty ConsoleKit do zarządzania uprawnieniami urządzeń systemowych.
-
-%package compat
-Summary:	Compatibility rules for Linux kernels < 2.6.31
-Summary(pl.UTF-8):	Reguły dla kompatybilości z jądrami Linuksa < 2.6.31
-Group:		Base
-Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
-
-%description compat
-Compatibility rules for Linux kernels < 2.6.31.
-
-%description compat -l pl.UTF-8
-Reguły dla kompatybilości z jądrami Linuksa < 2.6.31.
-
 %package core
 Summary:	A userspace implementation of devfs - core part of udev
 Summary(pl.UTF-8):	Implementacja devfs w przestrzeni użytkownika - główna część udev
@@ -157,7 +133,6 @@ Requires:	filesystem >= 3.0-45
 Requires:	setup >= 2.6.1-1
 Requires:	systemd-units >= 0.38
 Requires:	uname(release) >= 2.6.32
-Suggests:	%{name}-compat
 Obsoletes:	udev-systemd
 Conflicts:	rc-scripts < 0.4.5.3-1
 Conflicts:	udev < 1:118-1
@@ -324,7 +299,6 @@ initramfs-tools.
 	--with-rootprefix="" \
 	--with-rootlibdir=/%{_lib} \
 	--disable-rule_generator \
-	--disable-udev_acl \
 	--disable-gudev \
 	--disable-keymap \
 	--disable-gtk-doc \
@@ -355,11 +329,9 @@ DEST=$(pwd)/udev-initrd
 	--with-rootprefix="" \
 	--with-rootlibdir=/%{_lib} \
 	--disable-silent-rules \
-	--enable-edd \
 	--enable-gtk-doc \
 	--enable-introspection \
 	--enable-floppy \
-	--enable-udev_acl \
 	--enable-logging \
 	--enable-shared \
 	--enable-static \
@@ -384,9 +356,6 @@ ln -s %{_sbindir}/udevadm $RPM_BUILD_ROOT%{_bindir}
 # install custom rules from pld package
 cp -a %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/40-alsa-restore.rules
 cp -a %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/70-udev-pld.rules
-
-# compatibility rules for older kernels
-cp -a rules/misc/30-kernel-compat.rules $RPM_BUILD_ROOT/lib/udev/rules.d/30-kernel-compat.rules
 
 # install configs
 cp -a %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/links.conf
@@ -470,16 +439,6 @@ fi
 %dev(c,5,1) %attr(660,root,console) /dev/console
 %dev(c,1,5) %attr(666,root,root) /dev/zero
 
-%files acl
-%defattr(644,root,root,755)
-%attr(755,root,root) /lib/udev/udev-acl
-%attr(755,root,root) /usr/lib/ConsoleKit/run-seat.d/udev-acl.ck
-/lib/udev/rules.d/70-udev-acl.rules
-
-%files compat
-%defattr(644,root,root,755)
-/lib/udev/rules.d/30-kernel-compat.rules
-
 %files core
 %defattr(644,root,root,755)
 %doc ChangeLog TODO
@@ -501,7 +460,6 @@ fi
 
 %attr(755,root,root) /lib/udev/ata_id
 %attr(755,root,root) /lib/udev/cdrom_id
-%attr(755,root,root) /lib/udev/edd_id
 %attr(755,root,root) /lib/udev/mtd_probe
 %attr(755,root,root) /lib/udev/scsi_id
 %attr(755,root,root) /lib/udev/v4l_id
@@ -532,7 +490,7 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udev/udev.conf
 
 # rules below are NOT supposed to be changed by users
-/lib/udev/rules.d/42-qemu-usb.rules
+/lib/udev/rules.d/42-usb-hid-pm.rules
 /lib/udev/rules.d/50-udev-default.rules
 /lib/udev/rules.d/60-cdrom_id.rules
 /lib/udev/rules.d/60-floppy.rules
@@ -543,7 +501,6 @@ fi
 /lib/udev/rules.d/60-persistent-storage.rules
 /lib/udev/rules.d/60-persistent-v4l.rules
 /lib/udev/rules.d/61-accelerometer.rules
-/lib/udev/rules.d/61-persistent-storage-edd.rules
 /lib/udev/rules.d/75-net-description.rules
 /lib/udev/rules.d/75-probe_mtd.rules
 /lib/udev/rules.d/75-tty-description.rules
