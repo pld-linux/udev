@@ -32,7 +32,7 @@ Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 # Verify ChangeLog and NEWS when updating (since there are incompatible/breaking changes very often)
 Version:	182
-Release:	3
+Release:	4
 Epoch:		1
 License:	GPL v2+
 Group:		Base
@@ -124,6 +124,7 @@ hotpluga.
 Summary:	A userspace implementation of devfs - core part of udev
 Summary(pl.UTF-8):	Implementacja devfs w przestrzeni użytkownika - główna część udev
 Group:		Base
+Requires(post,preun,postun):	systemd-units >= 38
 Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Requires:	coreutils
 Requires:	filesystem >= 3.0-45
