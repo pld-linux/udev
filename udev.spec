@@ -32,7 +32,7 @@ Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 # Verify ChangeLog and NEWS when updating (since there are incompatible/breaking changes very often)
 Version:	182
-Release:	4
+Release:	5
 Epoch:		1
 License:	GPL v2+
 Group:		Base
@@ -48,10 +48,6 @@ Source11:	start_udev
 # misc
 Source20:	%{name}.blacklist
 Source21:	fbdev.blacklist
-# initramfs
-Source30:	%{name}-initramfs-bottom
-Source31:	%{name}-initramfs-hook
-Source32:	%{name}-initramfs-premount
 Patch0:		%{name}-so.patch
 Patch1:		%{name}-uClibc.patch
 BuildRequires:	acl-devel
@@ -254,21 +250,6 @@ A userspace implementation of devfs - static binary for initrd.
 Implementacja devfs w przestrzeni użytkownika - statyczna binarka dla
 initrd.
 
-%package initramfs
-Summary:	A userspace implementation of devfs - support scripts for initramfs-tools
-Summary(pl.UTF-8):	Implementacja devfs w przestrzeni użytkownika - skrypty dla initramfs-tools
-Group:		Base
-Requires:	%{name}-core = %{epoch}:%{version}-%{release}
-Requires:	initramfs-tools
-
-%description initramfs
-A userspace implementation of devfs - support scripts for
-initramfs-tools.
-
-%description initramfs -l pl.UTF-8
-Implementacja devfs w przestrzeni użytkownika - skrypty dla
-initramfs-tools.
-
 %prep
 %setup -q
 %patch0 -p1
@@ -365,12 +346,6 @@ install -p %{SOURCE11} $RPM_BUILD_ROOT%{_sbindir}/start_udev
 # install misc
 cp -a %{SOURCE20} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/udev_blacklist.conf
 cp -a %{SOURCE21} $RPM_BUILD_ROOT%{_sysconfdir}/modprobe.d/fbdev-blacklist.conf
-
-install -d $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/{hooks,scripts/init-{bottom,premount}}
-# install support for initramfs-tools
-install -p %{SOURCE30} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/scripts/init-bottom/udev
-install -p %{SOURCE31} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/hooks/udev
-install -p %{SOURCE32} $RPM_BUILD_ROOT%{_datadir}/initramfs-tools/scripts/init-premount/udev
 
 %if %{with initrd}
 install -d $RPM_BUILD_ROOT%{_libdir}/initrd/udev
@@ -574,9 +549,3 @@ fi
 %attr(755,root,root) %{_libdir}/initrd/udev/*_id
 %attr(755,root,root) %{_libdir}/initrd/udev/collect
 %endif
-
-%files initramfs
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_datadir}/initramfs-tools/scripts/init-bottom/udev
-%attr(755,root,root) %{_datadir}/initramfs-tools/hooks/udev
-%attr(755,root,root) %{_datadir}/initramfs-tools/scripts/init-premount/udev
