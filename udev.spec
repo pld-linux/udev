@@ -32,7 +32,7 @@ Summary(pl.UTF-8):	Zarządca urządzeń dla Linuksa 2.6
 Name:		udev
 # Verify ChangeLog and NEWS when updating (since there are incompatible/breaking changes very often)
 Version:	182
-Release:	5
+Release:	6
 Epoch:		1
 License:	GPL v2+
 Group:		Base
@@ -50,6 +50,7 @@ Source20:	%{name}.blacklist
 Source21:	fbdev.blacklist
 Patch0:		%{name}-so.patch
 Patch1:		%{name}-uClibc.patch
+Patch2:		%{name}-ploop-rules.patch
 BuildRequires:	acl-devel
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake >= 1:1.11
@@ -256,6 +257,7 @@ initrd.
 %if %{with uClibc}
 %patch1 -p1
 %endif
+%patch2 -p1
 
 %build
 %{__gtkdocize}
